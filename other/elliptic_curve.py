@@ -1,79 +1,74 @@
 #!/usr/bin/env python3
+import sys
+if True:
+    sys.path.append('..')
+import lib as LIB
 try:
     from PIL import Image, ImageDraw
     IMG_OUT = True
 except ModuleNotFoundError:
     IMG_OUT = False
 
-
-def power(x, y, p):
-    res = 1
-    x %= p
-    while (y > 0):
-        if (y & 1):
-            res = (res * x) % p
-        y = y >> 1
-        x = (x * x) % p
-    return res
+ALL_OF_THEM = []
+OFFSET = 0
+SEPERATORS = []
+PRIMES_RED = False
 
 
-# Assumption: p is of the form 3*i + 4 where i >= 1
-def sqrtFast(n, p):
-    if (p % 4 != 3):
-        raise ValueError('Invalid Input')
-    # Try "+(n ^ ((p + 1)/4))"
-    n = n % p
-    x = power(n, (p + 1) // 4, p)
-    if ((x * x) % p == n):
-        return x
-    # Try "-(n ^ ((p + 1)/4))"
-    x = p - x
-    if ((x * x) % p == n):
-        return x
-    return None
+def write_image(dots, name, h, sz=0, width=None):
+    if width is None:
+        width = h
+    image = Image.new('RGB', (width, h))
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((0, 0, width, h), fill='white')
+    for x, p1, p2, pr in dots:
+        z1 = h - 1 - p1
+        z2 = h - 1 - p2
+        color = 'red' if PRIMES_RED and pr else 'black'
+        draw.rectangle((x - sz, z1 - sz, x + sz, z1 + sz), fill=color)
+        draw.rectangle((x - sz, z2 - sz, x + sz, z2 + sz), fill=color)
+    for x in SEPERATORS:
+        draw.rectangle((x, 0, x + 1, h), fill='gray')
+    image.save(name, 'PNG')
 
 
-def sqrtNormal(n, p):
-    n %= p
-    for x in range(2, p):
-        if ((x * x) % p == n):
-            return x
-    return None
-
-
-def elliptic_curve(a, b, r):
-    print(f'generate curve: a={a}, b={b}, r={r}')
-    if IMG_OUT:
-        image1 = Image.new('RGB', (r, r))
-        draw1 = ImageDraw.Draw(image1)
-        draw1.rectangle((0, 0, r, r), fill='white')
-        image2 = Image.new('RGB', (r, r))
-        draw2 = ImageDraw.Draw(image2)
-        draw2.rectangle((0, 0, r, r), fill='white')
-
-    sqrtFn = sqrtNormal if (r % 4 != 3) else sqrtFast
+def draw_curve(a, b, r):
+    global ALL_OF_THEM, OFFSET, SEPERATORS
+    # print(f'generate curve: a={a}, b={b}, r={r}')
+    img_dots = []
     txt = ''
     for x in range(r):
-        y2 = (x ** 3 + a * x + b) % r
-        u2 = sqrtFn(y2, r) if y2 > 0 else 0
-        if u2 is not None:
-            z1 = r - 1 - u2
-            z2 = r - 1 - (-u2 % r)
-            print(x, y2, -y2 % r)
-            txt += f'{x} {y2} {-y2 % r}\n'
-            if IMG_OUT:
-                draw1.rectangle((x, z1, x, z1), fill='black')
-                draw1.rectangle((x, z2, x, z2), fill='black')
-                draw2.rectangle((x - 2, z1 - 2, x + 2, z1 + 2), fill='black')
-                draw2.rectangle((x - 2, z2 - 2, x + 2, z2 + 2), fill='black')
+        p1, p2 = LIB.elliptic_curve(x, a, b, r)
+        if p1 is not None:
+            # print(x, p1, p2)
+            txt += f'{x} {p1} {p2}\n'
+            # img_dots.append((x + OFFSET, p1, p2, LIB.is_prime(x)))
+            if LIB.is_prime(x):
+                img_dots.append((x + OFFSET, p1, p2, True))
 
-    with open(f'ec-a{a}-b{b}-r{r}.txt', 'w') as f:
-        f.write(txt)
-    if IMG_OUT:
-        print('writing image output')
-        image1.save(f'ec-a{a}-b{b}-r{r}-pp.png', 'PNG')
-        image2.save(f'ec-a{a}-b{b}-r{r}-lg.png', 'PNG')
-    print()
+    # with open(f'ec-a{a}-b{b}-r{r}.txt', 'w') as f:
+    #     f.write(txt)
+
+    ALL_OF_THEM.append(((a, b, r), img_dots))
+    OFFSET += len(img_dots) + 10
+    SEPERATORS.append(OFFSET - 6)
+    # if IMG_OUT:
+    #     print(f'writing image output (a={a}, b={b}, r={r})')
+    #     write_image(img_dots, f'ec-a{a}-b{b}-r{r}-pp.png', r)
+    #     write_image(img_dots, f'ec-a{a}-b{b}-r{r}-lg.png', r, sz=2)
+    # print()
 
 
-elliptic_curve(a=149, b=263, r=3299)
+r = 3299
+t = [2, 3, 5, 7, 13, 23, 43, 79, 149, 263, 463, 829, 1481, 2593]
+# t = [2, 3]
+for x in t:
+    ALL_OF_THEM = []
+    SEPERATORS = []
+    OFFSET = 0
+    for y in t:
+        draw_curve(a=x, b=y, r=r)
+
+    print(f'writing image output ({x}@{t[0]}-{t[-1]} r={r}) {OFFSET}x{r}')
+    just_all = [z for x, y in ALL_OF_THEM for z in y]
+    write_image(just_all, f'ec-{x}-r{r}.png', r, sz=3, width=OFFSET)
