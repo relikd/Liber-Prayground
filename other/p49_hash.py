@@ -37,7 +37,7 @@ txt = '''
 '''
 
 rr = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwx'
-rr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwx1234567890'
+# rr = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwx1234567890'
 
 for base in range(58, 64):
     t = ''
@@ -49,6 +49,7 @@ for base in range(58, 64):
         # n = rr.index(x[0]) * len(rr) + rr.index(x[1])
         # n = int(x, 36)
         # t += '{},'.format(n)
-        tt += chr(n)
+        # tt += chr(n)
+        tt += '{}{}'.format(rr[n // 16], rr[n % 16])
     print(t)
     print(tt)
