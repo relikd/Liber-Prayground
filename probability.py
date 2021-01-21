@@ -60,10 +60,15 @@ def break_cipher(fname, candidates, solver, key_fn):
 #########################################
 
 for fname in [
-    # '0_welcome',  # V8
-    # 'jpg107-167',  # V13
-    # '0_warning',  # invert
-    # '0_wisdom',  # plain
+    '0_warning',  # invert
+    '0_welcome',  # V8
+    '0_wisdom',  # plain
+    '0_koan_1',  # invert + shift
+    '0_loss_of_divinity',  # plain
+    'jpg107-167',  # V13
+    'jpg229',  # plain
+    'p56_an_end',  # totient
+    'p57_parable',  # plain
     # 'p0-2',  # ???
     # 'p3-7',  # ???
     # 'p8-14',  # ??? -> kl 11? or 12?
@@ -72,7 +77,7 @@ for fname in [
     # 'p27-32',  # ???
     # 'p33-39',  # ???
     # 'p40-53',  # ???
-    'p54-55',  # ???
+    # 'p54-55',  # ???
 ]:
     # NGramShifter().guess(data, 'ᚠ')
     print()

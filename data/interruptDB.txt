@@ -1,8 +1,13 @@
 # file-name | number of interrupts | score | interrupt-rune (index) | key length | interrupts (starting with index 1 for first occurrence)
-0_welcome|25|1.17420|0|1|
-jpg107-167|5|1.13036|0|1|
 0_warning|1|1.85685|0|1|
+0_welcome|25|1.17420|0|1|
 0_wisdom|5|1.52270|0|1|
+0_koan_1|25|1.90479|0|1|
+0_loss_of_divinity|8|1.77524|0|1|
+jpg107-167|5|1.13036|0|1|
+jpg229|2|1.66624|0|1|
+p56_an_end|5|0.94230|0|1|
+p57_parable|3|1.81859|0|1|
 p0-2|34|0.98839|0|1|
 p3-7|26|1.00438|0|1|
 p8-14|66|0.99935|0|1|
