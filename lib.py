@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import math
 
+AFFINE_INV = None
+
 
 # yes it will report 2,3,5 as non-prime
 # though why add a check if it will never be tested anyway
@@ -70,3 +72,34 @@ def elliptic_curve(x, a, b, r):
     if y is None:
         return None, None
     return y, -y % r
+
+
+def affine_inverse(s, n=29):
+    def fn(s, n):
+        g = [n, s]
+        u = [1, 0]
+        v = [0, 1]
+        y = [None]
+        i = 1
+        while g[i] != 0:
+            y.append(g[i - 1] // g[i])
+            g.append(g[i - 1] - y[i] * g[i])
+            u.append(u[i - 1] - y[i] * u[i])
+            v.append(v[i - 1] - y[i] * v[i])
+            i += 1
+        return v[-2] % n
+
+    global AFFINE_INV
+    if AFFINE_INV is None:
+        AFFINE_INV = [fn(x, n) for x in range(n)]
+    return AFFINE_INV[s]
+
+
+def affine_decrypt(x, key, n=29):  # key: (s, t)
+    return ((x - key[1]) * affine_inverse(key[0], n)) % n
+
+
+# alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+# cipher = 'YDIDWYASDDJVAPJMMBIASDTJVAMD'
+# indices = [affine_decrypt(alphabet.index(x), (5, 9), 26) for x in cipher]
+# print(''.join(alphabet[x] for x in indices))

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from RuneRunner import RuneRunner
 from RuneText import Rune, RuneText
+import lib as LIB
 
 
 #########################################
@@ -137,3 +138,38 @@ class SequenceSolver(RuneSolver):
 
     def __str__(self):
         return super().__str__() + f'\nf(x): {self.FN}'
+
+
+#########################################
+#  AffineSolver  :  Decrypt runes with an array of (s, t) affine keys
+#########################################
+
+class AffineSolver(RuneSolver):
+    def __init__(self):
+        super().__init__()
+        self.current_key_pos = 0
+        self.reset()
+
+    def reset(self):
+        super().reset()
+        self.KEY_DATA = []  # the key material
+        self.KEY_INVERT = False  # ABCD -> ZYXW
+
+    def run(self, data=None):
+        self.current_key_pos = 0
+        super().run(data=data)
+
+    def rotate_key(self):
+        self.current_key_pos = (self.current_key_pos + 1) % len(self.KEY_DATA)
+
+    def cipher(self, rune, context):
+        r_idx = rune.index
+        if self.KEY_INVERT:
+            r_idx = 28 - r_idx
+        r_idx = LIB.affine_decrypt(r_idx, self.KEY_DATA[self.current_key_pos])
+        self.rotate_key()
+        return Rune(i=r_idx)
+
+    def __str__(self):
+        return super().__str__() + \
+            f'\nkey: {self.KEY_DATA}\nkey invert: {self.KEY_INVERT}'

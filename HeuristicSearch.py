@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import itertools  # product, compress, combinations
 import bisect  # bisect_left, insort
+import lib as LIB
 
 
 #########################################
@@ -27,6 +28,31 @@ class GuessVigenere(object):
 
 
 #########################################
+#  GuessAffine  :  Find greatest common affine key
+#########################################
+
+class GuessAffine(object):
+    def __init__(self, nums):
+        self.nums = nums
+
+    def guess(self, keylength, score_fn):  # minimize score_fn
+        found = []
+        for offset in range(keylength):
+            candidate = (None, None)
+            best = 9999999
+            for s in range(29):
+                for t in range(29):
+                    shifted = [LIB.affine_decrypt(x, (s, t))
+                               for x in self.nums[offset::keylength]]
+                    score = score_fn(shifted)
+                    if score < best:
+                        best = score
+                        candidate = (s, t)
+            found.append(candidate)
+        return found
+
+
+#########################################
 #  SearchInterrupt  :  Hill climbing algorithm for interrupt detection
 #########################################
 
@@ -38,6 +64,9 @@ class SearchInterrupt(object):
 
     def to_occurrence_index(self, interrupts):
         return [self.stops.index(x) + 1 for x in interrupts]
+
+    def from_occurrence_index(self, interrupts):
+        return [self.stops[x - 1] for x in interrupts]
 
     def join(self, interrupts=[]):  # rune positions, not occurrence index
         ret = []
@@ -145,7 +174,7 @@ class SearchInterrupt(object):
                 current = update
                 continue  # did optimize, so retry with same level
             level += 1
-        print()
+        print('.')
         # find equally likely candidates
         if self.single_result:
             return best, [current]
