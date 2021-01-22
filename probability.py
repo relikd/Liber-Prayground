@@ -8,8 +8,6 @@ from InterruptDB import InterruptDB
 RUNES = 'ᚠᚢᚦᚩᚱᚳᚷᚹᚻᚾᛁᛄᛇᛈᛉᛋᛏᛒᛖᛗᛚᛝᛟᛞᚪᚫᚣᛡᛠ'
 INVERT = False
 MIN_SCORE = 1.4
-
-db = InterruptDB.load()
 session_files = []
 
 
@@ -58,28 +56,33 @@ def break_cipher(fname, candidates, solver, key_fn):
 #########################################
 #  main
 #########################################
+# db = InterruptDB.load('InterruptDB/db_secondary.txt')
+db = InterruptDB.load()
 
 for fname in [
-    '0_warning',  # invert
-    '0_welcome',  # V8
-    '0_wisdom',  # plain
-    '0_koan_1',  # invert + shift
-    '0_loss_of_divinity',  # plain
-    'jpg107-167',  # V13
-    'jpg229',  # plain
-    'p56_an_end',  # totient
-    'p57_parable',  # plain
-    # 'p0-2',  # ???
-    # 'p3-7',  # ???
-    # 'p8-14',  # ??? -> kl 11? or 12?
-    # 'p15-22',  # ???
-    # 'p23-26',  # ???
-    # 'p27-32',  # ???
-    # 'p33-39',  # ???
-    # 'p40-53',  # ???
-    # 'p54-55',  # ???
+    'p0-2',  # ???
+    'p3-7',  # ???
+    'p8-14',  # ???
+    'p15-22',  # ???
+    'p23-26',  # ???
+    'p27-32',  # ???
+    'p33-39',  # ???
+    'p40-53',  # ???
+    'p54-55',  # ???
+    # '0_warning',  # invert
+    # '0_welcome',  # V8
+    # '0_wisdom',  # plain
+    # '0_koan_1',  # invert + shift
+    # '0_loss_of_divinity',  # plain
+    # 'jpg107-167',  # V13
+    # 'jpg229',  # plain
+    # 'p56_an_end',  # totient
+    # 'p57_parable',  # plain
 ]:
     # NGramShifter().guess(data, 'ᚠ')
+    if fname not in db:
+        print(fname, 'not in db.')
+        continue
     print()
     print(f'loading file: pages/{fname}.txt')
     candidates = [x for x in db[fname] if x[1] >= MIN_SCORE]

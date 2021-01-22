@@ -41,7 +41,7 @@ Rune values are taken from Gematria, with these unicode characters representing:
 
 In general, the playground accepts any kind of data. Be it runes, plain text, or comma separated list of indices. So for all commands below you can use whatever<sup>1</sup> you have currently in your clipboard.
 
-<sup>1</sup><small>not primes though, because how would you differentiate an index from a prime?</small>
+<small><sup>1</sup> not primes though, because how would you differentiate an index from a prime?</small>
 
 The command `help` will display:
 
@@ -177,7 +177,7 @@ The key length is the sum of user-set-key + offset + padding. Shift and rotate o
 
 __Note:__ Index 29 is used as placeholder here. A value of 29 will not affect the decryption calculation whatsoever. If a (vigenere) key is set, they key will be split into an active part (values != 29) and an inactive part (values == 29). The output will mark all active runes in red<sup>2</sup>.
 
-<sup>2</sup><small>Totient functions currently do not support highlighting because there is no part that is "not active".</small>
+<small><sup>2</sup> Totient functions currently do not support highlighting because there is no part that is "not active".</small>
 
 #### Key interrupts / key jumps
 
