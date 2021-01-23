@@ -152,20 +152,16 @@ class SearchInterrupt(object):
 
         def evolve(lvl):
             for x in itertools.combinations(self.stops, lvl + 1):
-                tmp = current[:]  # [x for x in current if x not in old]
+                tmp = current[:]
                 for y in x:
-                    if y is None:
-                        continue
-                    elif y in current:
+                    if y in current:
                         tmp.pop(bisect.bisect_left(tmp, y))
                     else:
                         bisect.insort(tmp, y)
                 yield tmp, score_fn(self.join(tmp))
-            if lvl > 0:
-                yield from evolve(lvl - 1)
 
         best = score_fn(self.join())
-        level = -1  # or start directly with maxdepth - 1
+        level = 0  # or start directly with maxdepth - 1
         while level < maxdepth:
             print('.', end='')
             update = None
@@ -174,6 +170,7 @@ class SearchInterrupt(object):
                     best = score
                     update = interrupts
             if update:
+                level = 0  # restart with 1-bit again
                 current = update
                 continue  # did optimize, so retry with same level
             level += 1

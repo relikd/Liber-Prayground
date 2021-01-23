@@ -10,9 +10,16 @@
 
 - `solver.py` you can run `solver.py -s` to output all already solved pages. Other than that, this is the playground to test new ideas against the unsolved pages. Here you can automate stuff and test it on all the remaining pages; e.g., there is a section to try out totient functions. See [Solving](#solving) for more info.
 
-- `probability.py` some tools for rune frequency analysis and a Vigenere breaker. These tools will try to determine the keylength of a Vigenere cipher and, once found, determine the most probable key shift per column. Also contains some algorithms to detect interrupts (which will skew the frequency analysis).
+- `probability.py` some tools for rune frequency analysis, interrupt detector, and Vigenere / Affine breaker. These tools will try to guess the key length of the cipher and determine the most probable key shift per key group. See [Heuristics](#heuristics) for more info.
 
-You can call both, playground and solver, with command line arguments `-v` or `-q` or both, to control the verbosity of the output (see [Log levels](#l-log-levels)).
+You can call `playground.py` and `solver.py` with command line arguments `-v` or `-q` (or both), to control the verbosity of the output (see [Log levels](#l-log-levels)).
+
+
+### LP pages and notation
+
+The `pages` folder contains all LP pages in text and graphic. Note, I have double checked each and every rune while copying and added missing whitespace characters like `'` and `"`.
+
+Rune values are taken from Gematria, with these unicode characters representing: space (`•`), period (`⁘`), comma (`⁚`), semicolon (`⁖`), and chapter mark (`⁜`).
 
 
 ### The library
@@ -28,13 +35,6 @@ These files you probably wont need to touch unless you want to modify some outpu
 - `RuneSolver.py` contains a specific implementation for each cipher type. Two implementations in particular, `VigenereSolver` which has methods for setting and modifying key material as well as automatic key rotation and interrupt skipping. `SequenceSolver` interprets the cipher on a continuous or discrete function (i.e., Euler's totient).
 
 Refer to `solver.py` or section [Solving](#solving) for examples on usage.
-
-
-### LP pages and notation
-
-The `pages` folder contains all LP pages in text and graphic. Note, I have double checked each and every rune while copying and added missing whitespace characters like `'` and `"`.
-
-Rune values are taken from Gematria, with these unicode characters representing: space (`•`), period (`⁘`), comma (`⁚`), semicolon (`⁖`), and chapter mark (`⁜`).
 
 
 ## Playground
@@ -267,10 +267,62 @@ solver.load(RuneText('will be copied'))
 The output writer has the options `COLORS`, `VERBOSE`, `QUIET`, and `BREAK_MODE` to control the appearance. `BREAK_MODE` can be one of the `Rune.kind` values.
 
 
-### RuneSolver, VigenereSolver, SequenceSolver
+### RuneSolver, VigenereSolver, SequenceSolver, AffineSolver
  
 All `RuneSolver` subclasses inherit the attributes of `RuneRunner` and will include additional data fields that can be set. In its most basic form it has the two fields `INTERRUPT` (must be rune) and `INTERRUPT_POS` (list of indices).
 
 In the case of `VigenereSolver` the additional fields are `KEY_DATA` (list of indices), `KEY_INVERT` (bool), `KEY_SHIFT` (int), `KEY_ROTATE` (int), `KEY_OFFSET` (int), and `KEY_POST_PAD` (int).
 
 The class `SequenceSolver` has only one additional parameter which is `FN` (function pointer or lambda expression).
+
+`AffineSolver` is very similar to `VigenereSolver` but does not support key manipulation (yet). `KEY_DATA` and `KEY_INVERT` are the only two attributes.
+
+
+## Heuristics
+
+This is where the magic happens. `HeuristicLib.py` contains the basic frequency analysis metrics like Index of Coincidence (IoC) and similarity matching. The latter is used to automatically detect key shifts – like in Vigenere or Affine. These metrics are based on english sample texts, in this case “Peace and War” or “Gadsby” (text without the letter ‘e’ [well almost, because there are still 6 e's in there ... liar!]).
+
+`NGrams.py` is respobsible for taking english text (or any other language) and translating it to runes. Also, counts runes in a text and creates the frequency distribution. The translation is the slowest part, but still very efficient. Creating all 1-gram to 5-grams of a 7 Mb text file takes approx. 20 sec.
+
+`FailedAttempts.py` is a collection of what the title is saying – failed attempts. Currently only holds a n-gram shifter. Which will shift every n runes in contrast to the normal decrypting of a single rune at a time.
+
+
+#### GuessVigenere, GuessAffine
+
+Two classes that enumerate all possible shifts for a key. For Vigenere that is key length * 29, for Affine key length * 29^2. To determine whether one shift is more likely than another, a similarity metric is used. In this case, the least square distance to a normal english distribution. The value will be lowest if it closely matches the frequencies of each rune.
+
+
+### HeuristicSearch.py
+
+This is the heart of the interrupt detector. Searching the full set of possible constellations is not feasable (2 ^ {number of possible interrupts}). Thus, the class has two methods to avoid the full search. Both come with a maximum look ahead parameter that can be tweaked.
+
+Lets look at an example with 66 interrupts (p8–14).  
+Testing all would require 2^66 or __7.4*10^19__ calculations.
+
+#### SearchInterrupt.sequential
+
+This will go through the text sequentially. Looking at the first N interrupts and try all combinations in this subset. The best combination will determine whether the current interrupt (1. interrupt index) should be added to the final result. If the current index was used to generate the best value then it is included otherwise not. __Note:__ it will only add the first interrupt, not all of them. The next iteration will look at the interrupts at index 1 to N+1. Adding the next index if it was in the set, and repeating with the remaining text.
+
+With a look ahead of 9 (default value), we have to do (66-8)*2^9 calculations, or __3.0\*10^4__.
+
+#### SearchInterrupt.genetic
+
+The genetic approach will look at all interrupts, but only change up to N interrupts at a time. If the look ahead is 4, the algorithm will look at all possible combinations with that will change (up to) 4 interrupts. The best combination is selected and the algorithm repeats. If no better solution is found, the currently best interrupt-set will be returned.
+
+As an optimization, smaller look ahead levels are tried first. E.g., if you specify a look ahead of 4, levels 1, 2, and 3 are tried first. The level tells you how many interrupts will be tried simultaniously. Interrupts are like bits and can be flipped either on or off, even multiple times, in a search.
+
+The complexity is not linear and depends on whether “there was just another better solution”. With the default look ahead of 3, which can flip 3 bits simultaneously, each step performs 66!/(3!(66-3)!) + 66!/(2!(66-2)!) + 66 operations or __4.8*10^4__. Usually it takes no more than 2–3 steps.
+
+
+### InterruptDB.py
+
+Calculating the best interrupt position takes quite long, so we can optimize our program by pre-calculating the IoC's. That is what `InterruptDB.py` is for. The class will search for the best interrupts and store the IoC score as well as the set of interrupts in a file. Later queries just need to process this file instead.
+
+The current configuration will look at the first 20 interrupts, for all runes, on all pages, and up to a key length of 32 – thats 1.36*10^10 operations! The full execution time is somewhere around 38 hours. Luckily, it is a one-time job. The resulting database is used directly as is, plus a html file is generated by `InterruptToWeb` for a graphical representation. Meanwhile, `InterruptIndices` keeps count how reliable the results are, e.g., how many runes were considered when looking for the first 20 interrupts, and adds that information to the html. Here is the [html overview](./InterruptDB/).
+
+
+### probability.py
+
+As described in the introduction to this repository, `probability.py` is the third main entry to deciphering the Liber Primus. This includes a fully automated Affine (incl. Atbash, reverse Gematria, xor) and Vigenere breaker.
+
+This is your playground to experiment with new automated decrypting and re-running previous tests on new interrupts. Contrary to `playground.py` (translation, search, key manipulation) and `solver.py` (automated testing of a specific idea or totient function), `probability.py` is about automated testing of ideas regarding heuristic metrics. E.g., how can you optimize the process so the program will drop the right answer automatically.
