@@ -88,7 +88,7 @@ class SearchInterrupt(object):
         found = [[]]
 
         def best_in_one(i, depth, prefix=[]):
-            best_s = 0
+            best_s = -8
             best_p = []  # [match, match, ...]
             irp = self.stops[i:i + depth]
             for x in itertools.product([False, True], repeat=depth):
@@ -103,7 +103,7 @@ class SearchInterrupt(object):
             return best_p, best_s
 
         def best_in_all(i, depth):
-            best_s = 0
+            best_s = -8
             best_p = []  # [(prefix, [match, match, ...]), ...]
             for pre in found:
                 parts, score = best_in_one(i, depth, prefix=pre)
@@ -148,7 +148,6 @@ class SearchInterrupt(object):
     # If no better score found, increment number of testing bits and repeat.
     # Either start with all interrupts set (topDown) or none set.
     def genetic(self, score_fn, topDown=False, maxdepth=3):
-        best = 0
         current = self.stops if topDown else []
 
         def evolve(lvl):

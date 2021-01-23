@@ -12,14 +12,13 @@ def normalized_probability(int_prob):
 RUNES = 'ᚠᚢᚦᚩᚱᚳᚷᚹᚻᚾᛁᛄᛇᛈᛉᛋᛏᛒᛖᛗᛚᛝᛟᛞᚪᚫᚣᛡᛠ'
 re_norune = re.compile('[^' + RUNES + ']')
 PROB_INT = [0] * 29
-# for k, v in NGrams.load(1, '-no-e').items():  # 1.8271530001197518
-for k, v in NGrams.load().items():  # 1.7736851725202398
+for k, v in NGrams.load(1, '').items():  # '-no-e', '-solved'
     PROB_INT[RUNES.index(k)] = v
 PROB_NORM = normalized_probability(PROB_INT)
-K_r = 1 / 29   # 0.034482758620689655
-K_p = sum(x ** 2 for x in PROB_INT)  # 0.06116195419412538
+# Target IoC. peace and war: 1.77368517 solved: 1.78021503, no e: 1.82715300
 N_total = (sum(PROB_INT) * (sum(PROB_INT) - 1)) / 29
-PROB_TARGET = sum(x * (x - 1) for x in PROB_INT) / N_total
+TARGET_IOC = sum(x * (x - 1) for x in PROB_INT) / N_total
+# TARGET_IOC = 1.78
 
 
 #########################################
@@ -37,9 +36,6 @@ class Probability(object):
         X = sum(x * (x - 1) for x in self.prob)
         return X / ((self.N * (self.N - 1)) / 29)
 
-    def friedman(self):
-        return (K_p - K_r) / (self.IC() - K_r)
-
     def similarity(self):
         probs = normalized_probability(self.prob)
         return sum((x - y) ** 2 for x, y in zip(PROB_NORM, probs))
@@ -48,6 +44,12 @@ class Probability(object):
     def IC_w_keylen(nums, keylen):
         val = sum(Probability(nums[x::keylen]).IC() for x in range(keylen))
         return val / keylen
+
+    @staticmethod
+    def target_diff(nums, keylen, target_ioc=TARGET_IOC):
+        val = sum(abs(Probability(nums[x::keylen]).IC() - target_ioc)
+                  for x in range(keylen))
+        return 1 - (val / keylen)
 
 
 #########################################

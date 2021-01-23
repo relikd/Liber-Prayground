@@ -7,7 +7,6 @@ from InterruptDB import InterruptDB
 
 RUNES = 'ᚠᚢᚦᚩᚱᚳᚷᚹᚻᚾᛁᛄᛇᛈᛉᛋᛏᛒᛖᛗᛚᛝᛟᛞᚪᚫᚣᛡᛠ'
 INVERT = False
-IOC_MIN_SCORE = 1.3
 KEY_MAX_SCORE = 0.05
 AFF_MAX_SCORE = 0.04
 IRP_F_ONLY = False
@@ -45,9 +44,10 @@ def break_cipher(fname, candidates, solver, key_fn):
         key_score, key = key_fn(testcase).guess(kl, fn_similarity)
         if key_score > key_max_score:
             continue
-        print(f'  key_score: {key_score:.4f}, {key}')
+        prio = (1 - key_score) * max(0, score)
+        print(f'  key_score: {prio:.4f}, {key}')
         print('  skip:', skips)
-        txtname = f'{key_fn.__name__}.{key_score:.4f}_{fname}_{kl}.{irp}'
+        txtname = f'{fname}_{prio:.4f}.{key_fn.__name__}.{irp}_{kl}'
         if INVERT:
             txtname += '.inv'
         while txtname in session_files:
@@ -55,7 +55,8 @@ def break_cipher(fname, candidates, solver, key_fn):
         session_files.append(txtname)
         outfile = f'out/{txtname}.txt'
         with open(outfile, 'w') as f:
-            f.write(f'{irp}, {kl}, {score:.4f}, {key}, {skips}\n')
+            f.write(
+                f'{irp}, {kl}, {score:.4f}, {key_score:.4f}, {key}, {skips}\n')
         slvr.output.file_output = outfile
         slvr.INTERRUPT = RUNES[irp]
         slvr.INTERRUPT_POS = skips
@@ -66,7 +67,9 @@ def break_cipher(fname, candidates, solver, key_fn):
 #########################################
 #  main
 #########################################
-db = InterruptDB.load()  # 'db_secondary'
+db = InterruptDB.load('db_norm')
+# IOC_MIN_SCORE = 1.4  # for db_high
+IOC_MIN_SCORE = 0.55  # for db_norm
 
 for fname in [
     'p0-2',  # ???
