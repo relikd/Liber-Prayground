@@ -14,6 +14,7 @@ class GuessVigenere(object):
 
     def guess(self, keylength, score_fn):  # minimize score_fn
         found = []
+        avg_score = 0
         for offset in range(keylength):
             bi = -1
             bs = 9999999
@@ -23,8 +24,9 @@ class GuessVigenere(object):
                 if score < bs:
                     bs = score
                     bi = i
+            avg_score += bs
             found.append(bi)
-        return found
+        return avg_score / keylength, found
 
 
 #########################################
@@ -37,6 +39,7 @@ class GuessAffine(object):
 
     def guess(self, keylength, score_fn):  # minimize score_fn
         found = []
+        avg_score = 0
         for offset in range(keylength):
             candidate = (None, None)
             best = 9999999
@@ -48,8 +51,9 @@ class GuessAffine(object):
                     if score < best:
                         best = score
                         candidate = (s, t)
+            avg_score += best
             found.append(candidate)
-        return found
+        return avg_score / keylength, found
 
 
 #########################################
@@ -114,7 +118,7 @@ class SearchInterrupt(object):
         # first step: move maxdepth-sized window over data
         i = startAt - 1  # in case loop isnt called
         for i in range(startAt, len(self.stops) - maxdepth):
-            print('.', end='')
+            # print('.', end='')
             parts, _ = best_in_all(i, maxdepth)
             found = []
             search = self.stops[i]
@@ -132,7 +136,7 @@ class SearchInterrupt(object):
                     found.append(prfx + [search])
                 if bitNotSet:
                     found.append(prfx)
-        print('.')
+        # print('.')
         # last step: all permutations for the remaining (< maxdepth) bits
         i += 1
         remaining, score = best_in_all(i, min(maxdepth, len(self.stops) - i))

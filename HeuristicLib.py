@@ -12,11 +12,14 @@ def normalized_probability(int_prob):
 RUNES = 'ᚠᚢᚦᚩᚱᚳᚷᚹᚻᚾᛁᛄᛇᛈᛉᛋᛏᛒᛖᛗᛚᛝᛟᛞᚪᚫᚣᛡᛠ'
 re_norune = re.compile('[^' + RUNES + ']')
 PROB_INT = [0] * 29
-for k, v in NGrams.load().items():
+# for k, v in NGrams.load(1, '-no-e').items():  # 1.8271530001197518
+for k, v in NGrams.load().items():  # 1.7736851725202398
     PROB_INT[RUNES.index(k)] = v
 PROB_NORM = normalized_probability(PROB_INT)
 K_r = 1 / 29   # 0.034482758620689655
 K_p = sum(x ** 2 for x in PROB_INT)  # 0.06116195419412538
+N_total = (sum(PROB_INT) * (sum(PROB_INT) - 1)) / 29
+PROB_TARGET = sum(x * (x - 1) for x in PROB_INT) / N_total
 
 
 #########################################

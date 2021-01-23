@@ -7,7 +7,10 @@ from InterruptDB import InterruptDB
 
 RUNES = 'ᚠᚢᚦᚩᚱᚳᚷᚹᚻᚾᛁᛄᛇᛈᛉᛋᛏᛒᛖᛗᛚᛝᛟᛞᚪᚫᚣᛡᛠ'
 INVERT = False
-MIN_SCORE = 1.4
+IOC_MIN_SCORE = 1.3
+KEY_MAX_SCORE = 0.05
+AFF_MAX_SCORE = 0.04
+IRP_F_ONLY = False
 session_files = []
 
 
@@ -25,7 +28,12 @@ def break_cipher(fname, candidates, solver, key_fn):
     slvr.output.QUIET = True
     slvr.output.COLORS = False
     slvr.KEY_INVERT = INVERT
+    key_max_score = KEY_MAX_SCORE
+    if key_fn.__name__ == 'GuessAffine':
+        key_max_score = AFF_MAX_SCORE
     for irp_count, score, irp, kl, skips in candidates:
+        if IRP_F_ONLY and irp != 0:
+            continue
         data = load_indices(filename, irp, maxinterrupt=irp_count)
         if INVERT:
             data = [28 - x for x in data]
@@ -34,10 +42,12 @@ def break_cipher(fname, candidates, solver, key_fn):
             score, RUNES[irp], len(iguess.stops), key_fn.__name__))
         testcase = iguess.join(iguess.from_occurrence_index(skips))
 
-        key = key_fn(testcase).guess(kl, fn_similarity)
+        key_score, key = key_fn(testcase).guess(kl, fn_similarity)
+        if key_score > key_max_score:
+            continue
+        print(f'  key_score: {key_score:.4f}, {key}')
         print('  skip:', skips)
-        print('  key:', key)
-        txtname = f'{key_fn.__name__}.{score:.3f}_{fname}_{kl}.{irp}'
+        txtname = f'{key_fn.__name__}.{key_score:.4f}_{fname}_{kl}.{irp}'
         if INVERT:
             txtname += '.inv'
         while txtname in session_files:
@@ -45,7 +55,7 @@ def break_cipher(fname, candidates, solver, key_fn):
         session_files.append(txtname)
         outfile = f'out/{txtname}.txt'
         with open(outfile, 'w') as f:
-            f.write(f'{kl}, {score:.4f}, {key}, {skips}\n')
+            f.write(f'{irp}, {kl}, {score:.4f}, {key}, {skips}\n')
         slvr.output.file_output = outfile
         slvr.INTERRUPT = RUNES[irp]
         slvr.INTERRUPT_POS = skips
@@ -56,8 +66,7 @@ def break_cipher(fname, candidates, solver, key_fn):
 #########################################
 #  main
 #########################################
-# db = InterruptDB.load('InterruptDB/db_secondary.txt')
-db = InterruptDB.load()
+db = InterruptDB.load()  # 'db_secondary'
 
 for fname in [
     'p0-2',  # ???
@@ -85,7 +94,7 @@ for fname in [
         continue
     print()
     print(f'loading file: pages/{fname}.txt')
-    candidates = [x for x in db[fname] if x[1] >= MIN_SCORE]
+    candidates = [x for x in db[fname] if x[1] >= IOC_MIN_SCORE]
     if not candidates:
         maxscore = max(x[1] for x in db[fname])
         print('No candidates. Highest score is only', maxscore)

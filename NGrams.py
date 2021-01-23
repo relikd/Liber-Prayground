@@ -45,9 +45,9 @@ class NGrams(object):
                 f.write(f'{x} {y}\n')
 
     @staticmethod
-    def load(ngram=1):
+    def load(ngram=1, prefix=''):
         ret = {}
-        with open(f'data/p-{ngram}gram.txt', 'r') as f:
+        with open(f'data/p{prefix}-{ngram}gram.txt', 'r') as f:
             for line in f.readlines():
                 r, v = line.split()
                 ret[r] = int(v)
@@ -61,3 +61,5 @@ class NGrams(object):
 #                 outfile=f'data/p-{i}gram.txt')
 #     NGrams.make(i, infile='_solved.txt',
 #                 outfile=f'data/p-solved-{i}gram.txt')
+#     NGrams.make(i, infile='data/baseline-rune-no-e.txt',
+#                 outfile=f'data/p-no-e-{i}gram.txt')

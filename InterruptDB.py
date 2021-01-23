@@ -17,8 +17,6 @@ FILES_ALL = FILES_UNSOLVED + FILES_SOLVED
 #########################################
 
 class InterruptDB(object):
-    DB_NAME = 'InterruptDB/db_main.txt'
-
     def __init__(self, data, interrupt):
         self.irp = interrupt
         self.iguess = SearchInterrupt(data, interrupt)
@@ -37,14 +35,13 @@ class InterruptDB(object):
             skips[i] = self.iguess.to_occurrence_index(interrupts)
         return score, skips
 
-    def make_keylength(self, name, keylen, db_path=DB_NAME):
+    def make_keylength(self, name, keylen, dbname='db_main'):
         score, interrupts = self.make(keylen)
         for nums in interrupts:
-            self.write(name, score, self.irp, self.irp_count, keylen, nums,
-                       db_path=db_path)
+            self.write(name, score, self.irp, self.irp_count, keylen, nums, dbname)
         return score, interrupts
 
-    def find_secondary(self, name, keylen, threshold, db_path=DB_NAME):
+    def find_secondary(self, name, keylen, threshold, dbname='db_main'):
         scores = []
 
         def fn(x):
@@ -62,16 +59,15 @@ class InterruptDB(object):
         # exclude best results, as they are already present in the main db
         filtered = [x for x in ret if x[0] < bestscore]
         for score, nums in filtered:
-            self.write(name, score, self.irp, self.irp_count, keylen, nums,
-                       db_path=db_path)
+            self.write(name, score, self.irp, self.irp_count, keylen, nums, dbname)
         return len(filtered)
 
     @staticmethod
-    def load(db_path=DB_NAME):
-        if not os.path.isfile(db_path):
+    def load(dbname='db_main'):
+        if not os.path.isfile(f'InterruptDB/{dbname}.txt'):
             return {}
         ret = {}
-        with open(db_path, 'r') as f:
+        with open(f'InterruptDB/{dbname}.txt', 'r') as f:
             for line in f.readlines():
                 if line.startswith('#'):
                     continue
@@ -86,8 +82,8 @@ class InterruptDB(object):
         return ret
 
     @staticmethod
-    def write(name, score, irp, irpmax, keylen, nums, db_path=DB_NAME):
-        with open(db_path, 'a') as f:
+    def write(name, score, irp, irpmax, keylen, nums, dbname='db_main'):
+        with open(f'InterruptDB/{dbname}.txt', 'a') as f:
             nums = ','.join(map(str, nums))
             f.write(f'{name}|{irpmax}|{score:.5f}|{irp}|{keylen}|{nums}\n')
 
@@ -97,8 +93,6 @@ class InterruptDB(object):
 #########################################
 
 class InterruptIndices(object):
-    DB_NAME = 'InterruptDB/db_indices.txt'
-
     def __init__(self):
         self.pos = InterruptIndices.read()
 
@@ -112,8 +106,8 @@ class InterruptIndices(object):
         return self.pos[name]['total']
 
     @staticmethod
-    def write():
-        with open(InterruptIndices.DB_NAME, 'w') as f:
+    def write(dbname='db_indices'):
+        with open(f'InterruptDB/{dbname}.txt', 'w') as f:
             f.write('# file | total runes in file | interrupt | indices\n')
             for name in FILES_ALL:
                 fname = f'pages/{name}.txt'
@@ -127,8 +121,8 @@ class InterruptIndices(object):
                         name, total, irp, ','.join(map(str, pos))))
 
     @staticmethod
-    def read():
-        with open(InterruptIndices.DB_NAME, 'r') as f:
+    def read(dbname='db_indices'):
+        with open(f'InterruptDB/{dbname}.txt', 'r') as f:
             ret = {}
             for line in f.readlines():
                 if line.startswith('#'):
@@ -242,25 +236,25 @@ class InterruptToWeb(object):
 #  helper functions
 #########################################
 
-def create_initial_db(min_kl=1, max_kl=32, max_irp=20):
-    oldDB = InterruptDB.load()
+def create_initial_db(dbname, minkl=1, maxkl=32, max_irp=20, irpset=range(29)):
+    oldDB = InterruptDB.load(dbname)
     oldValues = {k: set((a, b, c) for a, _, b, c, _ in v)
                  for k, v in oldDB.items()}
-    for irp in range(29):  # interrupt rune index
-        for name in FILES_ALL:  # filename
+    for irp in irpset:  # interrupt rune index
+        for name in FILES_UNSOLVED:  # filename
             fname = f'pages/{name}.txt'
             data = load_indices(fname, irp, maxinterrupt=max_irp)
             db = InterruptDB(data, irp)
             print('load:', fname, 'interrupt:', irp, 'count:', db.irp_count)
-            for keylen in range(min_kl, max_kl + 1):  # key length
+            for keylen in range(minkl, maxkl + 1):  # key length
                 if (db.irp_count, irp, keylen) in oldValues.get(name, []):
                     print(f'{keylen}: skipped.')
                     continue
-                score, interrupts = db.make_keylength(name, keylen)
+                score, interrupts = db.make_keylength(name, keylen, dbname)
                 print(f'{keylen}: {score:.4f}, solutions: {len(interrupts)}')
 
 
-def find_secondary_solutions(max_irp=20, threshold=1.4):
+def find_secondary_solutions(dbname, max_irp=20, threshold=1.4):
     oldDB = InterruptDB.load()
     search_set = set()
     for name, arr in oldDB.items():
@@ -277,11 +271,11 @@ def find_secondary_solutions(max_irp=20, threshold=1.4):
         data = load_indices(fname, irp, maxinterrupt=max_irp)
         db = InterruptDB(data, irp)
         c = db.find_secondary(name, kl, threshold,
-                              db_path='InterruptDB/db_secondary.txt')
+                              db_path=f'InterruptDB/{dbname}.txt')
         print('found', c, 'additional solutions')
 
 
 if __name__ == '__main__':
-    # find_secondary_solutions()
-    # create_initial_db(min_kl=1, max_kl=32, max_irp=20)
+    # find_secondary_solutions('db_secondary')
+    # create_initial_db('db_main', minkl=1, maxkl=32, max_irp=20)
     InterruptToWeb('InterruptDB/template.html').make('InterruptDB/index.html')
