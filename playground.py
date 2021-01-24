@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-from RuneSolver import VigenereSolver
+from RuneSolver import VigenereSolver, AffineSolver, AutokeySolver
 from RuneText import alphabet, RuneText
 import lib as LIB
 
 SOLVER = VigenereSolver()
+# SOLVER = AffineSolver()
+# SOLVER = AutokeySolver()
 SOLVER.input.load(file='_input.txt')
 
 
@@ -204,7 +206,7 @@ def command_k(cmd, args):  # (k)ey manipulation
     elif cmd[1] == 'i':
         SOLVER.KEY_INVERT = not SOLVER.KEY_INVERT
         print('set key invert: {}'.format(SOLVER.KEY_INVERT))
-    elif cmd[1] == 'j':
+    elif cmd == 'kj':
         args = args.strip('[]')
         pos = [int(x) for x in args.split(',')] if args else []
         SOLVER.INTERRUPT_POS = pos

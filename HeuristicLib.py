@@ -36,6 +36,9 @@ class Probability(object):
         X = sum(x * (x - 1) for x in self.prob)
         return X / ((self.N * (self.N - 1)) / 29)
 
+    def IC_norm(self, target_ioc=TARGET_IOC):
+        return abs(self.IC() - target_ioc)
+
     def similarity(self):
         probs = normalized_probability(self.prob)
         return sum((x - y) ** 2 for x, y in zip(PROB_NORM, probs))
