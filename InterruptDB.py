@@ -291,7 +291,7 @@ def find_secondary_solutions(db_in, db_out, threshold=0.75, max_irp=20):
 if __name__ == '__main__':
     # find_secondary_solutions('db_high', 'db_high_secondary', threshold=1.4)
     # find_secondary_solutions('db_norm', 'db_norm_secondary', threshold=0.55)
-    create_initial_db('db_norm', minkl=1, maxkl=32, max_irp=20, irpset=[0])
+    # create_initial_db('db_norm', minkl=1, maxkl=32, max_irp=20)
     # InterruptToWeb('db_high').make('InterruptDB/index_high.html')
-    # InterruptToWeb('db_norm').make(
-    #     'InterruptDB/index_norm.html', pmin=0.40, pmax=0.98)
+    InterruptToWeb('db_norm').make(
+        'InterruptDB/index_norm.html', pmin=0.40, pmax=0.98)
