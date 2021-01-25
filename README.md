@@ -249,7 +249,7 @@ If the output is too long, you can limit (the already loaded data) with `xl 180`
 
 `Rune.kind` can be one of `r n s l w` – meaning (r)une, (n)umber, (s)entence, (l)ine, or (w)hitespace. A line is what you see in the source file (which is equivalent to a line in the original jpg page). A sentence is one that ends with a period (`⁘`).
 
-`Rune` as well as `RuneText` both support simple arithmetic operations: `Rune(i=2) - 2` will yield a `ᚠ` rune. For example, you can invert a text with `28 - RuneText('test me')`.
+`Rune` as well as `RuneText` both support simple arithmetic operations: `Rune(i=2) - 2` will yield a `ᚠ` rune. For example, you can invert a text with `28 - RuneText('test me')` or simply `~RuneText('inverted')`.
 
 __Note:__ Always initialize a rune with its rune character or its index, never ASCII or its prime value.
 

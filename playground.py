@@ -85,8 +85,8 @@ def command_a(cmd, args):  # [a]ll variations
     root = RuneText(args)
     inclIndex = 'q' not in cmd
     if 'i' in cmd:
-        root = 28 - root
-    for i in range(0, 29):
+        root = ~root
+    for i in range(29):
         print('{:02d}: {}'.format(i, (root + i).description(index=inclIndex)))
 
 
@@ -110,7 +110,7 @@ def command_d(cmd, args):  # [d]ecrypt or single substitution
         print('Error: key length mismatch')
     else:
         print('Substition:')
-        print((enc - plain).description())
+        print((enc.zip_sub(plain)).description())
 
 
 #########################################
@@ -134,13 +134,26 @@ def command_f(cmd, args):  # (f)ind word
     print()
     print('Found:')
     for _, _, pos, _, w in cur_words:
-        print('{:04}: {}'.format(pos, w.description(count=True)))
+        print(f'{pos:04}: {w.description(count=True)}')
     if search_term:
+        print()
+        keylen = [len(search_term)]
+        if SOLVER.substitute_supports_keylen():
+            try:
+                inp = input('What is the key length? (num or [a]ll): ').strip()
+                if inp:
+                    if inp[0] == 'a':
+                        keylen = range(len(search_term), 24)
+                    else:
+                        keylen = [int(inp)]
+            except ValueError:
+                raise ValueError('not a number.')
         print()
         print('Available substition:')
         for _, _, pos, _, w in cur_words:
-            word = search_term - w
-            print('{:04}: {}'.format(pos, word.description(count=True)))
+            for kl in keylen:
+                res = SOLVER.substitute_get(pos, kl, search_term, w)
+                print(f'{pos:04}: {res}')
 
 
 #########################################
@@ -253,17 +266,16 @@ def command_t(cmd, args):  # (t)ranslate
     if cmd != 't':
         return False
     word = RuneText(args)
-    rev_word = 28 - word
-    word = word.as_dict()
-    psum = sum(word['p'])
+    x = word.as_dict()
+    psum = sum(x['p'])
     sffx = '*' if LIB.is_prime(psum) else ''
     if LIB.is_prime(LIB.rev(psum)):
         sffx += '√'
-    print('runes({}): {}'.format(len(word['r']), word['r']))
-    print('plain({}): {}'.format(len(word['t']), word['t']))
-    print('reversed: {}'.format(''.join([x.rune for x in rev_word])))
-    print('indices: {}'.format(word['i']))
-    print('prime({}{}): {}'.format(psum, sffx, word['p']))
+    print('runes({}): {}'.format(len(x['r']), x['r']))
+    print('plain({}): {}'.format(len(x['t']), x['t']))
+    print('reversed: {}'.format(''.join([x.rune for x in ~word])))
+    print('indices: {}'.format(x['i']))
+    print('prime({}{}): {}'.format(psum, sffx, x['p']))
 
 
 #########################################

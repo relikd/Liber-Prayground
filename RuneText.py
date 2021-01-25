@@ -101,6 +101,9 @@ class Rune(object):
     def __rsub__(self, o):
         return self if self.index == 29 else Rune(i=(o - self.index) % 29)
 
+    def __invert__(self):
+        return self if self.index == 29 else Rune(i=28 - self.index)
+
 
 #########################################
 #  RuneText  :  Stores multiple Rune objects. Allows arithmetic operations
@@ -196,6 +199,11 @@ class RuneText(object):
                 d['i'] = [x for x in d['i'] if x != 29]
         return fmt.format(d['r'], len(d['r']), d['t'], len(d['t']), d['i'])
 
+    def zip_sub(self, other):
+        if len(self) != len(other):
+            raise IndexError('RuneText length mismatch')
+        return RuneText([x - y for x, y in zip(self._data, other._data)])
+
     def __getitem__(self, key):
         if isinstance(key, str):
             return [getattr(x, key) for x in self._data]
@@ -206,26 +214,19 @@ class RuneText(object):
         self._data[key] = value
 
     def __add__(self, other):
-        if isinstance(other, RuneText):
-            if len(self) != len(other):
-                raise IndexError('RuneText length mismatch')
-            return RuneText([x + y for x, y in zip(self._data, other._data)])
-        else:
-            return RuneText([x + other for x in self._data])
+        return RuneText([x + other for x in self._data])
 
     def __sub__(self, other):
-        if isinstance(other, RuneText):
-            if len(self) != len(other):
-                raise IndexError('RuneText length mismatch')
-            return RuneText([x - y for x, y in zip(self._data, other._data)])
-        else:
-            return RuneText([x - other for x in self._data])
+        return RuneText([x - other for x in self._data])
 
     def __radd__(self, other):
         return RuneText([other + x for x in self._data])
 
     def __rsub__(self, other):
         return RuneText([other - x for x in self._data])
+
+    def __invert__(self):
+        return RuneText([~x for x in self._data])
 
     def __repr__(self):
         return f'RuneText<{len(self._data)}>'

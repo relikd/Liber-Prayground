@@ -20,6 +20,12 @@ class RuneSolver(RuneRunner):
     def highlight_interrupt(self):
         return self.highlight_rune(self.INTERRUPT, self.INTERRUPT_POS)
 
+    def substitute_get(self, pos, keylen, search_term, found_term):
+        return found_term.zip_sub(search_term).description(count=True)
+
+    def substitute_supports_keylen(self):
+        return False
+
     def run(self, data=None):
         if data:
             self.input.load(data=data)
@@ -120,7 +126,9 @@ class RunningKeySolver(RuneSolver):
         if self.KEY_INVERT:
             r_idx = 28 - r_idx
         pos = self.active_key_pos()
-        if pos != -1:
+        if pos == -1:
+            self.copy_unmodified(r_idx)
+        else:
             i = (pos + self.KEY_SHIFT) % self.k_len
             r_idx = (self.decrypt(r_idx, i) - self.KEY_ROTATE) % 29
         # rotate_key
@@ -128,8 +136,11 @@ class RunningKeySolver(RuneSolver):
             self.k_current_pos = (self.k_current_pos + 1) % self.k_full_len
         return Rune(i=r_idx)
 
-    def decrypt(self, rune_index, key_index):
-        raise NotImplementedError  # must subclass
+    def decrypt(self, rune_index, key_index):  # must subclass
+        raise NotImplementedError
+
+    def copy_unmodified(self, rune_index):  # subclass if needed
+        pass
 
     def key__str__(self):
         return self.KEY_DATA  # you should override this
@@ -156,6 +167,15 @@ class VigenereSolver(RunningKeySolver):
     def decrypt(self, rune_index, key_index):
         return rune_index - self.KEY_DATA[key_index]
 
+    def substitute_supports_keylen(self):
+        return True
+
+    def substitute_get(self, pos, keylen, search_term, found_term):
+        ret = [Rune(r='⁚')] * keylen
+        for i, r in enumerate(found_term.zip_sub(search_term)):
+            ret[(pos + i) % keylen] = r
+        return RuneText(ret).description(count=True, index=False)
+
     def key__str__(self):
         return self.key__str__basic_runes()
 
@@ -175,13 +195,35 @@ class AffineSolver(RunningKeySolver):
 
 class AutokeySolver(RunningKeySolver):
     def run(self, data=None):
-        self.running_key = self.KEY_DATA[:]
+        key = self.KEY_DATA[self.KEY_SHIFT:] + self.KEY_DATA[:self.KEY_SHIFT]
+        key = [29] * self.KEY_OFFSET + key + [29] * self.KEY_POST_PAD
+        self.running_key = key
         super().run(data=data)
 
-    def decrypt(self, rune_index, key_index):
+    def decrypt(self, rune_index, _):
         rune_index = (rune_index - self.running_key.pop(0)) % 29
         self.running_key.append(rune_index)
         return rune_index
+
+    def copy_unmodified(self, rune_index):
+        if self.k_len > 0:
+            self.running_key.pop(0)
+            self.running_key.append(rune_index)
+
+    def substitute_supports_keylen(self):
+        return True
+
+    def substitute_get(self, pos, keylen, search_term, found_term):
+        data = self.input.runes_no_whitespace()
+        ret = [Rune(r='⁚')] * keylen
+        for o in range(len(search_term)):
+            plain = search_term[o]
+            i = pos + o
+            while i >= 0:
+                plain = data[i] - plain
+                i -= keylen
+            ret[i + keylen] = plain
+        return RuneText(ret).description(count=True, index=False)
 
     def key__str__(self):
         return self.key__str__basic_runes()
