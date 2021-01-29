@@ -99,6 +99,17 @@ def affine_decrypt(x, key, n=29):  # key: (s, t)
     return ((x - key[1]) * affine_inverse(key[0], n)) % n
 
 
+def autokey_reverse(data, keylen, pos, search_term):
+    ret = [29] * keylen
+    for o in range(len(search_term)):
+        plain = search_term[o]
+        i = pos + o
+        while i >= 0:
+            plain = (data[i] - plain) % 29
+            i -= keylen
+        ret[i + keylen] = plain
+    return ret
+
 # alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 # cipher = 'YDIDWYASDDJVAPJMMBIASDTJVAMD'
 # indices = [affine_decrypt(alphabet.index(x), (5, 9), 26) for x in cipher]

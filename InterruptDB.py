@@ -65,6 +65,25 @@ class InterruptDB(object):
         return len(filtered)
 
     @staticmethod
+    def longest_no_interrupt(data, interrupt, irpmax=0):
+        def add(i):
+            nonlocal ret, prev
+            idx = prev.pop(0)
+            if idx == 0:
+                ret = []
+            ret.append((i - idx, idx))
+
+        prev = [0] * (irpmax + 1)
+        ret = []
+        for i, x in enumerate(data):
+            if x == interrupt:
+                prev.append(i + 1)
+                add(i)
+        add(i + 1)
+        length, pos = max(ret)
+        return pos, length
+
+    @staticmethod
     def load(dbname):
         if not os.path.isfile(f'InterruptDB/{dbname}.txt'):
             return {}
@@ -106,6 +125,12 @@ class InterruptIndices(object):
 
     def total(self, name):
         return self.pos[name]['total']
+
+    def longest_no_interrupt(self, name, irp, irpmax=0):
+        irpmax += 1
+        nums = self.pos[name]['pos'][irp] + [self.pos[name]['total']] * irpmax
+        ret = [(y - x, x) for x, y in zip(nums, nums[irpmax:])]
+        return sorted(ret, reverse=True)
 
     @staticmethod
     def write(dbname='db_indices'):

@@ -111,6 +111,7 @@ class Rune(object):
 
 class RuneText(object):
     def __init__(self, anything):
+        self._rune_sum = None
         if not anything:
             self._data = []
         elif isinstance(anything, list):
@@ -139,6 +140,8 @@ class RuneText(object):
 
     def trim(self, maxlen):
         if self._data_len > maxlen:
+            if self._rune_sum > 0:
+                self._rune_sum -= sum(x.prime for x in self._data[maxlen:])
             self._data = self._data[:maxlen]
             self._data_len = maxlen
 
@@ -203,6 +206,12 @@ class RuneText(object):
         if len(self) != len(other):
             raise IndexError('RuneText length mismatch')
         return RuneText([x - y for x, y in zip(self._data, other._data)])
+
+    @property
+    def rune_sum(self):
+        if self._rune_sum is None:
+            self._rune_sum = sum(x.prime for x in self._data)
+        return self._rune_sum
 
     def __getitem__(self, key):
         if isinstance(key, str):
