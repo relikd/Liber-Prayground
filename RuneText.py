@@ -213,6 +213,14 @@ class RuneText(object):
             self._rune_sum = sum(x.prime for x in self._data)
         return self._rune_sum
 
+    @property
+    def text(self):
+        return ''.join(x.text for x in self._data)
+
+    @property
+    def rune(self):
+        return ''.join(x.rune for x in self._data)
+
     def __getitem__(self, key):
         if isinstance(key, str):
             return [getattr(x, key) for x in self._data]
