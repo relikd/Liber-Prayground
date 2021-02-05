@@ -140,7 +140,7 @@ class RuneText(object):
 
     def trim(self, maxlen):
         if self._data_len > maxlen:
-            if self._rune_sum > 0:
+            if self._rune_sum and self._rune_sum > 0:
                 self._rune_sum -= sum(x.prime for x in self._data[maxlen:])
             self._data = self._data[:maxlen]
             self._data_len = maxlen
@@ -220,6 +220,14 @@ class RuneText(object):
     @property
     def rune(self):
         return ''.join(x.rune for x in self._data)
+
+    @property
+    def index(self):
+        return [x.index for x in self._data]
+
+    @property
+    def index_no_whitespace(self):
+        return [x.index for x in self._data if x.index != 29]
 
     def __getitem__(self, key):
         if isinstance(key, str):

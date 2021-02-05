@@ -3,6 +3,7 @@ from RuneSolver import VigenereSolver, SequenceSolver
 from RuneText import Rune, RuneText
 from lib import elliptic_curve
 import sys
+import itertools
 
 
 def load_sequence_file(fname):
@@ -70,15 +71,28 @@ def print_all_solved():
 def play_around():
     slvr = VigenereSolver()
     slvr.output.COLORS = False
-    slvr.input.load(file='_input.txt')
+    slvr.output.QUIET = True
     slvr.KEY_DATA = []
-    slvr.run()
+    vowels = 'ᚢᚩᛁᛇᛖᛟᚪᚫᛡᛠ'
+    for uuu in ['0-2', '3-7', '8-14', '15-22', '23-26', '27-32', '33-39', '40-53', '54-55']:
+        slvr.input.load(file=f'pages/p{uuu}.txt')
+        print(uuu)
+        print('word count:', sum(len(x) for x in slvr.input.words.values()))
+        a = [1 if x.rune in vowels else 0 for x in slvr.input.runes_no_whitespace()]
+        b = [a[i:i + 5] for i in range(0, len(a), 5)]
+        c = [int(''.join(str(y) for y in x), 2) for x in b]
+        # print('-'.join(str(x) for x in c))
+        # print(''.join(Rune(i=x).text for x in c))
+        # print(''.join('ABCDEFGHIJKLMNOPQRSTUVWXYZ___...'[x] for x in c))
+        # slvr.run()
 
 
 def try_totient_on_unsolved():
     slvr = SequenceSolver()
     slvr.output.QUIET = True
     slvr.output.BREAK_MODE = ''  # disable line breaks
+    # slvr.INTERRUPT = 'ᛝ'
+    # slvr.INTERRUPT_POS = [1]
     # for uuu in ['15-22']:
     for uuu in ['0-2', '3-7', '8-14', '15-22', '23-26', '27-32', '33-39', '40-53', '54-55']:
         print()
@@ -117,8 +131,86 @@ def try_totient_on_unsolved():
             slvr.run()
 
 
+def find_oeis(irp=0, invert=False, offset=0):
+    def trim_orig_oeis(minlen=15, trim=40):
+        # download and unzip: https://oeis.org/stripped.gz
+        with open('data/oeis_orig.txt', 'r') as f_in:
+            with open('data/oeis.txt', 'w') as f_out:
+                for line in f_in.readlines():
+                    if line[0] == '#':
+                        continue
+                    name, *vals = line.split(',')
+                    vals = [str(int(x) % 29) for x in vals if x.strip()][:trim]
+                    if len(vals) < minlen:
+                        continue
+                    f_out.write(name + ',' + ','.join(vals) + '\n')
+
+    # trim_orig_oeis()  # create db if not present already
+    with open('data/oeis.txt', 'r') as f:
+        seqs = []
+        for line in f.readlines():
+            name, *vals = line.split(',')
+            vals = [int(x) for x in vals]
+            seqs.append([name] + vals)
+
+    RUNES = 'ᚠᚢᚦᚩᚱᚳᚷᚹᚻᚾᛁᛄᛇᛈᛉᛋᛏᛒᛖᛗᛚᛝᛟᛞᚪᚫᚣᛡᛠ'
+    words = [set()] * 13
+    words[1] = set(x for x in RUNES)
+    for i in range(2, 13):  # since 12 is the longest word
+        with open(f'data/dictionary_{i}.txt', 'r') as f:
+            words[i] = set(x.strip() for x in f.readlines())
+
+    for uuu, wlen in {
+        '0-2': [8, 5, 4, 3, 3, 11, 5, 4, 3, 3],
+        '3-7': [2, 11, 3, 4, 7, 7, 7, 4, 6],
+        '8-14': [4, 8, 3, 2, 3, 9, 4, 3, 4, 2, 2],
+        '15-22': [4, 5, 4, 2, 5, 4, 5, 6, 5, 6, 3, 3],
+        '23-26': [2, 6, 3, 4, 8, 3, 3, 7, 5, 5],
+        '27-32': [3, 12, 4, 7, 2, 3, 3, 2, 1, 3, 4],
+        '33-39': [2, 8, 2, 9, 6, 3, 3, 5, 3, 2],
+        '40-53': [3, 5, 5, 4, 3, 5, 4, 2, 12, 3, 3, 2],
+        '54-55': [1, 8, 8, 3, 6, 2, 5, 3, 2, 3, 5, 7],
+        # '56_an_end': [2, 3, 5, 2, 4, 3, 4, 6, 1, 4, 3, 6, 2],
+    }.items():
+        minwords = sum(wlen[:2])  # must match at least n words
+        splits = [(0, 0, 0)]
+        for x in wlen:
+            splits.append((splits[-1][1], splits[-1][1] + x))
+        splits = splits[1:]
+        print()
+        print(uuu)
+        with open(f'pages/p{uuu}.txt', 'r') as f:
+            data = RuneText(f.read()[:120]).index_no_whitespace
+            irps = [i for i, x in enumerate(data[:splits[-1][1]]) if x == irp]
+            irps.reverse()
+            if invert:
+                data = [28 - x for x in data]
+
+        for oeis, *v in seqs:  # 390k
+            v = v[offset:]
+            if len(v) < minwords:
+                continue
+            cases = [x for x in irps if x < len(v)]
+            for i in range(len(cases) + 1):
+                for comb in itertools.combinations(cases, i):  # 2^3
+                    res = v[:]
+                    for z in comb:
+                        res.insert(z, -1)  # insert interrupts
+                    for s in range(29):
+                        who = ''.join(RUNES[x if y == -1 else (x - y - s) % 29]
+                                      for x, y in zip(data, res))
+                        active = [x for x in splits if x[1] <= len(who)]
+                        bag = [who[x:y] for x, y in active]
+                        if all(w in words[len(w)] for w in bag):
+                            print(oeis.split()[0], 'shift:', s, 'irps:', comb)
+                            print(' ', ' '.join(RuneText(w).text for w in bag))
+
+
 if '-s' in sys.argv:  # print [s]olved
     print_all_solved()
 else:
-    # play_around()
-    try_totient_on_unsolved()
+    play_around()
+    # try_totient_on_unsolved()
+    # for i in range(0, 4):
+    #     print('offset:', i)
+    #     find_oeis(irp=0, invert=False, offset=i)
