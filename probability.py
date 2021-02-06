@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 from RuneSolver import VigenereSolver, AffineSolver
-from HeuristicSearch import GuessVigenere, GuessAffine, SearchInterrupt
+from HeuristicSearch import GuessVigenere, GuessAffine, GuessPattern
+from HeuristicSearch import SearchInterrupt
 from HeuristicLib import load_indices, Probability
 from InterruptDB import InterruptDB
+from RuneText import RuneText
 # from FailedAttempts import NGramShifter
 
 RUNES = 'ᚠᚢᚦᚩᚱᚳᚷᚹᚻᚾᛁᛄᛇᛈᛉᛋᛏᛒᛖᛗᛚᛝᛟᛞᚪᚫᚣᛡᛠ'
@@ -64,6 +67,64 @@ def break_cipher(fname, candidates, solver, key_fn):
         slvr.run()
 
 
+def pattern_solver(fname, irp=0):
+    with open(f'pages/{fname}.txt', 'r') as f:
+        orig = RuneText(f.read())
+    # orig = RuneText('ᛄᚹᚻᛗᛋᚪ-ᛋᛁᚫᛇ-ᛋᛠᚾᛞ-ᛇᛞ-ᛞᚾᚣᚹᛗ.ᛞᛈ-ᛝᛚᚳᚾᛗᚾᚣ-ᛖᛝᛖᚦᚣᚢ-ᚱᚻᛁᚠ-ᛟᛝ-ᛚᛖᚫᛋᛚᚳᛋᛇ.ᚣᚾᚻᛄᚾᚳᛡ-ᚷᚳᛝ-ᛈᛝ-ᛡᚷᚦᚷᛖ.ᚻᛠᚣ-ᛄᛞᚹᛒ-ᛇᛄᛝᚩᛟ.ᛗᛠᚣᛋᛖᛚᚠ-ᚾᚫᛁ-ᛄᚹᚻᚻᛚᛈᚹᚠ-ᚫᚩᛡᚫᛟ-ᚷᛠ-ᚪᛡᚠᛄᚱᛏᚢᛈ.ᛏᛈ-ᛇᛞ-ᛟᛗᛇᛒᛄᚳᛈ.ᛉᛟ-ᛒᚻᚱᛄᚣ-ᚾᚱ-ᚾᛡᛈᛈ-ᛚᛉᛗᛞ-ᛟᛝ-ᚷᛁᚱᚩᚹᛗ-ᚠᛇᚣ-ᚣᛝᛒ-ᛁ-ᚠᚾᚹᚢ-ᛠᚾᛈᚠᚻ.ᚫᛋᛄᚪᚻ-ᛒᛖᛋᚻᛠ-ᛄᛗ-ᛟᛡᚹᚪᛡ-ᛄᛋᛖᚢᛗ-ᛏᛖᛉᚪ-ᛞᛟᛉᚾᚠ-ᚱᛡᛒᛚᚩᛈᛝ-ᛋᛄᛚᛗ-ᛞᚱᛗᛗ-ᛒᛈ-ᛁᛉᚱᛄᛝ.ᛋᛇᚪ-ᛗᚠᚻᚣᚹᛉᛞ-ᛡᛁᚷᚪ-ᚩᚱ-ᚪᚾᚹᛇᛋᛞᛄᚷ-ᛡ-ᛖᚫᛄ-ᛞᛟᛁᚻᚹᛝ-ᛠᛈᛏ-ᚪᛗᛗᛚᛚᚪᛞ.ᛁᛠᛈᚷᛞ-ᛗᚣᛄᚳᚹᛚ-ᚻᛋᛟᛗ-ᚣᚫᛝᛚ-ᛠᛁᛝᛝᚪ-ᚳᛗ-ᚢᚫᛋ-ᛉᛠᚱ-ᛇᛡᛄᚻᛗᚾ-ᚻᛗᛝᛚ-ᛇᛞ-ᛟᚢᚣᚪᚷᚱ-ᛡᚷ-ᚷᛠ-ᛚᚻᛒ.ᛡᛒ-ᚩᛁᛄ-ᛗᛟᛉᚩᚣ-ᛞᚩ-ᚳᛗ-ᚾᛗᚩ-ᚷᛠ-ᛚᚱᚠᚷ-ᛁᚫᛗᛉ-ᛁᛠᚹᛚ-ᛖᛝᚾᛟᛗᚾ-ᛄᚾ-ᚾᚳᛚᛝ-ᛡ-ᚷᛞᛗᚱᚻᚩ-ᛗᛞᛠᚫᛞ-ᛞᚱᛗᛗ-ᚣᚪ-ᛗᛉᚢᛞᛇᚹ-ᛟᚱᛏᚱᛟᚢᛉᛗᛚᛈᛉᛝ.ᛏᛖ-ᛗᛋᚣ-ᚹᛁ-ᚹᛝ-ᛋᛇᛄᚳᛁᛋᛝ.ᛄᛚᚹ-ᚷᚠᛝ-ᚫᚷᛚᛡᛁᛡ.ᛖᚠᚣ-ᛉᛝᚻᛄᚾᛈᚠ-ᛉᚣ-ᛚᛄᛞᛝᛞᚪ-ᚩᛈ-ᚻᛟ-ᛖᚻᚱᚹ-ᛚᚷᚳ-ᛒᛈᛏᚻ-ᚠᛋᛠᚣᛋᚠ-ᛏᚷᛈᚪᛒ.')
+    # orig = RuneText('ᛇᚦ-ᛒᛏᚣᚳ-ᛇᛚᛉ-ᛄᛚᚦᚪ-ᛋᚱᛉᚦ-ᚦᛄᚻ-ᛉᛗ-ᛏᛞᛋ-ᚣᚾ-ᚣᛟᛇᛈᛟᛚ-ᛈᚹᛚᚪᛗ-ᚪᛉᛁᛇᛝᚢᚱᛉ.ᛞᛄ-ᚻᛠᚪᛚ.ᚠᛚ-ᚩᛋᚾ-ᚫᛞᛋᛁᛞᚹᚾᚪᚪ-ᚱᛟᚻ-ᛚᚠᛚᚳᛟᚱ-ᚣᛏ-ᚹᛏᛝᚣ-ᚳᚩ-ᛄᚷᛟ-ᛖ-ᚫᚻᚦᛠ-ᛒᛠᛁ-ᛁᚩᛡ-ᛗᛉᚠᚷᛁ-ᚣᚣᛋᛇᛗᛠᚹ.ᛇᚪ-ᛇᛉᛡ-ᛄᚾᛇᛁᛇᚫ-ᛋᚱᚹ-ᛝᚣᚦ-ᛠᛁᛄᛚᚢᛄ-ᚻᛇᛚᛟ-ᛒᛠᛒᛚ-ᚩᛈᛈ-ᚢᚻᛚ-ᛡᚾᛚ-ᛒᚦᚱᚠᚦᚫ-ᛞᚳ-ᛄᚳᚷ-ᚹᚫ-ᚱᛉᚣᛖᚱ.ᛒᛝᚹ-ᛟᚳᚫᚹᛈᚢ-ᚱᛋᛒ-ᚷᚦᚳᛏᛏᛠᚹ-ᚱᚣᛞ-ᚣᛠᛄ-ᛋ-qᚪᛚᚾᛖᛄᚪ-ᛇᚻᛖ-ᛏᛠᛈ-ᛝᛉᚾᚳ-ᛋᚾᚹᚦᚾ-ᚣᛞᛝᚣ-ᛠᛠᛡ-ᛉᛁᛚᚢᚩ.ᛗᛉᚦ-ᛒᛝᛇᛠᛟ-ᛁᛟᛏ-ᛠᛏᛄ-ᚫᚳᛉᛝᛖᚠ-ᛇᚠ.ᛄᛄᛝᛟᛡᛟ-ᛠᛖᚫ-ᚦᛏᛠᛗ-ᛁᛏᚩᛒᛡ-ᛝᛟ-ᛉᚠᛇᚷᛗᛠ-ᚠᛖ-ᚳᛖᛖᚾᛠᛁᚪᛟ-ᛉᚣ-ᚢᛁ.ᛒᛏ.ᛒᛠ-ᛠᛁᚢᛗ-ᛞᛟᛋᛠᚷᚠᛇᚫ-ᛏᚪ-ᛇᚦ-ᛒᚪᛟᚩᛗ.ᛟᚳᛇ-ᛞᛞ-ᛋᚱᛁᛋᚦ-ᛇᛒ-ᚳᛒᛟ-ᚳᛟᚳᚷᛇ.ᛗᛉᚦ-ᛞᚦᛉᛈᛚᛈᛚᛁᚢ-ᚳᛞᛡᛝᚻᚷ-ᛞᚪ-ᚳᛟᚳᛁᛟᛞ-')
+    data = orig.index
+    if False:  # longest uninterrupted text
+        pos, lg = InterruptDB.longest_no_interrupt(data, interrupt=0, irpmax=0)
+        data = data[pos:pos + lg]
+    else:  # from the beginning
+        data = data[:170]
+
+    data_i = [i for i, x in enumerate(data) if x == 29]
+    data = [x for x in data if x != 29]
+
+    def fn_similarity(x):
+        return Probability(x).similarity()
+
+    def fn_pattern_mirror(x, kl):
+        for i in range(10000):  # mirrored, 012210012210 or 012101210
+            yield from x
+            # yield from x[::-1]
+            yield from x[::-1][1:-1]
+
+    print(fname)
+    gr = GuessPattern(data)
+    for kl in range(3, 19):
+        # for pattern_shift in range(1):
+        #     fn_pattern = fn_pattern_mirror
+        for pattern_shift in range(1, kl):
+            def fn_pattern_shift(x, kl):  # shift by (more than) one, 012201120
+                for i in range(10000):
+                    yield from x[(i * pattern_shift) % kl:]
+                    yield from x[:(i * pattern_shift) % kl]
+
+            fn_pattern = fn_pattern_shift
+            # Find proper pattern
+            res = []
+            for offset in range(kl):  # up to keylen offset
+                mask = GuessPattern.pattern(kl, fn_pattern)
+                parts = gr.split(kl, mask, offset)
+                score = sum(Probability(x).IC() for x in parts) / kl
+                if score > 1.6 and score < 2.1:
+                    res.append((score, parts, offset))
+
+            # Find best matching key for pattern
+            for score, parts, off in res:
+                sc, solution = GuessPattern.guess(parts, fn_similarity)
+                if sc < 0.1:
+                    fmt = 'kl: {}, pattern-n: {}, IoC: {:.3f}, dist: {:.4f}, offset: {}, key: {}'
+                    print(fmt.format(kl, pattern_shift, score, sc, off,
+                                     RuneText(solution).text))
+                    solved = gr.zip(fn_pattern(solution, kl), off)
+                    for i in data_i:
+                        solved.insert(i, 29)
+                    print(' ', RuneText(solved).text)
+
+
 #########################################
 #  main
 #########################################
@@ -91,6 +152,9 @@ for fname in [
     # 'p56_an_end',  # totient
     # 'p57_parable',  # plain
 ]:
+    pattern_solver(fname)
+    # break
+    continue
     # NGramShifter().guess(data, 'ᚠ')
     if fname not in db:
         print(fname, 'not in db.')

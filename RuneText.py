@@ -223,7 +223,7 @@ class RuneText(object):
 
     @property
     def index(self):
-        return [x.index for x in self._data]
+        return [x.index for x in self._data if x.kind != 'l']
 
     @property
     def index_no_whitespace(self):

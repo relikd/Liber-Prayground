@@ -61,7 +61,7 @@ class Probability(object):
 
 def load_indices(fname, interrupt, maxinterrupt=None, minlen=None, limit=None):
     with open(fname, 'r') as f:
-        data = RuneText(re_norune.sub('', f.read()))['index'][:limit]
+        data = RuneText(re_norune.sub('', f.read())).index[:limit]
     if maxinterrupt is not None:
         # incl. everything up to but not including next interrupt
         # e.g., maxinterrupt = 0 will return text until first interrupt
