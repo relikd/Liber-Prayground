@@ -1,12 +1,8 @@
 #!/usr/bin/env python3
-from RuneSolver import VigenereSolver, AffineSolver, AutokeySolver
-from RuneText import alphabet, RuneText
-import lib as LIB
+import LP
 
-SOLVER = VigenereSolver()
-# SOLVER = AffineSolver()
-# SOLVER = AutokeySolver()
-SOLVER.input.load(file='_input.txt')
+SOLVER = LP.VigenereSolver()  # VigenereSolver, AffineSolver, AutokeySolver
+SOLVER.input.load(file=LP.path.root('_input.txt'))
 
 
 def main():
@@ -82,7 +78,7 @@ def command_a(cmd, args):  # [a]ll variations
         return False
     if not args:
         raise Warning('No input provided.')
-    root = RuneText(args)
+    root = LP.RuneText(args)
     inclIndex = 'q' not in cmd
     if 'i' in cmd:
         root = ~root
@@ -101,10 +97,10 @@ def command_d(cmd, args):  # [d]ecrypt or single substitution
         trythis = input('What is the encrypted text?: ').strip()
     else:
         trythis = args
-    enc = RuneText(trythis)
+    enc = LP.RuneText(trythis)
     print('encrypted:', enc.description())
     target = input('What should the decrypted clear text be?: ').strip()
-    plain = RuneText(target)
+    plain = LP.RuneText(target)
     print('plaintext:', plain.description())
     if len(enc) != len(plain):
         print('Error: key length mismatch')
@@ -126,7 +122,7 @@ def command_f(cmd, args):  # (f)ind word
         search_term = None
         s_len = int(args.strip())  # search words with n-length
     except ValueError:
-        search_term = RuneText(args)
+        search_term = LP.RuneText(args)
         s_len = len(search_term)
 
     cur_words = SOLVER.highlight_words_with_len(s_len)
@@ -165,14 +161,14 @@ def command_g(cmd, args):  # (g)ematria primus
         return False
 
     def pp(i):
-        p, r, t = alphabet[28 - i if rev else i]
+        p, r, t = LP.alphabet[28 - i if rev else i]
         return '{:2d}  {} {:3d}  {}'.format(i, r, p, '/'.join(t))
 
     rev = cmd[-1] in 'ir' or len(args) > 0 and args[0] in 'ir'
     print('Gematria Primus (reversed)' if rev else 'Gematria Primus')
-    half = (len(alphabet) >> 1) + (len(alphabet) & 1)  # ceil
+    half = (len(LP.alphabet) >> 1) + (len(LP.alphabet) & 1)  # ceil
     for i in range(half):
-        if i < len(alphabet) // 2:
+        if i < len(LP.alphabet) // 2:
             print('{:22} {}'.format(pp(i), pp(i + half)))
         else:
             print(pp(i))
@@ -206,8 +202,8 @@ def command_h(cmd, args):  # (h)ighlight
 
 def command_k(cmd, args):  # (k)ey manipulation
     if cmd == 'k' or cmd == 'key':
-        SOLVER.KEY_DATA = [x.index for x in RuneText(args)]
-        print('set key: {}'.format(SOLVER.KEY_DATA))
+        SOLVER.KEY_DATA = LP.RuneText(args).index
+        print(f'set key: {SOLVER.KEY_DATA}')
     elif cmd[1] == 's':
         SOLVER.KEY_SHIFT = get_cmd_int(cmd, args, 'shift')
     elif cmd[1] == 'r':
@@ -218,12 +214,12 @@ def command_k(cmd, args):  # (k)ey manipulation
         SOLVER.KEY_POST_PAD = get_cmd_int(cmd, args, 'post padding')
     elif cmd[1] == 'i':
         SOLVER.KEY_INVERT = not SOLVER.KEY_INVERT
-        print('set key invert: {}'.format(SOLVER.KEY_INVERT))
+        print(f'set key invert: {SOLVER.KEY_INVERT}')
     elif cmd == 'kj':
         args = args.strip('[]')
         pos = [int(x) for x in args.split(',')] if args else []
         SOLVER.INTERRUPT_POS = pos
-        print('set interrupt jumps: {}'.format(pos))
+        print(f'set interrupt jumps: {SOLVER.INTERRUPT_POS}')
     else:
         return False  # command not found
     SOLVER.run()
@@ -254,8 +250,8 @@ def command_p(cmd, args):  # (p)rime test
     if args and cmd not in 'prime':
         return False
     p = get_cmd_int(cmd, args, start=1)
-    print(p, ':', LIB.is_prime(p))
-    print(LIB.rev(p), ':', LIB.is_prime(LIB.rev(p)))
+    print(p, ':', LP.utils.is_prime(p))
+    print(LP.utils.rev(p), ':', LP.utils.is_emirp(p))
 
 
 #########################################
@@ -265,17 +261,14 @@ def command_p(cmd, args):  # (p)rime test
 def command_t(cmd, args):  # (t)ranslate
     if cmd != 't':
         return False
-    word = RuneText(args)
-    x = word.as_dict()
-    psum = sum(x['p'])
-    sffx = '*' if LIB.is_prime(psum) else ''
-    if LIB.is_prime(LIB.rev(psum)):
-        sffx += '√'
-    print('runes({}): {}'.format(len(x['r']), x['r']))
-    print('plain({}): {}'.format(len(x['t']), x['t']))
-    print('reversed: {}'.format(''.join([x.rune for x in ~word])))
-    print('indices: {}'.format(x['i']))
-    print('prime({}{}): {}'.format(psum, sffx, x['p']))
+    word = LP.RuneText(args)
+    sffx = ''.join(['*' if LP.utils.is_prime(word.prime_sum) else '',
+                    '√' if LP.utils.is_emirp(word.prime_sum) else ''])
+    print('runes({}): {}'.format(len(word), word.rune))
+    print('plain({}): {}'.format(len(word.text), word.text))
+    print('reversed: {}'.format((~word).rune))
+    print('indices: {}'.format(word.index))
+    print('prime({}{}): {}'.format(word.prime_sum, sffx, word.prime))
 
 
 #########################################
@@ -286,7 +279,7 @@ def command_x(cmd, args):  # e(x)ecute decryption
     if cmd == 'x':
         pass  # just run the solver
     elif cmd == 'xf':  # reload from file
-        file = f'pages/{args}.txt' if args else '_input.txt'
+        file = LP.path.page(args) if args else LP.path.root('_input.txt')
         print('loading file:', file)
         SOLVER.input.load(file=file)
         args = None  # so run() won't override data

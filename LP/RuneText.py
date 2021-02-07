@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+import re  # load_indices
+
 white_rune = {'•': ' ', '⁘': '.', '⁚': ',', '⁖': ';', '⁜': '#'}
 white_text = {v: k for k, v in white_rune.items()}
 alphabet = [  # Using last value for display. Custom added: V
@@ -14,8 +17,9 @@ alphabet = [  # Using last value for display. Custom added: V
 ]
 text_map = {t: r for _, r, ta in alphabet for t in ta}
 rune_map = {r: t for _, r, ta in alphabet for t in ta}
-index_map = [r for _, r, _ in alphabet]  # array already sorted
 primes_map = {r: p for p, r, _ in alphabet}
+RUNES = [r for _, r, _ in alphabet]  # array already sorted
+re_norune = re.compile('[^' + ''.join(RUNES) + ']')
 # del alphabet  # used in playground for GP display
 
 
@@ -37,7 +41,7 @@ class Rune(object):
     @property
     def rune(self):
         if self._rune is None:
-            self._rune = index_map[self._index] if self._index < 29 else '•'
+            self._rune = RUNES[self._index] if self._index < 29 else '•'
         return self._rune
 
     @property
@@ -54,7 +58,7 @@ class Rune(object):
     def index(self):
         if self._index is None:
             r = self._rune
-            self._index = index_map.index(r) if r in index_map else 29
+            self._index = RUNES.index(r) if r in RUNES else 29
         return self._index
 
     @property
@@ -182,36 +186,17 @@ class RuneText(object):
             res.append(Rune(r=rune, t=char))
         return res
 
-    def as_dict(self):
-        ret = {'r': '', 't': '', 'i': [], 'p': []}
-        for x in self._data:
-            ret['r'] += x.rune
-            ret['t'] += x.text
-            ret['i'].append(x.index)
-            ret['p'].append(x.prime)
-        return ret
-
     def description(self, count=False, index=True, indexWhitespace=False):
-        if len(self) == 0:
-            return None
-        fmt = '{0} ({1}) – {2} ({3})' if count else '{0} – {2}'
-        d = self.as_dict()
-        if index:
-            fmt += ' – {4}'
-            if not indexWhitespace:
-                d['i'] = [x for x in d['i'] if x != 29]
-        return fmt.format(d['r'], len(d['r']), d['t'], len(d['t']), d['i'])
+        return None if len(self) == 0 else \
+            self.rune + (f' ({len(self)})' if count else '') + ' - ' + \
+            self.text + (f' ({len(self.text)})' if count else '') + \
+            (f' - {self.index if indexWhitespace else self.index_rune_only}'
+             if index else '')
 
     def zip_sub(self, other):
         if len(self) != len(other):
             raise IndexError('RuneText length mismatch')
         return RuneText([x - y for x, y in zip(self._data, other._data)])
-
-    @property
-    def rune_sum(self):
-        if self._rune_sum is None:
-            self._rune_sum = sum(x.prime for x in self._data)
-        return self._rune_sum
 
     @property
     def text(self):
@@ -226,8 +211,18 @@ class RuneText(object):
         return [x.index for x in self._data if x.kind != 'l']
 
     @property
-    def index_no_whitespace(self):
+    def index_rune_only(self):
         return [x.index for x in self._data if x.index != 29]
+
+    @property
+    def prime(self):
+        return [x.prime for x in self._data]
+
+    @property
+    def prime_sum(self):
+        if self._rune_sum is None:
+            self._rune_sum = sum(self.prime)
+        return self._rune_sum
 
     def __getitem__(self, key):
         if isinstance(key, str):
@@ -255,3 +250,24 @@ class RuneText(object):
 
     def __repr__(self):
         return f'RuneText<{len(self._data)}>'
+
+
+#########################################
+#  load page and convert to indices for faster access
+#########################################
+
+def load_indices(fname, interrupt, maxinterrupt=None, minlen=None, limit=None):
+    with open(fname, 'r') as f:
+        data = RuneText(re_norune.sub('', f.read())).index_rune_only[:limit]
+    if maxinterrupt is not None:
+        # incl. everything up to but not including next interrupt
+        # e.g., maxinterrupt = 0 will return text until first interrupt
+        for i, x in enumerate(data):
+            if x != interrupt:
+                continue
+            if maxinterrupt == 0:
+                if minlen and i < minlen:
+                    continue
+                return data[:i]
+            maxinterrupt -= 1
+    return data

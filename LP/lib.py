@@ -1,11 +1,7 @@
 #!/usr/bin/env python3
 import math
 
-AFFINE_INV = None
 
-
-# yes it will report 2,3,5 as non-prime
-# though why add a check if it will never be tested anyway
 def is_prime(num):
     if isinstance(num, str):
         num = int(num)
@@ -28,6 +24,10 @@ def rev(num):  # or int(str(num)[::-1])
         revs = (revs * 10) + remainder
         num = num // 10
     return revs
+
+
+def is_emirp(num):
+    return is_prime(rev(num))
 
 
 def power(x, y, p):
@@ -72,6 +72,9 @@ def elliptic_curve(x, a, b, r):
     if y is None:
         return None, None
     return y, -y % r
+
+
+AFFINE_INV = None
 
 
 def affine_inverse(s, n=29):

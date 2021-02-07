@@ -1,15 +1,9 @@
 #!/usr/bin/env python3
 import os
 from HeuristicSearch import SearchInterrupt
-from HeuristicLib import load_indices, Probability
-
-RUNES = 'ᚠᚢᚦᚩᚱᚳᚷᚹᚻᚾᛁᛄᛇᛈᛉᛋᛏᛒᛖᛗᛚᛝᛟᛞᚪᚫᚣᛡᛠ'  # used in InterruptToWeb
-FILES_SOLVED = ['0_warning', '0_welcome', '0_wisdom', '0_koan_1',
-                '0_loss_of_divinity', 'jpg107-167', 'jpg229',
-                'p56_an_end', 'p57_parable']
-FILES_UNSOLVED = ['p0-2', 'p3-7', 'p8-14', 'p15-22', 'p23-26',
-                  'p27-32', 'p33-39', 'p40-53', 'p54-55']
-FILES_ALL = FILES_UNSOLVED + FILES_SOLVED
+from HeuristicLib import Probability
+from RuneText import RUNES, load_indices
+from LPath import FILES_ALL, FILES_UNSOLVED, LPath
 
 
 #########################################
@@ -85,10 +79,10 @@ class InterruptDB(object):
 
     @staticmethod
     def load(dbname):
-        if not os.path.isfile(f'InterruptDB/{dbname}.txt'):
+        if not os.path.isfile(LPath.InterruptDB(dbname)):
             return {}
         ret = {}
-        with open(f'InterruptDB/{dbname}.txt', 'r') as f:
+        with open(LPath.InterruptDB(dbname), 'r') as f:
             for line in f.readlines():
                 if line.startswith('#'):
                     continue
@@ -104,7 +98,7 @@ class InterruptDB(object):
 
     @staticmethod
     def write(name, score, irp, irpmax, keylen, nums, dbname='db_main'):
-        with open(f'InterruptDB/{dbname}.txt', 'a') as f:
+        with open(LPath.InterruptDB(dbname), 'a') as f:
             nums = ','.join(map(str, nums))
             f.write(f'{name}|{irpmax}|{score:.5f}|{irp}|{keylen}|{nums}\n')
 
@@ -134,7 +128,7 @@ class InterruptIndices(object):
 
     @staticmethod
     def write(dbname='db_indices'):
-        with open(f'InterruptDB/{dbname}.txt', 'w') as f:
+        with open(LPath.InterruptDB(dbname), 'w') as f:
             f.write('# file | total runes in file | interrupt | indices\n')
             for name in FILES_ALL:
                 fname = f'pages/{name}.txt'
@@ -149,7 +143,7 @@ class InterruptIndices(object):
 
     @staticmethod
     def read(dbname='db_indices'):
-        with open(f'InterruptDB/{dbname}.txt', 'r') as f:
+        with open(LPath.InterruptDB(dbname), 'r') as f:
             ret = {}
             for line in f.readlines():
                 if line.startswith('#'):
@@ -169,8 +163,9 @@ class InterruptIndices(object):
 #########################################
 
 class InterruptToWeb(object):
-    def __init__(self, dbname, template='InterruptDB/template.html'):
-        self.template = template
+    def __init__(self, dbname, template='template.html'):
+        with open(LPath.results(template), 'r') as f:
+            self.template = f.read()
         self.indices = InterruptIndices()
         self.scores = {}
         db = InterruptDB.load(dbname)
@@ -252,8 +247,6 @@ class InterruptToWeb(object):
         return f'<table>{trh}{"".join(trd[1:])}{trbest}</table>'
 
     def make(self, outfile, pmin=1.25, pmax=1.65):
-        with open(self.template, 'r') as f:
-            html = f.read()
         nav = ''
         txt = ''
         for i in range(29):
@@ -263,10 +256,10 @@ class InterruptToWeb(object):
             nav += f'<a href="#tb-i{i}">{RUNES[i]}</a>\n'
             txt += f'<h3 id="tb-i{i}">Interrupt {i}: <b>{RUNES[i]}</b></h3>'
             txt += self.table_interrupt(i, pmin, pmax)
-        html = html.replace('__NAVIGATION__', nav)
+        html = self.template.replace('__NAVIGATION__', nav)
         html = html.replace('__TAB_RELIABLE__', self.table_reliable())
         html = html.replace('__INTERRUPT_TABLES__', txt)
-        with open(outfile, 'w') as f:
+        with open(LPath.results(outfile), 'w') as f:
             f.write(html)
 
 
@@ -279,12 +272,10 @@ def create_initial_db(dbname, minkl=1, maxkl=32, max_irp=20, irpset=range(29)):
     oldValues = {k: set((a, b, c) for a, _, b, c, _ in v)
                  for k, v in oldDB.items()}
     for irp in irpset:  # interrupt rune index
-        # for name in FILES_UNSOLVED:
         for name in FILES_ALL:
-            fname = f'pages/{name}.txt'
-            data = load_indices(fname, irp, maxinterrupt=max_irp)
+            data = load_indices(LPath.page(name), irp, maxinterrupt=max_irp)
             db = InterruptDB(data, irp)
-            print('load:', fname, 'interrupt:', irp, 'count:', db.irp_count)
+            print('load:', name, 'interrupt:', irp, 'count:', db.irp_count)
             for keylen in range(minkl, maxkl + 1):  # key length
                 if (db.irp_count, irp, keylen) in oldValues.get(name, []):
                     print(f'{keylen}: skipped.')
@@ -305,9 +296,8 @@ def find_secondary_solutions(db_in, db_out, threshold=0.75, max_irp=20):
             search_set.add((name, irp, kl))
     print('searching through', len(search_set), 'files.')
     for name, irp, kl in search_set:
-        fname = f'pages/{name}.txt'
-        print('load:', fname, 'interrupt:', irp, 'keylen:', kl)
-        data = load_indices(fname, irp, maxinterrupt=max_irp)
+        print('load:', name, 'interrupt:', irp, 'keylen:', kl)
+        data = load_indices(LPath.page(name), irp, maxinterrupt=max_irp)
         db = InterruptDB(data, irp)
         c = db.make_secondary(db_out, name, kl, threshold)
         print('found', c, 'additional solutions')
@@ -317,6 +307,5 @@ if __name__ == '__main__':
     # find_secondary_solutions('db_high', 'db_high_secondary', threshold=1.4)
     # find_secondary_solutions('db_norm', 'db_norm_secondary', threshold=0.55)
     # create_initial_db('db_norm', minkl=1, maxkl=32, max_irp=20)
-    # InterruptToWeb('db_high').make('InterruptDB/index_high.html')
-    InterruptToWeb('db_norm').make(
-        'InterruptDB/index_norm.html', pmin=0.40, pmax=0.98)
+    # InterruptToWeb('db_high').make('index_high.html')
+    InterruptToWeb('db_norm').make('index_norm.html', pmin=0.40, pmax=0.98)

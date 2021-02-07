@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import itertools  # product, compress, combinations
 import bisect  # bisect_left, insort
-import lib as LIB
+from lib import affine_decrypt
 
 
 #########################################
@@ -45,7 +45,7 @@ class GuessAffine(object):
             best = 9999999
             for s in range(29):
                 for t in range(29):
-                    shifted = [LIB.affine_decrypt(x, (s, t))
+                    shifted = [affine_decrypt(x, (s, t))
                                for x in self.nums[offset::keylength]]
                     score = score_fn(shifted)
                     if score < best:

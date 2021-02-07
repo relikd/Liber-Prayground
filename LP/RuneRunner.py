@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-from RuneText import RuneText
-import lib as LIB
 import sys
+from RuneText import RuneText
+import lib as utils
 
 
 #########################################
@@ -86,11 +86,11 @@ class RuneReader(object):
         self.loaded_file = None
         self.words = {x: [] for x in range(20)}  # increase for longer words
 
-    def load(self, data=None, file=None):
+    def load(self, data=None, file=None, limit=None):
         self.loaded_file = None
         if not data:
             with open(file, 'r') as f:
-                data = f.read()
+                data = f.read()[:limit]
                 self.loaded_file = file
         self.data = data if isinstance(data, RuneText) else RuneText(data)
         self.generate_word_list()
@@ -219,7 +219,7 @@ class RuneRunner(object):
             if self.output.VERBOSE:
                 self.output.write(n1=('' if is_first else '+') + str(num))
             return
-        prm = LIB.is_prime(num)
+        prm = utils.is_prime(num)
         if typ == 'w':  # word
             tt = ('' if is_first else ' + ') + str(num) + ('*' if prm else '')
             self.output.write(n2=tt)
@@ -229,7 +229,7 @@ class RuneRunner(object):
             self.output.mark = False
             # if not is_first:
             sffx = ' = {}'.format(num) + ('*' if prm else '')
-            if LIB.is_prime(LIB.rev(num)):
+            if utils.is_emirp(num):
                 sffx += '√'
             if self.output.VERBOSE:
                 self.output.write(n2=sffx)

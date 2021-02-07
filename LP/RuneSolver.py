@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from RuneRunner import RuneRunner
 from RuneText import Rune, RuneText
-import lib as LIB
+from lib import affine_decrypt
 
 
 #########################################
@@ -186,7 +186,7 @@ class VigenereSolver(RunningKeySolver):
 
 class AffineSolver(RunningKeySolver):
     def decrypt(self, rune_index, key_index):
-        return LIB.affine_decrypt(rune_index, self.KEY_DATA[key_index])
+        return affine_decrypt(rune_index, self.KEY_DATA[key_index])
 
 
 #########################################

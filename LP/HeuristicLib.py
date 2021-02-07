@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-import re
-from RuneText import RuneText
 from NGrams import NGrams
+from RuneText import RUNES
 
 
 def normalized_probability(int_prob):
@@ -9,8 +8,6 @@ def normalized_probability(int_prob):
     return [x / total for x in int_prob]  # math.log(x / total, 10)
 
 
-RUNES = 'ᚠᚢᚦᚩᚱᚳᚷᚹᚻᚾᛁᛄᛇᛈᛉᛋᛏᛒᛖᛗᛚᛝᛟᛞᚪᚫᚣᛡᛠ'
-re_norune = re.compile('[^' + RUNES + ']')
 PROB_INT = [0] * 29
 for k, v in NGrams.load(1, '').items():  # '-no-e', '-solved'
     PROB_INT[RUNES.index(k)] = v
@@ -53,24 +50,3 @@ class Probability(object):
         val = sum(abs(Probability(nums[x::keylen]).IC() - target_ioc)
                   for x in range(keylen))
         return 1 - (val / keylen)
-
-
-#########################################
-#  load page and convert to indices for faster access
-#########################################
-
-def load_indices(fname, interrupt, maxinterrupt=None, minlen=None, limit=None):
-    with open(fname, 'r') as f:
-        data = RuneText(re_norune.sub('', f.read())).index[:limit]
-    if maxinterrupt is not None:
-        # incl. everything up to but not including next interrupt
-        # e.g., maxinterrupt = 0 will return text until first interrupt
-        for i, x in enumerate(data):
-            if x != interrupt:
-                continue
-            if maxinterrupt == 0:
-                if minlen and i < minlen:
-                    continue
-                return data[:i]
-            maxinterrupt -= 1
-    return data

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import re
-from RuneText import alphabet, RuneText
+from RuneText import RUNES, re_norune, RuneText
+from LPath import LPath
 
 
 #########################################
@@ -28,11 +29,10 @@ class NGrams(object):
 
     @staticmethod
     def make(gramsize, infile, outfile):
-        allowed_chr = [x[1] for x in alphabet]
         with open(infile, 'r') as f:
-            data = re.sub('[^{}]'.format(''.join(allowed_chr)), '', f.read())
+            data = re_norune.sub('', f.read())
 
-        res = {x: 0 for x in allowed_chr} if gramsize == 1 else {}
+        res = {x: 0 for x in RUNES} if gramsize == 1 else {}
         for i in range(len(data) - gramsize + 1):
             ngram = data[i:i + gramsize]
             try:
@@ -47,19 +47,28 @@ class NGrams(object):
     @staticmethod
     def load(ngram=1, prefix=''):
         ret = {}
-        with open(f'data/p{prefix}-{ngram}gram.txt', 'r') as f:
+        with open(LPath.data(f'p{prefix}-{ngram}gram'), 'r') as f:
             for line in f.readlines():
                 r, v = line.split()
                 ret[r] = int(v)
         return ret
 
 
-# NGrams.translate('data/baseline-text.txt', 'data/baseline-rune.txt', False)
-# for i in range(1, 6):
-#     print(f'generate {i}-gram file')
-#     NGrams.make(i, infile='data/baseline-rune-words.txt',
-#                 outfile=f'data/p-{i}gram.txt')
-#     NGrams.make(i, infile='_solved.txt',
-#                 outfile=f'data/p-solved-{i}gram.txt')
-#     NGrams.make(i, infile='data/baseline-rune-no-e.txt',
-#                 outfile=f'data/p-no-e-{i}gram.txt')
+def make_translation(stream=False):  # if true, ignore spaces / word bounds
+    NGrams.translate(LPath.data('baseline-text'),
+                     LPath.data('baseline-rune'), stream)
+
+
+def make_ngrams(max_ngram=1):
+    for i in range(1, max_ngram + 1):
+        print(f'generate {i}-gram file')
+        NGrams.make(i, infile=LPath.data('baseline-rune-words'),
+                    outfile=LPath.data(f'p-{i}gram'))
+        NGrams.make(i, infile=LPath.root('_solved.txt'),
+                    outfile=LPath.data(f'p-solved-{i}gram'))
+        NGrams.make(i, infile=LPath.data('baseline-rune-no-e'),
+                    outfile=LPath.data(f'p-no-e-{i}gram'))
+
+
+# make_translation(stream=False)
+# make_ngrams(5)
