@@ -1,114 +1,18 @@
 #!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 import itertools  # product, compress, combinations
 import bisect  # bisect_left, insort
-from lib import affine_decrypt
 
 
 #########################################
-#  GuessVigenere  :  Shift values around with a given keylength
+#  InterruptSearch  :  Hill climbing algorithm for interrupt detection
 #########################################
 
-class GuessVigenere(object):
-    def __init__(self, nums):
-        self.nums = nums
-
-    def guess(self, keylength, score_fn):  # minimize score_fn
-        found = []
-        avg_score = 0
-        for offset in range(keylength):
-            bi = -1
-            bs = 9999999
-            for i in range(29):
-                shifted = [(x - i) % 29 for x in self.nums[offset::keylength]]
-                score = score_fn(shifted)
-                if score < bs:
-                    bs = score
-                    bi = i
-            avg_score += bs
-            found.append(bi)
-        return avg_score / keylength, found
-
-
-#########################################
-#  GuessAffine  :  Find greatest common affine key
-#########################################
-
-class GuessAffine(object):
-    def __init__(self, nums):
-        self.nums = nums
-
-    def guess(self, keylength, score_fn):  # minimize score_fn
-        found = []
-        avg_score = 0
-        for offset in range(keylength):
-            candidate = (None, None)
-            best = 9999999
-            for s in range(29):
-                for t in range(29):
-                    shifted = [affine_decrypt(x, (s, t))
-                               for x in self.nums[offset::keylength]]
-                    score = score_fn(shifted)
-                    if score < best:
-                        best = score
-                        candidate = (s, t)
-            avg_score += best
-            found.append(candidate)
-        return avg_score / keylength, found
-
-
-#########################################
-#  GuessPattern  :  Find a key that is rotated ABC BCA CAB, or ABC CAB BCA
-#########################################
-
-class GuessPattern(object):
-    def __init__(self, nums):
-        self.nums = nums
-
-    @staticmethod
-    def pattern(keylen, fn_pattern):
-        mask = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'[:keylen]
-        return fn_pattern(mask, keylen)
-
-    def split(self, keylen, mask, offset=0):
-        ret = {}
-        for _ in range(offset):
-            next(mask)
-        ret = {k: [] for k in '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'[:keylen]}
-        for n, k in zip(self.nums, mask):
-            ret[k].append(n)
-        return ret.values()
-
-    def zip(self, key_mask, offset=0):
-        for _ in range(offset):
-            next(key_mask)
-        return [(n - k) % 29 for n, k in zip(self.nums, key_mask)]
-
-    @staticmethod
-    def guess(parts, score_fn):  # minimize score_fn
-        found = []
-        avg_score = 0
-        for nums in parts:
-            best = 9999999
-            candidate = 0
-            for i in range(29):
-                score = score_fn([(x - i) % 29 for x in nums])
-                if score < best:
-                    best = score
-                    candidate = i
-            avg_score += best
-            found.append(candidate)
-        return avg_score / len(parts), found
-
-
-#########################################
-#  SearchInterrupt  :  Hill climbing algorithm for interrupt detection
-#########################################
-
-class SearchInterrupt(object):
-    def __init__(self, arr, interrupt_chr):  # remove all whitespace in arr
+class InterruptSearch(object):
+    def __init__(self, arr, irp):  # remove all whitespace in arr
         self.single_result = False  # if False, return list of equal likelihood
         self.full = arr
-        self.stops = [i for i, n in enumerate(arr) if n == interrupt_chr]
+        self.stops = [i for i, n in enumerate(arr) if n == irp]
 
     def to_occurrence_index(self, interrupts):
         return [self.stops.index(x) + 1 for x in interrupts]
@@ -124,11 +28,27 @@ class SearchInterrupt(object):
             i = x
         return ret + self.full[i + 1:]
 
+    # Just enumerate all possibilities.
+    # If you need to limit the options, trim the data before computation
+    def all(self, keylen, score_fn):
+        best_s = -8
+        found = []  # [match, match, ...]
+        for x in itertools.product([False, True], repeat=len(self.stops)):
+            part = list(itertools.compress(self.stops, x))
+            score = score_fn(self.join(part), keylen)
+            if score >= best_s:
+                if score > best_s or self.single_result:
+                    best_s = score
+                    found = [part]
+                else:
+                    found.append(part)
+        return best_s, found
+
     # Go over the full string but only look at the first {maxdepth} interrupts.
     # Enumerate all possibilities and choose the one with the highest score.
     # If first interrupt is set, add it to the resulting set. If not, ignore it
     # Every iteration will add a single interrupt only, not the full set.
-    def sequential(self, score_fn, startAt=0, maxdepth=9):
+    def sequential(self, keylen, score_fn, startAt=0, maxdepth=9):
         found = [[]]
 
         def best_in_one(i, depth, prefix=[]):
@@ -137,7 +57,7 @@ class SearchInterrupt(object):
             irp = self.stops[i:i + depth]
             for x in itertools.product([False, True], repeat=depth):
                 part = list(itertools.compress(irp, x))
-                score = score_fn(self.join(prefix + part))
+                score = score_fn(self.join(prefix + part), keylen)
                 if score >= best_s:
                     if score > best_s or self.single_result:
                         best_s = score
@@ -162,7 +82,7 @@ class SearchInterrupt(object):
         # first step: move maxdepth-sized window over data
         i = startAt - 1  # in case loop isnt called
         for i in range(startAt, len(self.stops) - maxdepth):
-            # print('.', end='')
+            print('.', end='')
             parts, _ = best_in_all(i, maxdepth)
             found = []
             search = self.stops[i]
@@ -180,7 +100,7 @@ class SearchInterrupt(object):
                     found.append(prfx + [search])
                 if bitNotSet:
                     found.append(prfx)
-        # print('.')
+        print('.')
         # last step: all permutations for the remaining (< maxdepth) bits
         i += 1
         remaining, score = best_in_all(i, min(maxdepth, len(self.stops) - i))
@@ -191,10 +111,12 @@ class SearchInterrupt(object):
     # Choose the bitset with the highest score and repeat.
     # If no better score found, increment number of testing bits and repeat.
     # Either start with all interrupts set (topDown) or none set.
-    def genetic(self, score_fn, topDown=False, maxdepth=3):
+    def genetic(self, keylen, score_fn, topDown=False, maxdepth=3):
         current = self.stops if topDown else []
 
         def evolve(lvl):
+            if lvl > 0:
+                yield from evolve(lvl - 1)
             for x in itertools.combinations(self.stops, lvl + 1):
                 tmp = current[:]
                 for y in x:
@@ -202,9 +124,9 @@ class SearchInterrupt(object):
                         tmp.pop(bisect.bisect_left(tmp, y))
                     else:
                         bisect.insort(tmp, y)
-                yield tmp, score_fn(self.join(tmp))
+                yield tmp, score_fn(self.join(tmp), keylen)
 
-        best = score_fn(self.join())
+        best = score_fn(self.join(), keylen)
         level = 0  # or start directly with maxdepth - 1
         while level < maxdepth:
             print('.', end='')
@@ -227,7 +149,10 @@ class SearchInterrupt(object):
         return best, all_of_them
 
 
-# a = GuessInterrupt([2, 0, 1, 0, 14, 15, 0, 13, 24, 25, 25, 25], 0)
-# print(a.sequential(lambda x: (1.2 if len(x) == 11 else 0.1)))
-# print(a.sequential(lambda x: (1.1 if len(x) == 10 else 0.1)))
-# print(a.sequential(lambda x: (1.3 if len(x) == 9 else 0.1)))
+if __name__ == '__main__':
+    a = InterruptSearch([2, 0, 1, 0, 14, 15, 0, 13, 24, 25, 25, 25], irp=0)
+    print(a.sequential(1, lambda x, k: (1.2 if len(x) == 11 else 0.1)))
+    print(a.sequential(1, lambda x, k: (1.1 if len(x) == 10 else 0.1)))
+    print(a.sequential(1, lambda x, k: (1.3 if len(x) == 9 else 0.1)))
+    print(a.genetic(1, lambda x, k: (1.5 if len(x) == 10 else 0.1)))
+    print(a.all(1, lambda x, k: (1.4 if len(x) == 11 else 0.1)))

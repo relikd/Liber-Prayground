@@ -1,112 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-import re  # load_indices
-
-white_rune = {'•': ' ', '⁘': '.', '⁚': ',', '⁖': ';', '⁜': '#'}
-white_text = {v: k for k, v in white_rune.items()}
-alphabet = [  # Using last value for display. Custom added: V
-    (2, 'ᚠ', ['F']), (3, 'ᚢ', ['V', 'U']), (5, 'ᚦ', ['TH']), (7, 'ᚩ', ['O']),
-    (11, 'ᚱ', ['R']), (13, 'ᚳ', ['K', 'C']), (17, 'ᚷ', ['G']),
-    (19, 'ᚹ', ['W']), (23, 'ᚻ', ['H']), (29, 'ᚾ', ['N']), (31, 'ᛁ', ['I']),
-    (37, 'ᛄ', ['J']), (41, 'ᛇ', ['EO']), (43, 'ᛈ', ['P']), (47, 'ᛉ', ['X']),
-    (53, 'ᛋ', ['Z', 'S']), (59, 'ᛏ', ['T']), (61, 'ᛒ', ['B']),
-    (67, 'ᛖ', ['E']), (71, 'ᛗ', ['M']), (73, 'ᛚ', ['L']),
-    (79, 'ᛝ', ['ING', 'NG']), (83, 'ᛟ', ['OE']), (89, 'ᛞ', ['D']),
-    (97, 'ᚪ', ['A']), (101, 'ᚫ', ['AE']), (103, 'ᚣ', ['Y']),
-    (107, 'ᛡ', ['IO', 'IA']), (109, 'ᛠ', ['EA'])
-]
-text_map = {t: r for _, r, ta in alphabet for t in ta}
-rune_map = {r: t for _, r, ta in alphabet for t in ta}
-primes_map = {r: p for p, r, _ in alphabet}
-RUNES = [r for _, r, _ in alphabet]  # array already sorted
-re_norune = re.compile('[^' + ''.join(RUNES) + ']')
-# del alphabet  # used in playground for GP display
-
-
-#########################################
-#  Rune  :  Stores a single rune. Incl. text, prime, index, and kind
-#########################################
-
-class Rune(object):
-    def __init__(self, r=None, t=None, i=None, p=None):
-        self._rune = r
-        self._text = t
-        self._index = i
-        self._prime = p
-        self._kind = None  # one of: r n s l w
-
-    def __repr__(self):
-        return f'<{self._rune}, {self._text}, {self._index}, {self._prime}>'
-
-    @property
-    def rune(self):
-        if self._rune is None:
-            self._rune = RUNES[self._index] if self._index < 29 else '•'
-        return self._rune
-
-    @property
-    def text(self, sameWhitespace=False):
-        if self._text is None:
-            if sameWhitespace:
-                self._text = rune_map.get(self.rune, ' ')
-            else:
-                r = self.rune
-                self._text = rune_map.get(r, white_rune.get(r, r))
-        return self._text
-
-    @property
-    def index(self):
-        if self._index is None:
-            r = self._rune
-            self._index = RUNES.index(r) if r in RUNES else 29
-        return self._index
-
-    @property
-    def prime(self):
-        if self._prime is None:
-            self._prime = primes_map.get(self.rune, 0)
-        return self._prime
-
-    @property
-    def kind(self):
-        if self._kind is None:
-            x = self.rune
-            if x in rune_map:
-                self._kind = 'r'  # rune
-            elif x == '⁜':
-                self._kind = 's'  # paragraph, but treat as sentence
-            elif x == '⁘':
-                self._kind = 's'  # sentence
-            elif x == '\n' or x == '\r':
-                self._kind = 'l'  # line end
-            elif x in '1234567890':
-                self._kind = 'n'  # number
-            else:
-                self._kind = 'w'  # whitespace (explicitly not n or s)
-        return self._kind
-
-    def __add__(self, o):
-        if isinstance(o, Rune):
-            o = o.index
-        if self.index == 29 or o == 29:
-            return self
-        return Rune(i=(self.index + o) % 29)
-
-    def __sub__(self, o):
-        if isinstance(o, Rune):
-            o = o.index
-        if self.index == 29 or o == 29:
-            return self
-        return Rune(i=(self.index - o) % 29)
-
-    def __radd__(self, o):
-        return self if self.index == 29 else Rune(i=(o + self.index) % 29)
-
-    def __rsub__(self, o):
-        return self if self.index == 29 else Rune(i=(o - self.index) % 29)
-
-    def __invert__(self):
-        return self if self.index == 29 else Rune(i=28 - self.index)
+from Alphabet import white_rune, white_text, rune_map, text_map
+from Rune import Rune
 
 
 #########################################
@@ -138,16 +33,6 @@ class RuneText(object):
                     self._data = self.from_text(txt)
 
         self._data_len = len(self._data)
-
-    def __len__(self):
-        return self._data_len
-
-    def trim(self, maxlen):
-        if self._data_len > maxlen:
-            if self._rune_sum and self._rune_sum > 0:
-                self._rune_sum -= sum(x.prime for x in self._data[maxlen:])
-            self._data = self._data[:maxlen]
-            self._data_len = maxlen
 
     @classmethod
     def from_text(self, text):
@@ -186,17 +71,29 @@ class RuneText(object):
             res.append(Rune(r=rune, t=char))
         return res
 
-    def description(self, count=False, index=True, indexWhitespace=False):
-        return None if len(self) == 0 else \
-            self.rune + (f' ({len(self)})' if count else '') + ' - ' + \
-            self.text + (f' ({len(self.text)})' if count else '') + \
-            (f' - {self.index if indexWhitespace else self.index_rune_only}'
-             if index else '')
+    def __len__(self):
+        return self._data_len
 
-    def zip_sub(self, other):
-        if len(self) != len(other):
-            raise IndexError('RuneText length mismatch')
-        return RuneText([x - y for x, y in zip(self._data, other._data)])
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            return [getattr(x, key) for x in self._data]
+        else:
+            return self._data[key]
+
+    # def __setitem__(self, key, value):
+    #     self._data[key] = value
+
+    def __add__(self, other):
+        return RuneText([x + other for x in self._data])
+
+    def __sub__(self, other):
+        return RuneText([x - other for x in self._data])
+
+    def __invert__(self):
+        return RuneText([~x for x in self._data])
+
+    def __str__(self):
+        return f'RuneText<{len(self)}>'
 
     @property
     def text(self):
@@ -207,11 +104,11 @@ class RuneText(object):
         return ''.join(x.rune for x in self._data)
 
     @property
-    def index(self):
+    def index_no_newline(self):
         return [x.index for x in self._data if x.kind != 'l']
 
     @property
-    def index_rune_only(self):
+    def index_no_white(self):
         return [x.index for x in self._data if x.index != 29]
 
     @property
@@ -224,50 +121,82 @@ class RuneText(object):
             self._rune_sum = sum(self.prime)
         return self._rune_sum
 
-    def __getitem__(self, key):
-        if isinstance(key, str):
-            return [getattr(x, key) for x in self._data]
-        else:
-            return self._data[key]
+    @property
+    def data_clean(self):
+        return [x if x.kind == 'r' else Rune(i=29)
+                for x in self._data if x.kind != 'l']
 
-    def __setitem__(self, key, value):
-        self._data[key] = value
+    def description(self, count=False, index=True, indexWhitespace=False):
+        return None if len(self) == 0 else \
+            self.rune + (f' ({len(self)})' if count else '') + ' - ' + \
+            self.text + (f' ({len(self.text)})' if count else '') + \
+            (' - {}'.format(self.index_no_newline if indexWhitespace else
+                            self.index_no_white)
+             if index else '')
 
-    def __add__(self, other):
-        return RuneText([x + other for x in self._data])
+    def trim(self, maxlen):
+        if self._data_len > maxlen:
+            if self._rune_sum and self._rune_sum > 0:
+                self._rune_sum -= sum(x.prime for x in self._data[maxlen:])
+            self._data = self._data[:maxlen]
+            self._data_len = maxlen
 
-    def __sub__(self, other):
-        return RuneText([x - other for x in self._data])
+    def zip_sub(self, other):
+        if len(self) != len(other):
+            raise IndexError('RuneText length mismatch')
+        return RuneText([x - y for x, y in zip(self._data, other._data)])
 
-    def __radd__(self, other):
-        return RuneText([other + x for x in self._data])
+    # def equal(self, other):
+    #     if len(self) != len(other):
+    #         return False
+    #     return all(x.index == y.index for x, y in zip(self, other))
 
-    def __rsub__(self, other):
-        return RuneText([other - x for x in self._data])
-
-    def __invert__(self):
-        return RuneText([~x for x in self._data])
-
-    def __repr__(self):
-        return f'RuneText<{len(self._data)}>'
-
-
-#########################################
-#  load page and convert to indices for faster access
-#########################################
-
-def load_indices(fname, interrupt, maxinterrupt=None, minlen=None, limit=None):
-    with open(fname, 'r') as f:
-        data = RuneText(re_norune.sub('', f.read())).index_rune_only[:limit]
-    if maxinterrupt is not None:
-        # incl. everything up to but not including next interrupt
-        # e.g., maxinterrupt = 0 will return text until first interrupt
-        for i, x in enumerate(data):
-            if x != interrupt:
+    def enum_words(self):  # [(start, end, len), ...] may include \n \r
+        start = 0
+        r_pos = 0
+        word = []
+        for i, x in enumerate(self._data):
+            if x.kind == 'r':
+                r_pos += 1
+                word.append(x)
+            elif x.kind == 'l':
                 continue
-            if maxinterrupt == 0:
-                if minlen and i < minlen:
-                    continue
-                return data[:i]
-            maxinterrupt -= 1
-    return data
+            else:
+                if len(word) > 0:
+                    yield start, i, r_pos - len(word), RuneText(word)
+                    word = []
+                start = i + 1
+
+
+class RuneTextFile(RuneText):
+    def __init__(self, file, limit=None):
+        with open(file, 'r') as f:
+            super().__init__(f.read()[:limit])
+        self.inverted = False
+        self.loaded_file = file
+
+    def reopen(self, limit=None):
+        ret = RuneTextFile(self.loaded_file, limit)
+        if self.inverted:
+            ret.invert()
+        return ret
+
+    def invert(self):
+        self.inverted = not self.inverted
+        self._rune_sum = None
+        self._data = [~x for x in self._data]
+
+    def __str__(self):
+        return '@file: {} ({} bytes), inverted: {}'.format(
+            self.loaded_file, len(self._data), self.inverted)
+
+
+if __name__ == '__main__':
+    x = RuneText('Hi there. And welc\nome, to my "world";')
+    for a, z, r_pos, word in x.enum_words():
+        print((a, z), r_pos, word.text)
+
+    y = RuneTextFile(file='../_input.txt')
+    print(y.loaded_file)
+    print(y.prime_sum)
+    print(y)

@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 import os.path
 
 FILES_SOLVED = ['0_warning', '0_welcome', '0_wisdom', '0_koan_1',

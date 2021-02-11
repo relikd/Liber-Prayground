@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 from NGrams import NGrams
-from RuneText import RUNES
+from Alphabet import RUNES
 
 
 def normalized_probability(int_prob):

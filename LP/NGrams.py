@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 import re
-from RuneText import RUNES, re_norune, RuneText
+from Alphabet import RUNES
+from IOReader import re_norune
+from RuneText import RuneText
 from LPath import LPath
 
 
@@ -54,21 +57,20 @@ class NGrams(object):
         return ret
 
 
-def make_translation(stream=False):  # if true, ignore spaces / word bounds
-    NGrams.translate(LPath.data('baseline-text'),
-                     LPath.data('baseline-rune'), stream)
+if __name__ == '__main__':
+    def make_translation(stream=False):  # if true, ignore spaces / word bounds
+        NGrams.translate(LPath.data('baseline-text'),
+                         LPath.data('baseline-rune'), stream)
 
+    def make_ngrams(max_ngram=1):
+        for i in range(1, max_ngram + 1):
+            print(f'generate {i}-gram file')
+            NGrams.make(i, infile=LPath.data('baseline-rune-words'),
+                        outfile=LPath.data(f'p-{i}gram'))
+            NGrams.make(i, infile=LPath.root('_solved.txt'),
+                        outfile=LPath.data(f'p-solved-{i}gram'))
+            NGrams.make(i, infile=LPath.data('baseline-rune-no-e'),
+                        outfile=LPath.data(f'p-no-e-{i}gram'))
 
-def make_ngrams(max_ngram=1):
-    for i in range(1, max_ngram + 1):
-        print(f'generate {i}-gram file')
-        NGrams.make(i, infile=LPath.data('baseline-rune-words'),
-                    outfile=LPath.data(f'p-{i}gram'))
-        NGrams.make(i, infile=LPath.root('_solved.txt'),
-                    outfile=LPath.data(f'p-solved-{i}gram'))
-        NGrams.make(i, infile=LPath.data('baseline-rune-no-e'),
-                    outfile=LPath.data(f'p-no-e-{i}gram'))
-
-
-# make_translation(stream=False)
-# make_ngrams(5)
+    # make_translation(stream=False)
+    # make_ngrams(5)

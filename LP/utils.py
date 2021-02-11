@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
 import math
 
 
@@ -113,7 +114,9 @@ def autokey_reverse(data, keylen, pos, search_term):
         ret[i + keylen] = plain
     return ret
 
-# alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-# cipher = 'YDIDWYASDDJVAPJMMBIASDTJVAMD'
-# indices = [affine_decrypt(alphabet.index(x), (5, 9), 26) for x in cipher]
-# print(''.join(alphabet[x] for x in indices))
+
+if __name__ == '__main__':
+    alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    cipher = 'YDIDWYASDDJVAPJMMBIASDTJVAMD'
+    indices = [affine_decrypt(alphabet.index(x), (5, 9), 26) for x in cipher]
+    print(''.join(alphabet[x] for x in indices))

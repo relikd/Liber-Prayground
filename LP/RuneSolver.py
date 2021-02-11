@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
-from RuneRunner import RuneRunner
+# -*- coding: UTF-8 -*-
 from RuneText import Rune, RuneText
-from lib import affine_decrypt
+from utils import affine_decrypt
 
 
 #########################################
 #  RuneSolver  :  Generic parent class handles interrupts and text highlight
 #########################################
 
-class RuneSolver(RuneRunner):
+class RuneSolver(object):
     def __init__(self):
-        super().__init__()
         self.reset()
 
     def reset(self):
@@ -20,43 +19,31 @@ class RuneSolver(RuneRunner):
     def highlight_interrupt(self):
         return self.highlight_rune(self.INTERRUPT, self.INTERRUPT_POS)
 
-    def substitute_get(self, pos, keylen, search_term, found_term):
-        return found_term.zip_sub(search_term).description(count=True)
-
     def substitute_supports_keylen(self):
         return False
 
-    def run(self, data=None):
-        if data:
-            self.input.load(data=data)
-        self.interrupt_counter = 0
-        self.start(self.cipher_callback)
+    def substitute_get(self, pos, keylen, search_term, found_term, all_data):
+        return found_term.zip_sub(search_term).description(count=True)
 
-    def cipher_callback(self, encrypted_data, index):
-        obj = encrypted_data[index]
-        is_interrupt = obj.rune == self.INTERRUPT
-        if is_interrupt:
-            self.interrupt_counter += 1
-        skip = is_interrupt and self.interrupt_counter in self.INTERRUPT_POS
-        mark_this = self.mark_char_at(index)
-        if not skip:
-            obj = self.cipher(obj, (index, encrypted_data))
-        mark_next = self.mark_char_at(index)
-        return obj, mark_this, mark_next
+    def enum_data(self, data):
+        irp_i = 0
+        r_pos = -1
+        for i, obj in enumerate(data):
+            skip = obj.index == 29
+            if not skip:
+                r_pos += 1
+                is_interrupt = obj.rune == self.INTERRUPT
+                if is_interrupt:
+                    irp_i += 1
+                skip = is_interrupt and irp_i in self.INTERRUPT_POS
+            yield obj, i, r_pos, skip
 
-    def cipher(self, rune, context):
-        raise NotImplementedError  # must subclass
-
-    def mark_char_at(self, position):
-        return False
+    def run(self, data):
+        raise NotImplementedError('must subclass')
+        # return RuneText(), [(start-highlight, end-highlight), ...]
 
     def __str__(self):
-        txt = f'DATA: {len(self.input.data) if self.input.data else 0} bytes'
-        if self.input.loaded_file:
-            txt += f' (file: {self.input.loaded_file})'
-        else:
-            txt += f' (manual input)'
-        return txt + f'\ninterrupt jumps: {self.INTERRUPT_POS}'
+        return f'interrupt: {self.INTERRUPT}, jumps: {self.INTERRUPT_POS}'
 
 
 #########################################
@@ -66,22 +53,22 @@ class RuneSolver(RuneRunner):
 class SequenceSolver(RuneSolver):
     def __init__(self):
         super().__init__()
-        self.seq_index = 0
         self.reset()
 
     def reset(self):
         super().reset()
         self.FN = None
 
-    def run(self, data=None):
-        self.seq_index = 0
+    def run(self, data):
         assert(self.FN)
-        super().run(data=data)
-
-    def cipher(self, rune, context):
-        x = self.FN(self.seq_index, rune)
-        self.seq_index += 1
-        return x
+        seq_i = 0
+        ret = []
+        for rune, i, ri, skip in self.enum_data(data):
+            if not skip:
+                rune = self.FN(seq_i, rune)
+                seq_i += 1
+            ret.append(rune)
+        return RuneText(ret), []
 
     def __str__(self):
         return super().__str__() + f'\nf(x): {self.FN}'
@@ -99,59 +86,52 @@ class RunningKeySolver(RuneSolver):
     def reset(self):
         super().reset()
         self.KEY_DATA = []  # the key material
-        self.KEY_INVERT = False  # ABCD -> ZYXW
         self.KEY_SHIFT = 0  # ABCD -> DABC
         self.KEY_ROTATE = 0  # ABCD -> ZABC
         self.KEY_OFFSET = 0  # ABCD -> __ABCD
         self.KEY_POST_PAD = 0  # ABCD -> ABCD__
 
-    def run(self, data=None):
-        self.k_current_pos = 0
-        self.k_len = len(self.KEY_DATA)
-        self.k_full_len = self.KEY_OFFSET + self.k_len + self.KEY_POST_PAD
-        super().run(data=data)
+    def run(self, data):
+        k_len = len(self.KEY_DATA)
+        if k_len <= 0:
+            return data, []
+        k_full_len = self.KEY_OFFSET + k_len + self.KEY_POST_PAD
+        k_current_pos = 0
+        ret = []
+        highlight = [[0, 0]]
+        for rune, i, ri, skip in self.enum_data(data):
+            if not skip:
+                u = k_current_pos - self.KEY_OFFSET
+                if u < 0 or u >= k_len or self.KEY_DATA[u] == 29:
+                    self.unmodified_callback(rune)
+                else:
+                    key_i = (u + self.KEY_SHIFT) % k_len
+                    decrypted = self.decrypt(rune.index, key_i)
+                    rune = Rune(i=(decrypted - self.KEY_ROTATE) % 29)
+                    if i == highlight[-1][1]:
+                        highlight[-1][1] = i + 1
+                    else:
+                        highlight.append([i, i + 1])
+                # rotate_key
+                if k_full_len > 0:  # e.g., for key invert without a key
+                    k_current_pos = (k_current_pos + 1) % k_full_len
+            ret.append(rune)
+        if highlight[0][1] == 0:
+            highlight = highlight[1:]
+        return RuneText(ret), highlight
 
-    def mark_char_at(self, position):
-        return self.active_key_pos() != -1
+    def decrypt(self, rune_index, key_index):
+        raise NotImplementedError('must subclass')
 
-    def active_key_pos(self):
-        i = self.k_current_pos - self.KEY_OFFSET
-        if i >= 0 and i < self.k_len:
-            if self.KEY_DATA[i] != 29:  # placeholder for unknown
-                return i
-        return -1
+    def unmodified_callback(self, rune_index):
+        pass  # subclass if needed
 
-    def cipher(self, rune, context):
-        r_idx = rune.index
-        if self.KEY_INVERT:
-            r_idx = 28 - r_idx
-        pos = self.active_key_pos()
-        if pos == -1:
-            self.copy_unmodified(r_idx)
-        else:
-            i = (pos + self.KEY_SHIFT) % self.k_len
-            r_idx = (self.decrypt(r_idx, i) - self.KEY_ROTATE) % 29
-        # rotate_key
-        if self.k_full_len > 0:  # e.g., for key invert without a key
-            self.k_current_pos = (self.k_current_pos + 1) % self.k_full_len
-        return Rune(i=r_idx)
-
-    def decrypt(self, rune_index, key_index):  # must subclass
-        raise NotImplementedError
-
-    def copy_unmodified(self, rune_index):  # subclass if needed
-        pass
-
-    def key__str__(self):
-        return self.KEY_DATA  # you should override this
-
-    def key__str__basic_runes(self):
+    def key__str__(self):  # you should override this
         return RuneText(self.KEY_DATA).description(indexWhitespace=True)
 
     def __str__(self):
         txt = super().__str__()
         txt += f'\nkey: {self.key__str__()}'
-        txt += f'\nkey invert: {self.KEY_INVERT}'
         txt += f'\nkey offset: {self.KEY_OFFSET} runes'
         txt += f'\nkey post pad: {self.KEY_POST_PAD} runes'
         txt += f'\nkey shift: {self.KEY_SHIFT} indices'
@@ -170,14 +150,11 @@ class VigenereSolver(RunningKeySolver):
     def substitute_supports_keylen(self):
         return True
 
-    def substitute_get(self, pos, keylen, search_term, found_term):
+    def substitute_get(self, pos, keylen, search_term, found_term, all_data):
         ret = [Rune(r='⁚')] * keylen
         for i, r in enumerate(found_term.zip_sub(search_term)):
             ret[(pos + i) % keylen] = r
         return RuneText(ret).description(count=True, index=False)
-
-    def key__str__(self):
-        return self.key__str__basic_runes()
 
 
 #########################################
@@ -188,42 +165,55 @@ class AffineSolver(RunningKeySolver):
     def decrypt(self, rune_index, key_index):
         return affine_decrypt(rune_index, self.KEY_DATA[key_index])
 
+    def key__str__(self):
+        return self.KEY_DATA
+
 
 #########################################
 #  AutokeySolver  :  Decrypts runes by using previously decrypted ones as input
 #########################################
 
 class AutokeySolver(RunningKeySolver):
-    def run(self, data=None):
+    def run(self, data):
         key = self.KEY_DATA[self.KEY_SHIFT:] + self.KEY_DATA[:self.KEY_SHIFT]
         key = [29] * self.KEY_OFFSET + key + [29] * self.KEY_POST_PAD
         self.running_key = key
-        super().run(data=data)
+        return super().run(data)
 
-    def decrypt(self, rune_index, _):
+    def decrypt(self, rune_index, key_index):
         rune_index = (rune_index - self.running_key.pop(0)) % 29
         self.running_key.append(rune_index)
         return rune_index
 
-    def copy_unmodified(self, rune_index):
-        if self.k_len > 0:
-            self.running_key.pop(0)
-            self.running_key.append(rune_index)
+    def unmodified_callback(self, rune_index):
+        self.running_key.pop(0)
+        self.running_key.append(rune_index)
 
     def substitute_supports_keylen(self):
         return True
 
-    def substitute_get(self, pos, keylen, search_term, found_term):
-        data = self.input.runes_no_whitespace()
+    def substitute_get(self, pos, keylen, search_term, found_term, all_data):
+        data = all_data.index_no_white
         ret = [Rune(r='⁚')] * keylen
         for o in range(len(search_term)):
-            plain = search_term[o]
+            plain = search_term[o].index
             i = pos + o
             while i >= 0:
-                plain = data[i] - plain
+                plain = (data[i] - plain) % 29
                 i -= keylen
-            ret[i + keylen] = plain
+            ret[i + keylen] = Rune(i=plain)
         return RuneText(ret).description(count=True, index=False)
 
-    def key__str__(self):
-        return self.key__str__basic_runes()
+
+if __name__ == '__main__':
+    slvr = VigenereSolver()
+    slvr.KEY_DATA = [1]
+    print(slvr)
+    txt = RuneText('hi there')
+    sol = slvr.run(txt)
+    print(sol[0].text)
+    sol, mark = slvr.run(txt)
+    print(sol.text)
+    slvr.KEY_DATA = [-1]
+    print(slvr.run(sol)[0].text)
+    print(mark)

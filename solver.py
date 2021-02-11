@@ -18,41 +18,40 @@ MOEBIUS = load_sequence_file('seq_moebius')
 
 
 def print_all_solved():
-    def plain(slvr):
-        slvr.KEY_DATA = []
+    def plain(slvr, inpt):
+        pass
 
-    def invert(slvr):
-        slvr.KEY_DATA = []
-        slvr.KEY_INVERT = True
+    def invert(slvr, inpt):
+        inpt.invert()
 
-    def solution_welcome(slvr):
+    def solution_welcome(slvr, inpt):
         slvr.KEY_DATA = [23, 10, 1, 10, 9, 10, 16, 26]  # DIVINITY
         slvr.INTERRUPT = 'ᚠ'
         slvr.INTERRUPT_POS = [4, 5, 6, 7, 10, 11, 14, 18, 20, 21, 25]
 
-    def solution_koan_1(slvr):
+    def solution_koan_1(slvr, inpt):
         slvr.KEY_DATA = [26]  # Y
-        slvr.KEY_INVERT = True
+        inpt.invert()
 
-    def solution_jpg107_167(slvr):  # FIRFUMFERENFE
+    def solution_jpg107_167(slvr, inpt):  # FIRFUMFERENFE
         slvr.KEY_DATA = [0, 10, 4, 0, 1, 19, 0, 18, 4, 18, 9, 0, 18]
         slvr.INTERRUPT = 'ᚠ'
         slvr.INTERRUPT_POS = [2, 3]
 
-    def solution_p56_end(slvr):
+    def solution_p56_end(slvr, inpt):
         slvr.FN = lambda i, r: r - (PRIMES[i] - 1)
         slvr.INTERRUPT = 'ᚠ'
         slvr.INTERRUPT_POS = [4]
 
     def solve(fname, fn_solution, solver=LP.VigenereSolver):
         slvr = solver()
-        slvr.output.COLORS = False
-        slvr.output.QUIET = True  # or use -v/-q while calling
-        slvr.input.load(file=LP.path.page(fname))
-        fn_solution(slvr)
+        inpt = LP.RuneTextFile(LP.path.page(fname))
+        fn_solution(slvr, inpt)
         print(f'pages/{fname}.txt')
         print()
-        slvr.run()
+        io = LP.IOWriter()
+        # io.QUIET = True  # or use -v/-q while calling
+        io.run(slvr.run(inpt)[0])
         print()
 
     solve('0_warning', invert)
@@ -67,36 +66,29 @@ def print_all_solved():
 
 
 def play_around():
-    slvr = LP.VigenereSolver()
-    slvr.output.COLORS = False
-    slvr.output.QUIET = True
-    slvr.KEY_DATA = []
-    vowels = 'ᚢᚩᛁᛇᛖᛟᚪᚫᛡᛠ'
+    vowels = [LP.RUNES.index(x) for x in 'ᚢᚩᛁᛇᛖᛟᚪᚫᛡᛠ']
     for uuu in LP.FILES_UNSOLVED:
-        slvr.input.load(file=LP.path.page(uuu))
+        inpt = LP.RuneTextFile(LP.path.page(uuu))
         print(uuu)
-        print('word count:', sum(len(x) for x in slvr.input.words.values()))
-        a = [1 if x.rune in vowels else 0 for x in slvr.input.runes_no_whitespace()]
+        print('word count:', sum(1 for _ in inpt.enum_words()))
+        a = [1 if x in vowels else 0 for x in inpt.index_no_white]
         b = [a[i:i + 5] for i in range(0, len(a), 5)]
         c = [int(''.join(str(y) for y in x), 2) for x in b]
         # print('-'.join(str(x) for x in c))
         # print(LP.RuneText(c).text)
         # print(''.join('ABCDEFGHIJKLMNOPQRSTUVWXYZ___...'[x] for x in c))
-        # slvr.run()
 
 
 def try_totient_on_unsolved():
     slvr = LP.SequenceSolver()
-    slvr.output.QUIET = True
-    slvr.output.BREAK_MODE = ''  # disable line breaks
     # slvr.INTERRUPT = 'ᛝ'
     # slvr.INTERRUPT_POS = [1]
     # for uuu in ['15-22']:
     for uuu in LP.FILES_UNSOLVED:
         print()
         print(uuu)
-        slvr.input.load(file=LP.path.page(uuu), limit=25)
-        # alldata = slvr.input.runes_no_whitespace() + [LP.Rune(i=29)]
+        inpt = LP.RuneTextFile(LP.path.page(uuu), limit=25).data_clean
+        # alldata = [x for x in inpt if x.index != 29] + [LP.Rune(i=29)] * 1
 
         def ec(r, i):
             p1, p2 = LP.utils.elliptic_curve(i, 149, 263, 3299)
@@ -110,7 +102,7 @@ def try_totient_on_unsolved():
             # slvr.FN = lambda i, r: LP.Rune(i=(r.prime - PRIMES[FIBONACCI[i]] + z) % 29)
             # slvr.FN = lambda i, r: LP.Rune(i=(r.prime ** i + z) % 29)
             slvr.FN = lambda i, r: LP.Rune(i=(ec(r, i) + z) % 29)
-            slvr.run()
+            print(slvr.run(inpt)[0].text)
 
 
 def find_oeis(irp=0, invert=False, offset=0, allow_fails=1, min_match=2):
@@ -158,12 +150,11 @@ def find_oeis(irp=0, invert=False, offset=0, allow_fails=1, min_match=2):
         splits = splits[1:]
         print()
         print(uuu)
-        with open(LP.path.page(uuu), 'r') as f:
-            data = LP.RuneText(f.read()[:120]).index_rune_only
-            irps = [i for i, x in enumerate(data[:splits[-1][1]]) if x == irp]
-            irps.reverse()  # insert -1 starting with the last
-            if invert:
-                data = [28 - x for x in data]
+        data = LP.RuneTextFile(LP.path.page(uuu), limit=120).index_no_white
+        if invert:
+            data = [28 - x for x in data]
+        irps = [i for i, x in enumerate(data[:splits[-1][1]]) if x == irp]
+        irps.reverse()  # insert -1 starting with the last
 
         min_len = sum(wlen[:2])  # must match at least n words
         data_len = len(data)

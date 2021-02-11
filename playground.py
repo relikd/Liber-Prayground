@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
 import LP
 
+INPUT = LP.RuneTextFile(LP.path.root('_input.txt'))
+OUTPUT = LP.IOWriter()
 SOLVER = LP.VigenereSolver()  # VigenereSolver, AffineSolver, AutokeySolver
-SOLVER.input.load(file=LP.path.root('_input.txt'))
+
+
+def solve():
+    derypted, highlight = SOLVER.run(INPUT)
+    OUTPUT.run(derypted, highlight)
 
 
 def main():
@@ -14,13 +20,13 @@ Available commands are:
  d : Get decryption key (substitution) for a single phrase
  f : Find words with a given length (f 4, or f word)
  g : Print Gematria Primus (gp) or reversed Gematria (gpr)
- h : Highlight occurrences of interrupt jumps (hj) or reset (h)
+ h : Highlight occurrences of interrupt jumps (hj or hj 28)
  k : Re/set decryption key (k), invert key (ki),
    ': change key shift (ks), rotation (kr), offset (ko), or after padding (kp)
    ': set key jumps (kj) e.g., [1,2] (first appearence of ᚠ is index 1)
  l : Toggle log level: normal (ln), quiet (lq) verbose (lv)
  p : Prime number and emirp check
- t : Translate between runes, text, and indices (0-28)
+ t : Translate between runes, text, indices (0-28), and primes
  x : Execute decryption. Also: load data into memory
    ': set manually (x DATA) or load from file (xf p0-2) (default: _input.txt)
    ': limit/trim loaded data up to nth character (xl 300)
@@ -38,14 +44,12 @@ Available commands are:
             cmd = cmd_p[0].strip().lower()
             args = cmd_p[1].strip() if len(cmd_p) > 1 else ''
 
-            if cmd[0] != 'l':  # only log mode allowed after find operation
-                SOLVER.reset_highlight()
-
             if cmd == 'help':
                 print(help_str)
             elif cmd == 'q' or cmd == 'exit' or cmd == 'quit':
                 exit()
             elif cmd == '?':
+                print('DATA:', INPUT)
                 print(SOLVER)
             else:
                 cmdX = {'a': command_a, 'd': command_d, 'f': command_f,
@@ -83,7 +87,7 @@ def command_a(cmd, args):  # [a]ll variations
     if 'i' in cmd:
         root = ~root
     for i in range(29):
-        print('{:02d}: {}'.format(i, (root + i).description(index=inclIndex)))
+        print('{:02d}: {}'.format(i, (root - i).description(index=inclIndex)))
 
 
 #########################################
@@ -125,12 +129,16 @@ def command_f(cmd, args):  # (f)ind word
         search_term = LP.RuneText(args)
         s_len = len(search_term)
 
-    cur_words = SOLVER.highlight_words_with_len(s_len)
-    SOLVER.run()
+    cur_words = [x for x in INPUT.enum_words() if len(x[-1]) == s_len]
+    if len(cur_words) == 0:
+        print('No matching word found.')
+        return
+
+    OUTPUT.run(INPUT, [(a, b) for a, b, _, _ in cur_words])
     print()
     print('Found:')
-    for _, _, pos, _, w in cur_words:
-        print(f'{pos:04}: {w.description(count=True)}')
+    for _, _, pos, word in cur_words:
+        print(f'{pos:04}: {word.description(count=True)}')
     if search_term:
         print()
         keylen = [len(search_term)]
@@ -146,9 +154,9 @@ def command_f(cmd, args):  # (f)ind word
                 raise ValueError('not a number.')
         print()
         print('Available substition:')
-        for _, _, pos, _, w in cur_words:
+        for _, _, pos, word in cur_words:
             for kl in keylen:
-                res = SOLVER.substitute_get(pos, kl, search_term, w)
+                res = SOLVER.substitute_get(pos, kl, search_term, word, INPUT)
                 print(f'{pos:04}: {res}')
 
 
@@ -179,19 +187,31 @@ def command_g(cmd, args):  # (g)ematria primus
 #########################################
 
 def command_h(cmd, args):  # (h)ighlight
-    if cmd == 'h':
-        SOLVER.reset_highlight()
-        SOLVER.run()
-    elif cmd in 'hj hi':
-        res = SOLVER.highlight_interrupt()
-        SOLVER.run()
+    if len(cmd) > 1 and cmd[1] in 'ji':
+        try:
+            irp = get_cmd_int(cmd, args)
+        except ValueError:
+            irp = LP.RuneText(args)[0].index
+        res = []
+        r_pos = -1
+        for i, x in enumerate(INPUT):
+            if x.index != 29:
+                r_pos += 1
+                if x.index == irp:
+                    res.append(([i, i + 1], r_pos))
+
+        irp_set = [x for x in SOLVER.INTERRUPT_POS if x <= len(res)]
+        for i in irp_set:
+            res[i - 1][0].append('1;37m\x1b[45m')
+        # run without decryption
+        OUTPUT.run(INPUT, [x for x, _ in res])
         txt = ''
         bits = ''
-        # first appearance of ᚠ is l_pos == 1; r_pos is the index on runes only
-        for l_pos, r_pos, _, is_set in res:
-            txt += '{}.{}.{}  '.format(l_pos, 'T' if is_set else 'F', r_pos)
-            bits += '1' if is_set else '0'
-        print(f'\nInterrupts: {bits}\n{txt}')
+        for i, (_, r_pos) in enumerate(res):
+            i += 1  # first occurrence of interrupt is index 1
+            txt += f"{i}.{'T' if i in irp_set else 'F'}.{r_pos}  "
+            bits += '1' if i in irp_set else '0'
+        print(f'\nInterrupt({LP.RUNES[irp]}): {bits}\n{txt}')
     else:
         return False
 
@@ -202,7 +222,7 @@ def command_h(cmd, args):  # (h)ighlight
 
 def command_k(cmd, args):  # (k)ey manipulation
     if cmd == 'k' or cmd == 'key':
-        SOLVER.KEY_DATA = LP.RuneText(args).index
+        SOLVER.KEY_DATA = LP.RuneText(args).index_no_newline
         print(f'set key: {SOLVER.KEY_DATA}')
     elif cmd[1] == 's':
         SOLVER.KEY_SHIFT = get_cmd_int(cmd, args, 'shift')
@@ -213,8 +233,12 @@ def command_k(cmd, args):  # (k)ey manipulation
     elif cmd[1] == 'p':
         SOLVER.KEY_POST_PAD = get_cmd_int(cmd, args, 'post padding')
     elif cmd[1] == 'i':
-        SOLVER.KEY_INVERT = not SOLVER.KEY_INVERT
-        print(f'set key invert: {SOLVER.KEY_INVERT}')
+        global INPUT
+        if isinstance(INPUT, LP.RuneTextFile):
+            INPUT.invert()
+            print(f'set key invert: {INPUT.inverted}')
+        else:
+            INPUT = ~INPUT
     elif cmd == 'kj':
         args = args.strip('[]')
         pos = [int(x) for x in args.split(',')] if args else []
@@ -222,7 +246,7 @@ def command_k(cmd, args):  # (k)ey manipulation
         print(f'set interrupt jumps: {SOLVER.INTERRUPT_POS}')
     else:
         return False  # command not found
-    SOLVER.run()
+    solve()
 
 
 #########################################
@@ -231,15 +255,15 @@ def command_k(cmd, args):  # (k)ey manipulation
 
 def command_l(cmd, args):  # (l)og level
     if cmd == 'lv' or args == 'v' or args == 'verbose':
-        SOLVER.output.VERBOSE = not SOLVER.output.VERBOSE
+        OUTPUT.VERBOSE = not OUTPUT.VERBOSE
     elif cmd == 'lq' or args == 'q' or args == 'quiet':
-        SOLVER.output.QUIET = not SOLVER.output.QUIET
+        OUTPUT.QUIET = not OUTPUT.QUIET
     elif cmd == 'ln' or args == 'n' or args == 'normal':
-        SOLVER.output.VERBOSE = False
-        SOLVER.output.QUIET = False
+        OUTPUT.VERBOSE = False
+        OUTPUT.QUIET = False
     else:
         return False
-    SOLVER.run()
+    solve()
 
 
 #########################################
@@ -267,7 +291,7 @@ def command_t(cmd, args):  # (t)ranslate
     print('runes({}): {}'.format(len(word), word.rune))
     print('plain({}): {}'.format(len(word.text), word.text))
     print('reversed: {}'.format((~word).rune))
-    print('indices: {}'.format(word.index))
+    print('indices: {}'.format(word.index_no_newline))
     print('prime({}{}): {}'.format(word.prime_sum, sffx, word.prime))
 
 
@@ -276,24 +300,23 @@ def command_t(cmd, args):  # (t)ranslate
 #########################################
 
 def command_x(cmd, args):  # e(x)ecute decryption
+    global INPUT
     if cmd == 'x':
-        pass  # just run the solver
+        if args.strip():
+            INPUT = LP.RuneText(args)
     elif cmd == 'xf':  # reload from file
         file = LP.path.page(args) if args else LP.path.root('_input.txt')
         print('loading file:', file)
-        SOLVER.input.load(file=file)
-        args = None  # so run() won't override data
+        INPUT = LP.RuneTextFile(file)
     elif len(cmd) > 0 and cmd[1] == 'l':  # limit content
         limit = get_cmd_int(cmd, args, 'read limit')
-        last_file = SOLVER.input.loaded_file
-        if last_file:
-            SOLVER.input.load(file=last_file)
+        if isinstance(INPUT, LP.RuneTextFile):
+            INPUT = INPUT.reopen()
         if limit > 0:
-            SOLVER.input.data.trim(limit)
-        args = None
+            INPUT.trim(limit)
     else:
         return False
-    SOLVER.run(args if args else None)
+    solve()
 
 
 if __name__ == '__main__':

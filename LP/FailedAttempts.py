@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
-from RuneText import rune_map, RuneText
+# -*- coding: UTF-8 -*-
+from Alphabet import rune_map
+from RuneText import RuneText
 from NGrams import NGrams
 
 
@@ -57,5 +59,6 @@ class NGramShifter(object):
             print()
 
 
-# NGramShifter().guess('ᛈᚢᛟᚫᛈᚠᛖᚱᛋᛈᛈᚦᛗᚾᚪᚱᛚᚹᛈᛖᚩᛈᚢᛠᛁᛁᚻᛞᛚᛟᛠ', 'ᛟ')
-# NGramShifter().guess([1, 2, 4, 5, 7, 9, 0, 12], 'ᛟ')
+if __name__ == '__main__':
+    NGramShifter().guess('ᛈᚢᛟᚫᛈᚠᛖᚱᛋᛈᛈᚦᛗᚾᚪᚱᛚᚹᛈᛖᚩᛈᚢᛠᛁᛁᚻᛞᛚᛟᛠ', 'ᛟ')
+    NGramShifter().guess([1, 2, 4, 5, 7, 9, 0, 12], 'ᛟ')
