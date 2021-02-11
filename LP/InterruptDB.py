@@ -54,10 +54,10 @@ class InterruptDB(object):
 
     @staticmethod
     def load(dbname):
-        if not os.path.isfile(LPath.InterruptDB(dbname)):
+        if not os.path.isfile(LPath.db(dbname)):
             return {}
         ret = {}
-        with open(LPath.InterruptDB(dbname), 'r') as f:
+        with open(LPath.db(dbname), 'r') as f:
             for line in f.readlines():
                 if line.startswith('#'):
                     continue
@@ -73,7 +73,7 @@ class InterruptDB(object):
 
     @staticmethod
     def write(name, score, irp, irpmax, keylen, nums, dbname='db_main'):
-        with open(LPath.InterruptDB(dbname), 'a') as f:
+        with open(LPath.db(dbname), 'a') as f:
             nums = ','.join(map(str, nums))
             f.write(f'{name}|{irpmax}|{score:.5f}|{irp}|{keylen}|{nums}\n')
 

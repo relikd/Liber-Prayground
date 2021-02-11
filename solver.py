@@ -108,8 +108,8 @@ def try_totient_on_unsolved():
 def find_oeis(irp=0, invert=False, offset=0, allow_fails=1, min_match=2):
     def trim_orig_oeis(minlen=15, trim=40):
         # download and unzip: https://oeis.org/stripped.gz
-        with open(LP.path.data('oeis_orig'), 'r') as f_in:
-            with open(LP.path.data('oeis'), 'w') as f_out:
+        with open(LP.path.db('oeis_orig'), 'r') as f_in:
+            with open(LP.path.db('oeis'), 'w') as f_out:
                 for line in f_in.readlines():
                     if line[0] == '#':
                         continue
@@ -120,7 +120,7 @@ def find_oeis(irp=0, invert=False, offset=0, allow_fails=1, min_match=2):
                     f_out.write(name + ',' + ','.join(vals) + '\n')
 
     # trim_orig_oeis()  # create db if not present already
-    with open(LP.path.data('oeis'), 'r') as f:
+    with open(LP.path.db('oeis'), 'r') as f:
         seqs = []
         for line in f.readlines():
             vals = line.split(',')

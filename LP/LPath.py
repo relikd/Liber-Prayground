@@ -27,13 +27,13 @@ class LPath(object):
         return os.path.join(LP_ROOT_DIR, 'data', f'{fname}.{ext}')
 
     @staticmethod
-    def tmp(fname, ext='txt'):
-        return os.path.join(LP_ROOT_DIR, 'tmp', f'{fname}.{ext}')
-
-    @staticmethod
-    def InterruptDB(fname):
-        return os.path.join(LP_ROOT_DIR, 'InterruptDB', fname + '.txt')
+    def db(fname):
+        return os.path.join(LP_ROOT_DIR, 'db', fname + '.txt')
 
     @staticmethod
     def results(fname):
-        return os.path.join(LP_ROOT_DIR, 'InterruptDB', fname)
+        return os.path.join(LP_ROOT_DIR, 'results', fname)
+
+    @staticmethod
+    def tmp(fname, ext='txt'):
+        return os.path.join(LP_ROOT_DIR, 'tmp', f'{fname}.{ext}')

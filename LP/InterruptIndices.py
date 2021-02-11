@@ -28,7 +28,7 @@ class InterruptIndices(object):
 
     @staticmethod
     def write(dbname='db_indices'):
-        with open(LPath.InterruptDB(dbname), 'w') as f:
+        with open(LPath.db(dbname), 'w') as f:
             f.write('# file | total runes in file | interrupt | indices\n')
             for name in FILES_ALL:
                 data = load_indices(LPath.page(name), 0)
@@ -42,7 +42,7 @@ class InterruptIndices(object):
 
     @staticmethod
     def load(dbname='db_indices'):
-        with open(LPath.InterruptDB(dbname), 'r') as f:
+        with open(LPath.db(dbname), 'r') as f:
             ret = {}
             for line in f.readlines():
                 if line.startswith('#'):
