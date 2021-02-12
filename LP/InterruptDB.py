@@ -2,8 +2,9 @@
 # -*- coding: UTF-8 -*-
 import os
 from InterruptSearch import InterruptSearch
+from InterruptIndices import InterruptIndices
 from Probability import Probability
-from IOReader import load_indices
+from RuneText import RuneTextFile
 from LPath import FILES_ALL, FILES_UNSOLVED, LPath
 
 
@@ -82,15 +83,23 @@ class InterruptDB(object):
 #  helper functions
 #########################################
 
-def create_initial_db(dbname, fn_score, klset=range(1, 33),
-                      max_irp=20, irpset=range(29)):
+def get_db(fname, irp, max_irp):
+    T = False  # inverse
+    _, Z = InterruptIndices().consider(fname, 28 - irp if T else irp, max_irp)
+    data = RuneTextFile(LPath.page(fname)).index_no_white[:Z]
+    if T:
+        data = [28 - x for x in data]
+    return InterruptDB(data, irp)
+
+
+def create_primary(dbname, fn_score, klset=range(1, 33),
+                   max_irp=20, irpset=range(29)):
     oldDB = InterruptDB.load(dbname)
     oldValues = {k: set((a, b, c) for a, _, b, c, _ in v)
                  for k, v in oldDB.items()}
     for irp in irpset:  # interrupt rune index
         for name in FILES_ALL:
-            data = load_indices(LPath.page(name), irp, maxinterrupt=max_irp)
-            db = InterruptDB(data, irp)
+            db = get_db(name, irp, max_irp)
             print('load:', name, 'interrupt:', irp, 'count:', db.irp_count)
             for keylen in klset:  # key length
                 if (db.irp_count, irp, keylen) in oldValues.get(name, []):
@@ -100,8 +109,7 @@ def create_initial_db(dbname, fn_score, klset=range(1, 33),
                 print(f'{keylen}: {score:.4f}, solutions: {len(interrupts)}')
 
 
-def find_secondary_solutions(db_in, db_out, fn_score,
-                             threshold=0.75, max_irp=20):
+def create_secondary(db_in, db_out, fn_score, threshold=0.75, max_irp=20):
     oldDB = InterruptDB.load(db_in)
     search_set = set()
     for name, arr in oldDB.items():
@@ -114,16 +122,15 @@ def find_secondary_solutions(db_in, db_out, fn_score,
     print('searching through', len(search_set), 'files.')
     for name, irp, kl in search_set:
         print('load:', name, 'interrupt:', irp, 'keylen:', kl)
-        data = load_indices(LPath.page(name), irp, maxinterrupt=max_irp)
-        db = InterruptDB(data, irp)
+        db = get_db(name, irp, max_irp)
         c = db.make_secondary(db_out, name, kl, fn_score, threshold)
         print('found', c, 'additional solutions')
 
 
 if __name__ == '__main__':
-    create_initial_db('db_high', Probability.IC_w_keylen, max_irp=20)
-    create_initial_db('db_norm', Probability.target_diff, max_irp=20)
-    # find_secondary_solutions('db_high', 'db_high_secondary',
-    #                          Probability.IC_w_keylen, threshold=1.4)
-    # find_secondary_solutions('db_norm', 'db_norm_secondary',
-    #                          Probability.target_diff, threshold=0.55)
+    create_primary('db_high', Probability.IC_w_keylen, max_irp=20)
+    create_primary('db_norm', Probability.target_diff, max_irp=20)
+    # create_secondary('db_high', 'db_high_secondary',
+    #                  Probability.IC_w_keylen, threshold=1.4)
+    # create_secondary('db_norm', 'db_norm_secondary',
+    #                  Probability.target_diff, threshold=0.55)

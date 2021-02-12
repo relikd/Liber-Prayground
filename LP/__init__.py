@@ -10,7 +10,7 @@ from Alphabet import RUNES, alphabet
 from Rune import Rune
 from RuneText import RuneText, RuneTextFile
 
-from IOReader import load_indices, longest_no_interrupt
+from IOReader import longest_no_interrupt
 from IOWriter import IOWriter
 
 from RuneSolver import SequenceSolver, VigenereSolver, AffineSolver, AutokeySolver

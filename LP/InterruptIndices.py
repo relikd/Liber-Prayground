@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-from IOReader import load_indices
 from LPath import FILES_ALL, LPath
+from RuneText import RuneTextFile
 
 
 #########################################
@@ -20,18 +20,18 @@ class InterruptIndices(object):
     def total(self, name):
         return self.pos[name]['total']
 
-    def longest_no_interrupt(self, name, irp, irpmax=0):
-        irpmax += 1
-        nums = self.pos[name]['pos'][irp] + [self.pos[name]['total']] * irpmax
-        ret = [(y - x, x) for x, y in zip(nums, nums[irpmax:])]
-        return sorted(ret, reverse=True)
+    # def longest_no_interrupt(self, name, irp, irpmax=0):
+    #     irpmax += 1
+    #     nums = self.pos[name]['pos'][irp] + [self.pos[name]['total']] * irpmax
+    #     ret = [(y - x, x) for x, y in zip(nums, nums[irpmax:])]
+    #     return sorted(ret, reverse=True)
 
     @staticmethod
     def write(dbname='db_indices'):
         with open(LPath.db(dbname), 'w') as f:
             f.write('# file | total runes in file | interrupt | indices\n')
             for name in FILES_ALL:
-                data = load_indices(LPath.page(name), 0)
+                data = RuneTextFile(LPath.page(name)).index_no_white
                 total = len(data)
                 nums = [[] for x in range(29)]
                 for idx, rune in enumerate(data):

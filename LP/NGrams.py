@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 import re
 from Alphabet import RUNES
-from IOReader import re_norune
 from RuneText import RuneText
 from LPath import LPath
 
@@ -33,7 +32,7 @@ class NGrams(object):
     @staticmethod
     def make(gramsize, infile, outfile):
         with open(infile, 'r') as f:
-            data = re_norune.sub('', f.read())
+            data = re.sub('[^' + ''.join(RUNES) + ']', '', f.read())
 
         res = {x: 0 for x in RUNES} if gramsize == 1 else {}
         for i in range(len(data) - gramsize + 1):
@@ -74,3 +73,4 @@ if __name__ == '__main__':
 
     # make_translation(stream=False)
     # make_ngrams(5)
+    print(NGrams.load(2))
