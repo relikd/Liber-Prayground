@@ -39,7 +39,7 @@ def break_cipher(fname, candidates, solver, key_fn):
 
     outfmt = 'IoC: {}, interrupt: {}, count: {}, solver: {}'
     for irp_count, score, irp, kl, skips in candidates:
-        stops, upto = db_i.consider(fname, irp, irp_count)
+        stops, upto = db_i.consider(fname, 28 - irp if INVERT else irp, irp_count)
         print(outfmt.format(score, LP.RUNES[irp], len(stops), key_fn.__name__))
         testcase = data[:upto]
         for x in reversed(skips):

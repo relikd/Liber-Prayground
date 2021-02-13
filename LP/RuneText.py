@@ -92,7 +92,7 @@ class RuneText(object):
     def __invert__(self):
         return RuneText([~x for x in self._data])
 
-    def __str__(self):
+    def __repr__(self):
         return f'RuneText<{len(self)}>'
 
     @property

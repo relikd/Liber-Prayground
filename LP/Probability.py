@@ -28,7 +28,7 @@ class Probability(object):
         self.prob = [0] * 29
         for r in numstream:
             self.prob[r] += 1
-        self.N = len(numstream)
+        self.N = sum(self.prob)
 
     def IC(self):
         X = sum(x * (x - 1) for x in self.prob)
