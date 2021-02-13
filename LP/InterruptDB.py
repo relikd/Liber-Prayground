@@ -73,6 +73,21 @@ class InterruptDB(object):
         return ret
 
     @staticmethod
+    def load_scores(dbname):
+        scores = {}  # {fname: [irp0_[kl0, kl1, ...], irp1_[...]]}
+        for k, v in InterruptDB.load(dbname).items():
+            for irpc, score, irp, kl, nums in v:
+                if k not in scores:
+                    scores[k] = [[] for _ in range(29)]
+                part = scores[k][irp]
+                while kl >= len(part):
+                    part.append((0, 0))  # (score, irp_count)
+                oldc = part[kl][1]
+                if irpc > oldc or (irpc == oldc and score > part[kl][0]):
+                    part[kl] = (score, irpc)
+        return scores
+
+    @staticmethod
     def write(name, score, irp, irpmax, keylen, nums, dbname='db_main'):
         with open(LPath.db(dbname), 'a') as f:
             nums = ','.join(map(str, nums))
