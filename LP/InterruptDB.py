@@ -13,9 +13,9 @@ from LPath import FILES_ALL, FILES_UNSOLVED, LPath
 #########################################
 
 class InterruptDB(object):
-    def __init__(self, data, interrupt):
+    def __init__(self, data, interrupt, irp_stops=None):
         self.irp = interrupt
-        self.iguess = InterruptSearch(data, irp=interrupt)
+        self.iguess = InterruptSearch(data, irp=interrupt, irp_stops=irp_stops)
         self.irp_count = len(self.iguess.stops)
 
     def make(self, dbname, name, keylen, fn_score):
@@ -99,21 +99,18 @@ class InterruptDB(object):
 #########################################
 
 def get_db(fname, irp, max_irp):
-    T = False  # inverse
-    _, Z = InterruptIndices().consider(fname, 28 - irp if T else irp, max_irp)
+    stops, Z = InterruptIndices().consider(fname, irp, max_irp)
     data = RuneTextFile(LPath.page(fname)).index_no_white[:Z]
-    if T:
-        data = [28 - x for x in data]
-    return InterruptDB(data, irp)
+    return InterruptDB(data, irp, irp_stops=stops)
 
 
 def create_primary(dbname, fn_score, klset=range(1, 33),
-                   max_irp=20, irpset=range(29)):
+                   max_irp=20, irpset=range(29), files=FILES_ALL):
     oldDB = InterruptDB.load(dbname)
     oldValues = {k: set((a, b, c) for a, _, b, c, _ in v)
                  for k, v in oldDB.items()}
     for irp in irpset:  # interrupt rune index
-        for name in FILES_ALL:
+        for name in files:
             db = get_db(name, irp, max_irp)
             print('load:', name, 'interrupt:', irp, 'count:', db.irp_count)
             for keylen in klset:  # key length
@@ -142,9 +139,49 @@ def create_secondary(db_in, db_out, fn_score, threshold=0.75, max_irp=20):
         print('found', c, 'additional solutions')
 
 
+def create_mod_a_db(dbprefix, fn_score, klpairs, max_irp=20, irpset=[0, 28]):
+    for mod, upto in klpairs:
+        for mo in range(mod):
+            # if needed add combined check for all modulo parts
+            def xor_split(data, keylen):
+                return fn_score(data[mo::mod], keylen)
+
+            create_primary(f'db_{dbprefix}_mod_a_{mod}.{mo}', xor_split,
+                           range(1, upto + 1), max_irp, irpset, FILES_UNSOLVED)
+
+
+def create_mod_b_db(dbprefix, fn_score, klpairs, max_irp=20, irpset=[0, 28]):
+    db_i = InterruptIndices()
+    for mod, upto in klpairs:
+        for mo in range(mod):
+            dbname = f'db_{dbprefix}_mod_b_{mod}.{mo}'
+            oldDB = {k: set((a, b, c) for a, _, b, c, _ in v)
+                     for k, v in InterruptDB.load(dbname).items()}
+
+            for irp in irpset:  # interrupt rune index
+                for name in FILES_UNSOLVED:
+                    stops, Z = db_i.consider_mod_b(name, irp, max_irp, mod)
+                    stops = stops[mo]
+                    Z = Z[mo]
+                    data = RuneTextFile(LPath.page(name)).index_no_white
+                    data = data[mo::mod][:Z]
+                    db = InterruptDB(data, irp, irp_stops=stops)
+                    print(f'load: {name} interrupt: {irp} count: {len(stops)}')
+                    for keylen in range(2, upto + 1):  # key length
+                        if (db.irp_count, irp, keylen) in oldDB.get(name, []):
+                            print(f'{keylen}: skipped.')
+                            continue
+                        score, irps = db.make(dbname, name, keylen, fn_score)
+                        print(f'{keylen}: {score:.4f}, solutions: {len(irps)}')
+
+
 if __name__ == '__main__':
     create_primary('db_high', Probability.IC_w_keylen, max_irp=20)
     create_primary('db_norm', Probability.target_diff, max_irp=20)
+    create_mod_a_db('high', Probability.IC_w_keylen, [(2, 13), (3, 8)])
+    create_mod_a_db('norm', Probability.target_diff, [(2, 13), (3, 8)])
+    create_mod_b_db('high', Probability.IC_w_keylen, [(2, 18), (3, 18)])
+    create_mod_b_db('norm', Probability.target_diff, [(2, 18), (3, 18)])
     # create_secondary('db_high', 'db_high_secondary',
     #                  Probability.IC_w_keylen, threshold=1.4)
     # create_secondary('db_norm', 'db_norm_secondary',

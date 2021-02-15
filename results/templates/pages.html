@@ -5,20 +5,6 @@
 	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0" />
 	<title>__FNAME__ – Page Analyis</title>
 	<link rel="stylesheet" type="text/css" href="../style.css">
-<script type="text/javascript">
-var idx = -1;
-document.addEventListener("keydown", keyDownHandler, false);
-function keyDownHandler(e) {
-    if (e.key == "Right" || e.key == "ArrowRight") {
-        idx = Math.min(idx + 1, 28);
-    } else if (e.key == "Left" || e.key == "ArrowLeft") {
-        idx = Math.max(idx - 1, 0);
-    } else {
-    	return;
-    }
-    location.replace('#tb-i' + idx);
-}
-</script>
 </head>
 <body>
 	<nav class="small">
@@ -27,6 +13,7 @@ function keyDownHandler(e) {
 		<a href="#count">Count</a>
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
+		<a href="#mod-ioc">Mod-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -37,7 +24,10 @@ function keyDownHandler(e) {
 	<h2 id="double-rune">Double-Rune Occurrence</h2>
 	<p>
 		The following analysis looks at two neighboring runes.
-		Whenever two identical runes appear one after the other, the number sequence will print a “1” on dark background.
+		Whenever two identical runes appear one after another, the number sequence will print a “1” on dark background.
+		Rune difference looks at the shortest distance between two neighbors.
+		Maximum value is 14 if they are farthest apart.
+		The value is zero if they are identical.
 	</p>
 	<p>
 		<b>Note:</b> Hover on a cell to see the offset in the file.
@@ -50,12 +40,40 @@ function keyDownHandler(e) {
 		Values below 1.4 are highly unlikely to be anywhat meaningful.
 		Predicting english text with IoC gets worse if the text is very short.
 	</p>
-	<p>Here we are considering to either ᚠ being an interrupt; or it's inverse ᛠ.</p>
+	<p>
+		Here we are considering to either ᚠ being an interrupt; or it's inverse ᛠ.
+		The numbers (1–32) represent the key length.
+		With a key length of 5, every fifth rune will be decrypted with the same alphabet.
+	</p>
 	<p>
 		<b>Note:</b> the darker the cell, the better the prediction.
 		The runes per length columns influences the results of the other columns; so if this is low, the other columns are not reliable.
 	</p>
 	__SEC_IOC__
+
+	<h2 id="mod-ioc">Modulo IoC</h2>
+	<p>
+		This sections explores the idea of multiple alphabets alternating.
+		For example, have two or three Vigenere ciphers that switch after each rune.
+		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
+		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
+	</p>
+	<p>
+		There are two main distinctions.
+		Interrupt-first-then-mod assumes that an interrupt will pause the alternation between the different groups.
+		Mod-first-then-interrupt assumes that an interrupt will pause the key alternation within that group.
+		Lets look at the example Vig(3) + Vig(5).
+		With the first, the decryption sequence is: Vig(3)[0], interrupt, Vig(5)[0], Vig(3)[1], etc.
+		With the second, the decryption sequence is: Vig(3)[0], interrupt, Vig(3)[1], Vig(5)[0], etc.
+		Note that the second decryption still switched to Vig(5) but was ignored because it was an interrupt.
+	</p>
+	<p>
+		<b>Note:</b> The row header format is {interrupt}.{mod}.{offset}.
+		“ᚠ.2.0” means, assume the interrupt is ᚠ, divide the data into two sets, then look at the first set (rune at index 0, rune at index 2, etc.).
+		The column shows the keylength for which the IoC was calculated.
+		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
+	</p>
+	__SEC_IOC_MOD__
 
 	<h2 id="running-ioc">Running IoC</h2>
 	<p>

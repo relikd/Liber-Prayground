@@ -17,6 +17,20 @@ class InterruptIndices(object):
         total = self.pos[name]['total'] if len(nums) <= limit else nums[limit]
         return nums[:limit], total
 
+    def consider_mod_b(self, name, irp, limit, mod):
+        sets = [[] for _ in range(mod)]
+        for x in self.pos[name]['pos'][irp]:
+            mm = x % mod
+            sets[mm].append((x - mm) // mod)
+        tot = self.pos[name]['total']
+        totals = [(tot // mod)] * mod
+        for i, x in enumerate(sets):
+            if len(x) > limit:
+                totals[i] = x[limit]
+            elif i < tot % mod:
+                totals[i] += 1
+        return [x[:limit] for x in sets], totals
+
     def total(self, name):
         return self.pos[name]['total']
 
@@ -62,3 +76,9 @@ if __name__ == '__main__':
     for name, val in InterruptIndices.load().items():
         print(name, 'total:', val['total'])
         print(' ', [len(x) for x in val['pos']])
+    print()
+    for mod in range(1, 4):
+        print(f'file: p0-2, maxirp: 20, mod: {mod}')
+        pos, limit = InterruptIndices().consider_mod_b('p0-2', 0, 20, mod)
+        for i in range(mod):
+            print(' ', limit[i], pos[i])

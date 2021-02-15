@@ -9,10 +9,13 @@ import bisect  # bisect_left, insort
 #########################################
 
 class InterruptSearch(object):
-    def __init__(self, arr, irp):  # remove all whitespace in arr
+    def __init__(self, arr, irp, irp_stops=None):  # remove whitespace in arr
         self.single_result = False  # if False, return list of equal likelihood
         self.full = arr
-        self.stops = [i for i, n in enumerate(arr) if n == irp]
+        if irp_stops is None:
+            self.stops = [i for i, n in enumerate(arr) if n == irp]
+        else:
+            self.stops = irp_stops
 
     def to_occurrence_index(self, interrupts):
         return [self.stops.index(x) + 1 for x in interrupts]
