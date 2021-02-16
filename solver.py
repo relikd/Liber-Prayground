@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import LP
 import sys
-import itertools
 
 
 def load_sequence_file(fname):
@@ -105,100 +104,8 @@ def try_totient_on_unsolved():
             print(slvr.run(inpt)[0].text)
 
 
-def find_oeis(irp=0, invert=False, offset=0, allow_fails=1, min_match=2):
-    def trim_orig_oeis(minlen=15, trim=40):
-        # download and unzip: https://oeis.org/stripped.gz
-        with open(LP.path.db('oeis_orig'), 'r') as f_in:
-            with open(LP.path.db('oeis'), 'w') as f_out:
-                for line in f_in.readlines():
-                    if line[0] == '#':
-                        continue
-                    name, *vals = line.split(',')
-                    vals = [str(int(x) % 29) for x in vals if x.strip()][:trim]
-                    if len(vals) < minlen:
-                        continue
-                    f_out.write(name + ',' + ','.join(vals) + '\n')
-
-    # trim_orig_oeis()  # create db if not present already
-    with open(LP.path.db('oeis'), 'r') as f:
-        seqs = []
-        for line in f.readlines():
-            vals = line.split(',')
-            seqs.append((vals[0], list(map(int, vals[1:]))))
-
-    words = [set()] * 13
-    words[1] = set(x for x in LP.RUNES)
-    for i in range(2, 13):  # since 12 is the longest word
-        with open(LP.path.data(f'dictionary_{i}'), 'r') as f:
-            words[i] = set(x.strip() for x in f.readlines())
-
-    for uuu, wlen in {
-        'p0-2': [8, 5, 4, 3, 3, 11, 5, 4, 3, 3],
-        'p3-7': [2, 11, 3, 4, 7, 7, 7, 4, 6],
-        'p8-14': [4, 8, 3, 2, 3, 9, 4, 3, 4, 2, 2],
-        'p15-22': [4, 5, 4, 2, 5, 4, 5, 6, 5, 6, 3, 3],
-        'p23-26': [2, 6, 3, 4, 8, 3, 3, 7, 5, 5],
-        'p27-32': [3, 12, 4, 7, 2, 3, 3, 2, 1, 3, 4],
-        'p33-39': [2, 8, 2, 9, 6, 3, 3, 5, 3, 2],
-        'p40-53': [3, 5, 5, 4, 3, 5, 4, 2, 12, 3, 3, 2],
-        'p54-55': [1, 8, 8, 3, 6, 2, 5, 3, 2, 3, 5, 7],
-        # 'p56_an_end': [2, 3, 5, 2, 4, 3, 4, 6, 1, 4, 3, 6, 2],
-    }.items():
-        splits = [(0, 0, 0)]
-        for x in wlen:
-            splits.append((splits[-1][1], splits[-1][1] + x))
-        splits = splits[1:]
-        print()
-        print(uuu)
-        data = LP.RuneTextFile(LP.path.page(uuu), limit=120).index_no_white
-        if invert:
-            data = [28 - x for x in data]
-        irps = [i for i, x in enumerate(data[:splits[-1][1]]) if x == irp]
-        irps.reverse()  # insert -1 starting with the last
-
-        min_len = sum(wlen[:2])  # must match at least n words
-        data_len = len(data)
-        for oeis, vals in seqs:  # 390k
-            vals = vals[offset:]
-            if len(vals) < min_len:
-                continue
-            cases = [x for x in irps if x < len(vals)]
-            for i in range(len(cases) + 1):
-                for comb in itertools.combinations(cases, i):  # 2^3
-                    res = vals[:]
-                    for z in comb:
-                        res.insert(z, -1)  # insert interrupts
-                    shortest = min(data_len, len(res))
-
-                    for s in range(29):
-                        failed = 0
-                        full = []
-                        clen = 0
-                        for a, b in splits:
-                            if b > shortest:
-                                break
-                            nums = [x if y == -1 else (x - y - s) % 29
-                                    for x, y in zip(data[a:b], res[a:b])]
-                            word = ''.join(LP.RUNES[x] for x in nums)
-                            if word in words[len(nums)]:
-                                clen += len(nums)
-                            else:
-                                failed += 1
-                                if failed > allow_fails:
-                                    break
-                            full.append(LP.RuneText(nums).text)
-
-                        if failed > allow_fails or clen < min_match:
-                            continue  # too many failed
-                        print(oeis.split()[0], 'shift:', s, 'irps:', comb)
-                        print(' ', ' '.join(full))
-
-
 if '-s' in sys.argv:  # print [s]olved
     print_all_solved()
 else:
     play_around()
     # try_totient_on_unsolved()
-    # for i in range(0, 4):
-    #     print('offset:', i)
-    #     find_oeis(irp=0, invert=False, offset=i, allow_fails=1, min_match=10)

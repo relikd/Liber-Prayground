@@ -151,18 +151,18 @@ class RuneText(object):
     #         return False
     #     return all(x.index == y.index for x, y in zip(self, other))
 
-    def enum_words(self):  # [(start, end, len), ...] may include \n \r
+    def enum_words(self, reverse=False):  # [(start, end, len), ...]
         start = 0
         r_pos = 0
         word = []
-        for i, x in enumerate(self._data):
+        for i, x in enumerate(reversed(self._data) if reverse else self._data):
             if x.kind == 'r':
                 r_pos += 1
                 word.append(x)
             elif x.kind == 'l':
                 continue
             else:
-                if len(word) > 0:
+                if len(word) > 0:  # RuneText may include \n and \r
                     yield start, i, r_pos - len(word), RuneText(word)
                     word = []
                 start = i + 1
