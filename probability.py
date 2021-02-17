@@ -84,27 +84,15 @@ def pattern_solver(fname, irp=0):
     def fn_similarity(x):
         return LP.Probability(x).similarity()
 
-    def fn_pattern_mirror(x, kl):
-        for i in range(10000):  # mirrored, 012210012210 or 012101210
-            yield from x
-            # yield from x[::-1]
-            yield from x[::-1][1:-1]
-
     prnt_fmt = 'kl: {}, pattern-n: {}, IoC: {:.3f}, dist: {:.4f}, offset: {}, key: {}'
     print(fname)
-    gr = LP.GuessPattern(data)
+    # gr = LP.GuessPattern(data)
     for kl in range(3, 19):
-        for pattern_shift in range(1, kl):
-            def fn_pattern_shift(x, kl):  # shift by (more than) one, 012201120
-                for i in range(10000):
-                    yield from x[(i * pattern_shift) % kl:]
-                    yield from x[:(i * pattern_shift) % kl]
-
+        for kl_shift in range(1, kl):
             # Find proper pattern
             res = []
             for offset in range(kl):  # up to keylen offset
-                mask = LP.GuessPattern.pattern(kl, fn_pattern_shift)
-                parts = gr.split(kl, mask, offset)
+                parts = LP.GuessPattern.groups(data, kl, kl_shift, offset)
                 score = sum(LP.Probability(x).IC() for x in parts) / kl
                 if score > 1.6 and score < 2.1:
                     res.append((score, parts, offset))
@@ -113,9 +101,9 @@ def pattern_solver(fname, irp=0):
             for score, parts, off in res:
                 sc, key = LP.GuessPattern.guess(parts, fn_similarity)
                 if sc < 0.1:
-                    print(prnt_fmt.format(kl, pattern_shift, score, sc, off,
+                    print(prnt_fmt.format(kl, kl_shift, score, sc, off,
                                           LP.RuneText(key).text))
-                    solved = gr.zip(fn_pattern_shift(key, kl), off)
+                    solved = LP.GuessPattern.zip(data, key, kl, kl_shift, off)
                     for i in whitespace_i:
                         solved.insert(i, 29)
                     print(' ', LP.RuneText(solved).text)

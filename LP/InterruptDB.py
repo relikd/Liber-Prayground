@@ -6,6 +6,7 @@ from InterruptIndices import InterruptIndices
 from Probability import Probability
 from RuneText import RuneTextFile
 from LPath import FILES_ALL, FILES_UNSOLVED, LPath
+from KeySearch import GuessPattern
 
 
 #########################################
@@ -18,40 +19,21 @@ class InterruptDB(object):
         self.iguess = InterruptSearch(data, irp=interrupt, irp_stops=irp_stops)
         self.irp_count = len(self.iguess.stops)
 
-    def make(self, dbname, name, keylen, fn_score):
+    def find_best_solution(self, fn_score, keylen):
         if keylen == 0:  # without interrupts
             score, skips = fn_score(self.iguess.join(), 1), [[]]
         else:
             score, skips = self.iguess.all(keylen, fn_score)
         for i, interrupts in enumerate(skips):
             skips[i] = self.iguess.to_occurrence_index(interrupts)
-
-        for nums in skips:
-            self.write(
-                name, score, self.irp, self.irp_count, keylen, nums, dbname)
         return score, skips
 
-    def make_secondary(self, dbname, name, keylen, fn_score, threshold):
-        scores = []
-
-        def fn(x, kl):
-            score = fn_score(x, kl)
-            if score >= threshold:
-                scores.append(score)
-                return 1
-            return -1
-
-        _, skips = self.iguess.all(keylen, fn)
-        for i, interrupts in enumerate(skips):
-            skips[i] = self.iguess.to_occurrence_index(interrupts)
-        ret = list(zip(scores, skips))
-        bestscore = max(ret)[0]
-        # exclude best results, as they are already present in the main db
-        filtered = [x for x in ret if x[0] < bestscore]
-        for score, nums in filtered:
-            self.write(
-                name, score, self.irp, self.irp_count, keylen, nums, dbname)
-        return len(filtered)
+    def write(self, dbname, desc, score, keylen, nums):
+        with open(LPath.db(dbname), 'a') as f:
+            for solution in nums:
+                solution = ','.join(map(str, solution))
+                f.write('{}|{}|{:.5f}|{}|{}|{}\n'.format(
+                    desc, self.irp_count, score, self.irp, keylen, solution))
 
     @staticmethod
     def load(dbname):
@@ -75,11 +57,11 @@ class InterruptDB(object):
     @staticmethod
     def load_scores(dbname):
         scores = {}  # {fname: [irp0_[kl0, kl1, ...], irp1_[...]]}
-        for k, v in InterruptDB.load(dbname).items():
-            for irpc, score, irp, kl, nums in v:
-                if k not in scores:
-                    scores[k] = [[] for _ in range(29)]
-                part = scores[k][irp]
+        for name, entries in InterruptDB.load(dbname).items():
+            for irpc, score, irp, kl, nums in entries:
+                if name not in scores:
+                    scores[name] = [[] for _ in range(29)]
+                part = scores[name][irp]
                 while kl >= len(part):
                     part.append((0, 0))  # (score, irp_count)
                 oldc = part[kl][1]
@@ -87,16 +69,11 @@ class InterruptDB(object):
                     part[kl] = (score, irpc)
         return scores
 
-    @staticmethod
-    def write(name, score, irp, irpmax, keylen, nums, dbname='db_main'):
-        with open(LPath.db(dbname), 'a') as f:
-            nums = ','.join(map(str, nums))
-            f.write(f'{name}|{irpmax}|{score:.5f}|{irp}|{keylen}|{nums}\n')
-
 
 #########################################
 #  helper functions
 #########################################
+
 
 def get_db(fname, irp, max_irp):
     stops, Z = InterruptIndices().consider(fname, irp, max_irp)
@@ -104,84 +81,119 @@ def get_db(fname, irp, max_irp):
     return InterruptDB(data, irp, irp_stops=stops)
 
 
-def create_primary(dbname, fn_score, klset=range(1, 33),
-                   max_irp=20, irpset=range(29), files=FILES_ALL):
-    oldDB = InterruptDB.load(dbname)
+def enum_db_irps(dbname, fn_score, max_irp=20, irpset=[0, 28],
+                 klset=range(1, 33), files=FILES_UNSOLVED, fn_load_db=get_db):
     oldValues = {k: set((a, b, c) for a, _, b, c, _ in v)
-                 for k, v in oldDB.items()}
+                 for k, v in InterruptDB.load(dbname).items()}
     for irp in irpset:  # interrupt rune index
-        for name in files:
-            db = get_db(name, irp, max_irp)
-            print('load:', name, 'interrupt:', irp, 'count:', db.irp_count)
+        for fname in files:
+            db = fn_load_db(fname, irp, max_irp)
+            print('load:', fname, 'interrupt:', irp, 'count:', db.irp_count)
             for keylen in klset:  # key length
-                if (db.irp_count, irp, keylen) in oldValues.get(name, []):
+                if (db.irp_count, irp, keylen) in oldValues.get(fname, []):
                     print(f'{keylen}: skipped.')
                     continue
-                score, interrupts = db.make(dbname, name, keylen, fn_score)
-                print(f'{keylen}: {score:.4f}, solutions: {len(interrupts)}')
+                score, skips = db.find_best_solution(fn_score, keylen)
+                yield db, fname, score, keylen, skips
+
+
+def create_primary(dbname, fn_score):
+    for db, fname, score, kl, skips in enum_db_irps(dbname, fn_score,
+                                                    irpset=range(29),
+                                                    files=FILES_ALL):
+        db.write(dbname, fname, score, kl, skips)
+        print(f'{kl}: {score:.4f}, solutions: {len(skips)}')
 
 
 def create_secondary(db_in, db_out, fn_score, threshold=0.75, max_irp=20):
-    oldDB = InterruptDB.load(db_in)
     search_set = set()
-    for name, arr in oldDB.items():
-        if name not in FILES_UNSOLVED:
-            continue
-        for irpc, score, irp, kl, nums in arr:
-            if score <= threshold or kl > 26 or kl < 3:
-                continue
-            search_set.add((name, irp, kl))
-    print('searching through', len(search_set), 'files.')
-    for name, irp, kl in search_set:
-        print('load:', name, 'interrupt:', irp, 'keylen:', kl)
-        db = get_db(name, irp, max_irp)
-        c = db.make_secondary(db_out, name, kl, fn_score, threshold)
-        print('found', c, 'additional solutions')
+    for fname, arr in InterruptDB.load(db_in).items():
+        if fname in FILES_UNSOLVED:
+            for irpc, score, irp, kl, nums in arr:
+                if score > threshold and kl > 3 and kl < 26:
+                    search_set.add((fname, irp, kl))
+    print('searching through', len(search_set), 'candidates.')
+    for fname, irp, kl in search_set:
+        print('load:', fname, 'interrupt:', irp, 'keylen:', kl)
+        scores = []
+
+        def fn_keep_scores(x, kl):
+            score = fn_score(x, kl)
+            if score >= threshold:
+                scores.append(score)  # hacky but gets the job done
+                return 1
+            return -1
+
+        db = get_db(fname, irp, max_irp)
+        _, skips = db.find_best_solution(fn_keep_scores, kl)
+        ret = list(zip(scores, skips))
+        bestscore = max(ret)[0]
+        # exclude best results, as they are already present in the main db
+        filtered = [x for x in ret if x[0] < bestscore]
+        for score, nums in filtered:
+            db.write(db_out, fname, score, kl, [nums])
+        print('found', len(filtered), 'additional solutions')
 
 
-def create_mod_a_db(dbprefix, fn_score, klpairs, max_irp=20, irpset=[0, 28]):
-    for mod, upto in klpairs:
+def create_mod_a_db(dbprefix, fn_score):
+    for mod, upto in [(2, 13), (3, 8)]:
         for mo in range(mod):
             # if needed add combined check for all modulo parts
             def xor_split(data, keylen):
                 return fn_score(data[mo::mod], keylen)
 
-            create_primary(f'db_{dbprefix}_mod_a_{mod}.{mo}', xor_split,
-                           range(1, upto + 1), max_irp, irpset, FILES_UNSOLVED)
+            dbname = f'db_{dbprefix}_mod_a_{mod}.{mo}'
+            for db, fname, score, kl, skips in enum_db_irps(
+                    dbname, xor_split, klset=range(1, upto + 1)):
+                db.write(dbname, fname, score, kl, skips)
+                print(f'mod a {mod}.{mo}, kl: {kl}, score: {score:.4f}')
 
 
-def create_mod_b_db(dbprefix, fn_score, klpairs, max_irp=20, irpset=[0, 28]):
+def create_mod_b_db(dbprefix, fn_score):
     db_i = InterruptIndices()
-    for mod, upto in klpairs:
+    for mod, upto in [(2, 18), (3, 18)]:
         for mo in range(mod):
-            dbname = f'db_{dbprefix}_mod_b_{mod}.{mo}'
-            oldDB = {k: set((a, b, c) for a, _, b, c, _ in v)
-                     for k, v in InterruptDB.load(dbname).items()}
+            # custom modulo data load function
+            def db_load_mod(fname, irp, max_irp):
+                stops, Z = db_i.consider_mod_b(fname, irp, max_irp, mod)
+                stops = stops[mo]
+                Z = Z[mo]
+                data = RuneTextFile(LPath.page(fname)).index_no_white
+                data = data[mo::mod][:Z]
+                return InterruptDB(data, irp, irp_stops=stops)
 
-            for irp in irpset:  # interrupt rune index
-                for name in FILES_UNSOLVED:
-                    stops, Z = db_i.consider_mod_b(name, irp, max_irp, mod)
-                    stops = stops[mo]
-                    Z = Z[mo]
-                    data = RuneTextFile(LPath.page(name)).index_no_white
-                    data = data[mo::mod][:Z]
-                    db = InterruptDB(data, irp, irp_stops=stops)
-                    print(f'load: {name} interrupt: {irp} count: {len(stops)}')
-                    for keylen in range(2, upto + 1):  # key length
-                        if (db.irp_count, irp, keylen) in oldDB.get(name, []):
-                            print(f'{keylen}: skipped.')
-                            continue
-                        score, irps = db.make(dbname, name, keylen, fn_score)
-                        print(f'{keylen}: {score:.4f}, solutions: {len(irps)}')
+            dbname = f'db_{dbprefix}_mod_b_{mod}.{mo}'
+            for db, fname, score, kl, skips in enum_db_irps(
+                    dbname, fn_score, klset=range(2, upto + 1),
+                    fn_load_db=db_load_mod):
+                db.write(dbname, fname, score, kl, skips)
+                print(f'mod b {mod}.{mo}, kl: {kl}, score: {score:.4f}')
+
+
+def create_pattern_shift_db(offset=0):
+    # we misuse the db's keylen column as pattern shift multiply
+    for kpl in range(4, 19):  # key pattern length, equiv. to x^2 vigenere
+        def fn_score(x, kpl_shift):
+            parts = GuessPattern.groups(x, kpl, kpl_shift, offset)
+            return sum(Probability(x).IC() for x in parts) / kpl
+            # return 1 - (sum(Probability(x).IC_norm() for x in parts) / kl)
+
+        dbname = f'db_high_pattern_shift_{kpl}.{offset}'
+        for db, fname, score, kl, skips in enum_db_irps(dbname, fn_score,
+                                                        irpset=[0],
+                                                        klset=range(1, kpl)):
+            db.write(dbname, fname, score, kl, skips)
+            print(f'shift_pattern {kpl}.{offset}, shift: {kl}, score: {score:.4f}')
 
 
 if __name__ == '__main__':
-    create_primary('db_high', Probability.IC_w_keylen, max_irp=20)
-    create_primary('db_norm', Probability.target_diff, max_irp=20)
-    create_mod_a_db('high', Probability.IC_w_keylen, [(2, 13), (3, 8)])
-    create_mod_a_db('norm', Probability.target_diff, [(2, 13), (3, 8)])
-    create_mod_b_db('high', Probability.IC_w_keylen, [(2, 18), (3, 18)])
-    create_mod_b_db('norm', Probability.target_diff, [(2, 18), (3, 18)])
+    # create_primary('db_high', Probability.IC_w_keylen)
+    # create_primary('db_norm', Probability.target_diff)
+    # create_mod_a_db('high', Probability.IC_w_keylen)
+    # create_mod_a_db('norm', Probability.target_diff)
+    # create_mod_b_db('high', Probability.IC_w_keylen)
+    # create_mod_b_db('norm', Probability.target_diff)
+    create_pattern_shift_db(offset=0)
     # create_secondary('db_high', 'db_high_secondary',
     #                  Probability.IC_w_keylen, threshold=1.4)
     # create_secondary('db_norm', 'db_norm_secondary',

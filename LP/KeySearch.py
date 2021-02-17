@@ -60,27 +60,38 @@ class GuessAffine(object):
 #########################################
 
 class GuessPattern(object):
-    def __init__(self, nums):
-        self.nums = nums
+    @staticmethod
+    def groups(nums, keylen, shift=1, offset=0):
+        gen = GuessPattern.shift_pattern(keylen, shift)
+        for _ in range(offset):
+            next(gen)
+        ret = [[] for _ in range(keylen)]
+        for idx, value in zip(gen, nums):
+            ret[idx].append(value)
+        return ret
+
+    def shift_pattern(kl, shift=1):  # shift by (more than) one, 012201120
+        for i in range(10000):
+            p = (i * shift) % kl
+            yield from range(p, kl)
+            yield from range(p)
+
+    def mirror_pattern_a(kl):  # mirrored, 012210012210
+        for i in range(10000):
+            yield from range(kl)
+            yield from range(kl - 1, -1, -1)
+
+    def mirror_pattern_b(kl):  # mirrored, 012101210
+        for i in range(10000):
+            yield from range(kl)
+            yield from range(kl - 2, 0, -1)
 
     @staticmethod
-    def pattern(keylen, fn_pattern):
-        mask = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'[:keylen]
-        return fn_pattern(mask, keylen)
-
-    def split(self, keylen, mask, offset=0):
-        ret = {}
+    def zip(nums, key, keylen, shift=1, offset=0):
+        gen = GuessPattern.shift_pattern(keylen, shift)
         for _ in range(offset):
-            next(mask)
-        ret = {k: [] for k in '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'[:keylen]}
-        for n, k in zip(self.nums, mask):
-            ret[k].append(n)
-        return ret.values()
-
-    def zip(self, key_mask, offset=0):
-        for _ in range(offset):
-            next(key_mask)
-        return [(n - k) % 29 for n, k in zip(self.nums, key_mask)]
+            next(gen)
+        return [(n - key[k]) % 29 for n, k in zip(nums, gen)]
 
     @staticmethod
     def guess(parts, score_fn):  # minimize score_fn
@@ -97,3 +108,7 @@ class GuessPattern(object):
             avg_score += best
             found.append(candidate)
         return avg_score / len(parts), found
+
+
+if __name__ == '__main__':
+    print(list(GuessPattern.shift_pattern(4, 3))[:20])
