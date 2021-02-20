@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -80,7 +81,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -101,6 +102,22 @@
 		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
 	</p>
 	<p class="red">Mod-IoC is disabled on solved pages</p>
+
+
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<p class="red">Pattern-IoC is disabled on solved pages</p>
 
 
 	<h2 id="running-ioc">Running IoC</h2>
@@ -140,167 +157,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 1.666):</dt>
+<dt>Words (IoC: 1.666 / 0.893):</dt>
 <dd>
 AN INSTRUCTIAN CWESTIAN ALL THNGS DISCOUER TRUTH INSIDE YOURSELF FOLLOW YOUR TRUTH IMPOSE NOTHNG ON OTHERS CNOW THIS </dd>
-<dt>Pick every first letter (IoC: 1.706):</dt>
+<dt>Pick every first letter (IoC: 1.706 / 0.932):</dt>
 <dd class="runelist">
 <div>A</div><div>I</div><div>C</div><div>A</div><div>TH</div><div>D</div><div>T</div><div>I</div><div>Y</div><div>F</div><div>Y</div><div>T</div><div>I</div><div>N</div><div>O</div><div>O</div><div>C</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 2.464):</dt>
+<dt>Pick every last letter (IoC: 2.464 / 0.310):</dt>
 <dd class="runelist">
 <div>N</div><div>N</div><div>N</div><div>L</div><div>S</div><div>R</div><div>TH</div><div>E</div><div>F</div><div>W</div><div>R</div><div>TH</div><div>E</div><div>NG</div><div>N</div><div>S</div><div>W</div><div>S</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.338):</dt>
+<dt>Words (IoC: 1.338 / 0.565):</dt>
 <dd>
 AN CWESTIAN THNGS TRUTH YOURSELF YOUR IMPOSE ON CNOW </dd>
-<dt>Pick every first letter (IoC: 1.611):</dt>
+<dt>Pick every first letter (IoC: 1.611 / 0.837):</dt>
 <dd class="runelist">
 <div>A</div><div>C</div><div>TH</div><div>T</div><div>Y</div><div>Y</div><div>I</div><div>O</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 2.417):</dt>
+<dt>Pick every last letter (IoC: 2.417 / 0.357):</dt>
 <dd class="runelist">
 <div>N</div><div>N</div><div>S</div><div>TH</div><div>F</div><div>R</div><div>E</div><div>N</div><div>W</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.603):</dt>
+<dt>Words (IoC: 1.603 / 0.829):</dt>
 <dd>
 INSTRUCTIAN ALL DISCOUER INSIDE FOLLOW TRUTH NOTHNG OTHERS THIS </dd>
-<dt>Pick every first letter (IoC: 0.806):</dt>
+<dt>Pick every first letter (IoC: 0.806 / 0.032):</dt>
 <dd class="runelist">
 <div>I</div><div>A</div><div>D</div><div>I</div><div>F</div><div>T</div><div>N</div><div>O</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 0.806):</dt>
+<dt>Pick every last letter (IoC: 0.806 / 0.032):</dt>
 <dd class="runelist">
 <div>N</div><div>L</div><div>R</div><div>E</div><div>W</div><div>TH</div><div>NG</div><div>S</div><div>S</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.517):</dt>
+<dt>Words (IoC: 1.517 / 0.743):</dt>
 <dd>
 AN ALL TRUTH FOLLOW IMPOSE OTHERS </dd>
-<dt>Pick every first letter (IoC: 1.933):</dt>
+<dt>Pick every first letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>A</div><div>A</div><div>T</div><div>F</div><div>I</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>L</div><div>TH</div><div>W</div><div>E</div><div>S</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.559):</dt>
+<dt>Words (IoC: 1.559 / 0.785):</dt>
 <dd>
 INSTRUCTIAN THNGS INSIDE YOUR NOTHNG CNOW </dd>
-<dt>Pick every first letter (IoC: 1.933):</dt>
+<dt>Pick every first letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>I</div><div>TH</div><div>I</div><div>Y</div><div>N</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>S</div><div>E</div><div>R</div><div>NG</div><div>W</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.345):</dt>
+<dt>Words (IoC: 1.345 / 0.571):</dt>
 <dd>
 CWESTIAN DISCOUER YOURSELF TRUTH ON THIS </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>C</div><div>D</div><div>Y</div><div>T</div><div>O</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 1.933):</dt>
+<dt>Pick every last letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>N</div><div>R</div><div>F</div><div>TH</div><div>N</div><div>S</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 0.917):</dt>
+<dt>Words (IoC: 0.917 / 0.143):</dt>
 <dd>
 AN THNGS YOURSELF IMPOSE CNOW </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>TH</div><div>Y</div><div>I</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>S</div><div>F</div><div>E</div><div>W</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.310):</dt>
+<dt>Words (IoC: 1.310 / 0.536):</dt>
 <dd>
 INSTRUCTIAN DISCOUER FOLLOW NOTHNG THIS </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>I</div><div>D</div><div>F</div><div>N</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>R</div><div>W</div><div>NG</div><div>S</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.066):</dt>
+<dt>Words (IoC: 1.066 / 0.292):</dt>
 <dd>
 CWESTIAN TRUTH YOUR ON </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>C</div><div>T</div><div>Y</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 4.833):</dt>
+<dt>Pick every last letter (IoC: 4.833 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>TH</div><div>R</div><div>N</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.137):</dt>
+<dt>Words (IoC: 1.137 / 0.364):</dt>
 <dd>
 ALL INSIDE TRUTH OTHERS </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>I</div><div>T</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>L</div><div>E</div><div>TH</div><div>S</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.526):</dt>
+<dt>Words (IoC: 1.526 / 0.753):</dt>
 <dd>
 AN DISCOUER YOUR OTHERS </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>D</div><div>Y</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 4.833):</dt>
+<dt>Pick every last letter (IoC: 4.833 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>R</div><div>R</div><div>S</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 2.134):</dt>
+<dt>Words (IoC: 2.134 / 0.639):</dt>
 <dd>
 INSTRUCTIAN TRUTH TRUTH CNOW </dd>
-<dt>Pick every first letter (IoC: 4.833):</dt>
+<dt>Pick every first letter (IoC: 4.833 / 0.000):</dt>
 <dd class="runelist">
 <div>I</div><div>T</div><div>T</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 4.833):</dt>
+<dt>Pick every last letter (IoC: 4.833 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>TH</div><div>TH</div><div>W</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 2.009):</dt>
+<dt>Words (IoC: 2.009 / 0.765):</dt>
 <dd>
 CWESTIAN INSIDE IMPOSE THIS </dd>
-<dt>Pick every first letter (IoC: 4.833):</dt>
+<dt>Pick every first letter (IoC: 4.833 / 0.000):</dt>
 <dd class="runelist">
 <div>C</div><div>I</div><div>I</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 4.833):</dt>
+<dt>Pick every last letter (IoC: 4.833 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>E</div><div>E</div><div>S</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.105):</dt>
+<dt>Words (IoC: 1.105 / 0.331):</dt>
 <dd>
 ALL YOURSELF NOTHNG </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>Y</div><div>N</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>L</div><div>F</div><div>NG</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 2.109):</dt>
+<dt>Words (IoC: 2.109 / 0.665):</dt>
 <dd>
 THNGS FOLLOW ON </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>TH</div><div>F</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>S</div><div>W</div><div>N</div></dd>
 </dl>

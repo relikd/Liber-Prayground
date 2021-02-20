@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -53,7 +54,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -75,6 +76,21 @@
 	</p>
 	__SEC_IOC_MOD__
 
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	__SEC_IOC_PATTERN__
+
 	<h2 id="running-ioc">Running IoC</h2>
 	<p>
 		This section perfoms a running IoC with a window size on the whole text.
@@ -90,6 +106,9 @@
 	__SEC_IOC_FLOW__
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	__SEC_CONCEAL__
 
 </body>

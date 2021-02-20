@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -80,7 +81,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -101,6 +102,22 @@
 		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
 	</p>
 	<p class="red">Mod-IoC is disabled on solved pages</p>
+
+
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<p class="red">Pattern-IoC is disabled on solved pages</p>
 
 
 	<h2 id="running-ioc">Running IoC</h2>
@@ -140,167 +157,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 1.905):</dt>
+<dt>Words (IoC: 1.905 / 0.869):</dt>
 <dd>
 A COAN A MAN DECIDED TO GO AND STUDY WITH A MASTER HE WENT TO THE DOOR OF THE MASTER WHO ARE YOU WHO WISHES TO STUDY HERE ASCED THE MASTER THE STUDENT TOLD THE MASTER HIS NAME THAT IS NOT WHAT YOU ARE THAT IS ONLY WHAT YOU ARE CALLED WHO ARE YOU WHO WISHES TO STUDY HERE HE ASCED AGAIN THE MAN THOUGHT FOR A MOMENT AND REPLIED I AM A PROFESSOR THAT IS WHAT YOU DO NOT WHAT YOU ARE REPLIED THE MASTER WHO ARE YOU WHO WISHES TO STUDY HERE CONFUSED THE MAN THOUGHT SOME MORE FINALLY HE ANSWERED I AM A HUMAN BENG THAT IS ONLY YOUR SPECIES NOT WHO YOU ARE WHO ARE YOU WHO WISHES TO STUDY HERE ASCED THE MASTER AGAIN AFTER A MOMENT OF THOUGHT THE PROFESSOR REPLIED I AM A CONSCIAUSNESS INHABITNG AN ARBITRARY BODY THAT IS MERELY WHAT YOU ARE NOT WHO YOU ARE WHO ARE YOU WHO WISHES TO STUDY HERE THE MAN WAS GETTNG IRRITATED I AM HE STARTED BUT HE COULD NOT THINC OF ANYTHNG ELSE TO SAY SO HE TRAILED OFF AFTER A LONG PAUSE THE MASTER REPLIED THEN YOU ARE WELCOME TO COME STUDY AN INSTRUCTIAN DO FOUR UNREASONABLE THNGS EACH DAY </dd>
-<dt>Pick every first letter (IoC: 2.510):</dt>
+<dt>Pick every first letter (IoC: 2.510 / 0.264):</dt>
 <dd class="runelist">
 <div>A</div><div>C</div><div>A</div><div>M</div><div>D</div><div>T</div><div>G</div><div>A</div><div>S</div><div>W</div><div>A</div><div>M</div><div>H</div><div>W</div><div>T</div><div>TH</div><div>D</div><div>O</div><div>TH</div><div>M</div><div>W</div><div>A</div><div>Y</div><div>W</div><div>W</div><div>T</div><div>S</div><div>H</div><div>A</div><div>TH</div><div>M</div><div>TH</div><div>S</div><div>T</div><div>TH</div><div>M</div><div>H</div><div>N</div><div>TH</div><div>I</div><div>N</div><div>W</div><div>Y</div><div>A</div><div>TH</div><div>I</div><div>O</div><div>W</div><div>Y</div><div>A</div><div>C</div><div>W</div><div>A</div><div>Y</div><div>W</div><div>W</div><div>T</div><div>S</div><div>H</div><div>H</div><div>A</div><div>A</div><div>TH</div><div>M</div><div>TH</div><div>F</div><div>A</div><div>M</div><div>A</div><div>R</div><div>I</div><div>A</div><div>A</div><div>P</div><div>TH</div><div>I</div><div>W</div><div>Y</div><div>D</div><div>N</div><div>W</div><div>Y</div><div>A</div><div>R</div><div>TH</div><div>M</div><div>W</div><div>A</div><div>Y</div><div>W</div><div>W</div><div>T</div><div>S</div><div>H</div><div>C</div><div>TH</div><div>M</div><div>TH</div><div>S</div><div>M</div><div>F</div><div>H</div><div>A</div><div>I</div><div>A</div><div>A</div><div>H</div><div>B</div><div>TH</div><div>I</div><div>O</div><div>Y</div><div>S</div><div>N</div><div>W</div><div>Y</div><div>A</div><div>W</div><div>A</div><div>Y</div><div>W</div><div>W</div><div>T</div><div>S</div><div>H</div><div>A</div><div>TH</div><div>M</div><div>A</div><div>A</div><div>A</div><div>M</div><div>O</div><div>TH</div><div>TH</div><div>P</div><div>R</div><div>I</div><div>A</div><div>A</div><div>C</div><div>I</div><div>A</div><div>A</div><div>B</div><div>TH</div><div>I</div><div>M</div><div>W</div><div>Y</div><div>A</div><div>N</div><div>W</div><div>Y</div><div>A</div><div>W</div><div>A</div><div>Y</div><div>W</div><div>W</div><div>T</div><div>S</div><div>H</div><div>TH</div><div>M</div><div>W</div><div>G</div><div>I</div><div>I</div><div>A</div><div>H</div><div>S</div><div>B</div><div>H</div><div>C</div><div>N</div><div>TH</div><div>O</div><div>A</div><div>E</div><div>T</div><div>S</div><div>S</div><div>H</div><div>T</div><div>O</div><div>A</div><div>A</div><div>L</div><div>P</div><div>TH</div><div>M</div><div>R</div><div>TH</div><div>Y</div><div>A</div><div>W</div><div>T</div><div>C</div><div>S</div><div>A</div><div>I</div><div>D</div><div>F</div><div>U</div><div>TH</div><div>EA</div><div>D</div></dd>
-<dt>Pick every last letter (IoC: 2.872):</dt>
+<dt>Pick every last letter (IoC: 2.872 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>N</div><div>A</div><div>N</div><div>D</div><div>O</div><div>O</div><div>D</div><div>Y</div><div>TH</div><div>A</div><div>R</div><div>E</div><div>T</div><div>O</div><div>E</div><div>R</div><div>F</div><div>E</div><div>R</div><div>O</div><div>E</div><div>U</div><div>O</div><div>S</div><div>O</div><div>Y</div><div>E</div><div>D</div><div>E</div><div>R</div><div>E</div><div>T</div><div>D</div><div>E</div><div>R</div><div>S</div><div>E</div><div>T</div><div>S</div><div>T</div><div>T</div><div>U</div><div>E</div><div>T</div><div>S</div><div>Y</div><div>T</div><div>U</div><div>E</div><div>D</div><div>O</div><div>E</div><div>U</div><div>O</div><div>S</div><div>O</div><div>Y</div><div>E</div><div>E</div><div>D</div><div>N</div><div>E</div><div>N</div><div>T</div><div>R</div><div>A</div><div>T</div><div>D</div><div>D</div><div>I</div><div>M</div><div>A</div><div>R</div><div>T</div><div>S</div><div>T</div><div>U</div><div>O</div><div>T</div><div>T</div><div>U</div><div>E</div><div>D</div><div>E</div><div>R</div><div>O</div><div>E</div><div>U</div><div>O</div><div>S</div><div>O</div><div>Y</div><div>E</div><div>D</div><div>E</div><div>N</div><div>T</div><div>E</div><div>E</div><div>Y</div><div>E</div><div>D</div><div>I</div><div>M</div><div>A</div><div>N</div><div>NG</div><div>T</div><div>S</div><div>Y</div><div>R</div><div>S</div><div>T</div><div>O</div><div>U</div><div>E</div><div>O</div><div>E</div><div>U</div><div>O</div><div>S</div><div>O</div><div>Y</div><div>E</div><div>D</div><div>E</div><div>R</div><div>N</div><div>R</div><div>A</div><div>T</div><div>F</div><div>T</div><div>E</div><div>R</div><div>D</div><div>I</div><div>M</div><div>A</div><div>S</div><div>NG</div><div>N</div><div>Y</div><div>Y</div><div>T</div><div>S</div><div>Y</div><div>T</div><div>U</div><div>E</div><div>T</div><div>O</div><div>U</div><div>E</div><div>O</div><div>E</div><div>U</div><div>O</div><div>S</div><div>O</div><div>Y</div><div>E</div><div>E</div><div>N</div><div>S</div><div>NG</div><div>D</div><div>I</div><div>M</div><div>E</div><div>D</div><div>T</div><div>E</div><div>D</div><div>T</div><div>C</div><div>F</div><div>NG</div><div>E</div><div>O</div><div>Y</div><div>O</div><div>E</div><div>D</div><div>F</div><div>R</div><div>A</div><div>NG</div><div>E</div><div>E</div><div>R</div><div>D</div><div>N</div><div>U</div><div>E</div><div>E</div><div>O</div><div>E</div><div>Y</div><div>N</div><div>N</div><div>O</div><div>R</div><div>E</div><div>S</div><div>H</div><div>Y</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.861):</dt>
+<dt>Words (IoC: 1.861 / 0.912):</dt>
 <dd>
 A A DECIDED GO STUDY A HE TO DOOR THE WHO YOU WISHES STUDY ASCED MASTER STUDENT THE HIS THAT NOT YOU THAT ONLY YOU CALLED ARE WHO TO HERE ASCED THE THOUGHT A AND I A THAT WHAT DO WHAT ARE THE WHO YOU WISHES STUDY CONFUSED MAN SOME FINALLY ANSWERED AM HUMAN THAT ONLY SPECIES WHO ARE ARE WHO TO HERE THE AGAIN A OF THE REPLIED AM CONSCIAUSNESS AN BODY IS WHAT ARE WHO ARE ARE WHO TO HERE MAN GETTNG I HE BUT COULD THINC ANYTHNG TO SO TRAILED AFTER LONG THE REPLIED YOU WELCOME COME AN DO UNREASONABLE EACH </dd>
-<dt>Pick every first letter (IoC: 2.853):</dt>
+<dt>Pick every first letter (IoC: 2.853 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>A</div><div>D</div><div>G</div><div>S</div><div>A</div><div>H</div><div>T</div><div>D</div><div>TH</div><div>W</div><div>Y</div><div>W</div><div>S</div><div>A</div><div>M</div><div>S</div><div>TH</div><div>H</div><div>TH</div><div>N</div><div>Y</div><div>TH</div><div>O</div><div>Y</div><div>C</div><div>A</div><div>W</div><div>T</div><div>H</div><div>A</div><div>TH</div><div>TH</div><div>A</div><div>A</div><div>I</div><div>A</div><div>TH</div><div>W</div><div>D</div><div>W</div><div>A</div><div>TH</div><div>W</div><div>Y</div><div>W</div><div>S</div><div>C</div><div>M</div><div>S</div><div>F</div><div>A</div><div>A</div><div>H</div><div>TH</div><div>O</div><div>S</div><div>W</div><div>A</div><div>A</div><div>W</div><div>T</div><div>H</div><div>TH</div><div>A</div><div>A</div><div>O</div><div>TH</div><div>R</div><div>A</div><div>C</div><div>A</div><div>B</div><div>I</div><div>W</div><div>A</div><div>W</div><div>A</div><div>A</div><div>W</div><div>T</div><div>H</div><div>M</div><div>G</div><div>I</div><div>H</div><div>B</div><div>C</div><div>TH</div><div>A</div><div>T</div><div>S</div><div>T</div><div>A</div><div>L</div><div>TH</div><div>R</div><div>Y</div><div>W</div><div>C</div><div>A</div><div>D</div><div>U</div><div>EA</div></dd>
-<dt>Pick every last letter (IoC: 3.070):</dt>
+<dt>Pick every last letter (IoC: 3.070 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>A</div><div>D</div><div>O</div><div>Y</div><div>A</div><div>E</div><div>O</div><div>R</div><div>E</div><div>O</div><div>U</div><div>S</div><div>Y</div><div>D</div><div>R</div><div>T</div><div>E</div><div>S</div><div>T</div><div>T</div><div>U</div><div>T</div><div>Y</div><div>U</div><div>D</div><div>E</div><div>O</div><div>O</div><div>E</div><div>D</div><div>E</div><div>T</div><div>A</div><div>D</div><div>I</div><div>A</div><div>T</div><div>T</div><div>O</div><div>T</div><div>E</div><div>E</div><div>O</div><div>U</div><div>S</div><div>Y</div><div>D</div><div>N</div><div>E</div><div>Y</div><div>D</div><div>M</div><div>N</div><div>T</div><div>Y</div><div>S</div><div>O</div><div>E</div><div>E</div><div>O</div><div>O</div><div>E</div><div>E</div><div>N</div><div>A</div><div>F</div><div>E</div><div>D</div><div>M</div><div>S</div><div>N</div><div>Y</div><div>S</div><div>T</div><div>E</div><div>O</div><div>E</div><div>E</div><div>O</div><div>O</div><div>E</div><div>N</div><div>NG</div><div>I</div><div>E</div><div>T</div><div>D</div><div>C</div><div>NG</div><div>O</div><div>O</div><div>D</div><div>R</div><div>NG</div><div>E</div><div>D</div><div>U</div><div>E</div><div>E</div><div>N</div><div>O</div><div>E</div><div>H</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.949):</dt>
+<dt>Words (IoC: 1.949 / 0.824):</dt>
 <dd>
 COAN MAN TO AND WITH MASTER WENT THE OF MASTER ARE WHO TO HERE THE THE TOLD MASTER NAME IS WHAT ARE IS WHAT ARE WHO YOU WISHES STUDY HE AGAIN MAN FOR MOMENT REPLIED AM PROFESSOR IS YOU NOT YOU REPLIED MASTER ARE WHO TO HERE THE THOUGHT MORE HE I A BENG IS YOUR NOT YOU WHO YOU WISHES STUDY ASCED MASTER AFTER MOMENT THOUGHT PROFESSOR I A INHABITNG ARBITRARY THAT MERELY YOU NOT YOU WHO YOU WISHES STUDY THE WAS IRRITATED AM STARTED HE NOT OF ELSE SAY HE OFF A PAUSE MASTER THEN ARE TO STUDY INSTRUCTIAN FOUR THNGS DAY </dd>
-<dt>Pick every first letter (IoC: 2.296):</dt>
+<dt>Pick every first letter (IoC: 2.296 / 0.478):</dt>
 <dd class="runelist">
 <div>C</div><div>M</div><div>T</div><div>A</div><div>W</div><div>M</div><div>W</div><div>TH</div><div>O</div><div>M</div><div>A</div><div>W</div><div>T</div><div>H</div><div>TH</div><div>TH</div><div>T</div><div>M</div><div>N</div><div>I</div><div>W</div><div>A</div><div>I</div><div>W</div><div>A</div><div>W</div><div>Y</div><div>W</div><div>S</div><div>H</div><div>A</div><div>M</div><div>F</div><div>M</div><div>R</div><div>A</div><div>P</div><div>I</div><div>Y</div><div>N</div><div>Y</div><div>R</div><div>M</div><div>A</div><div>W</div><div>T</div><div>H</div><div>TH</div><div>TH</div><div>M</div><div>H</div><div>I</div><div>A</div><div>B</div><div>I</div><div>Y</div><div>N</div><div>Y</div><div>W</div><div>Y</div><div>W</div><div>S</div><div>A</div><div>M</div><div>A</div><div>M</div><div>TH</div><div>P</div><div>I</div><div>A</div><div>I</div><div>A</div><div>TH</div><div>M</div><div>Y</div><div>N</div><div>Y</div><div>W</div><div>Y</div><div>W</div><div>S</div><div>TH</div><div>W</div><div>I</div><div>A</div><div>S</div><div>H</div><div>N</div><div>O</div><div>E</div><div>S</div><div>H</div><div>O</div><div>A</div><div>P</div><div>M</div><div>TH</div><div>A</div><div>T</div><div>S</div><div>I</div><div>F</div><div>TH</div><div>D</div></dd>
-<dt>Pick every last letter (IoC: 2.680):</dt>
+<dt>Pick every last letter (IoC: 2.680 / 0.094):</dt>
 <dd class="runelist">
 <div>N</div><div>N</div><div>O</div><div>D</div><div>TH</div><div>R</div><div>T</div><div>E</div><div>F</div><div>R</div><div>E</div><div>O</div><div>O</div><div>E</div><div>E</div><div>E</div><div>D</div><div>R</div><div>E</div><div>S</div><div>T</div><div>E</div><div>S</div><div>T</div><div>E</div><div>O</div><div>U</div><div>S</div><div>Y</div><div>E</div><div>N</div><div>N</div><div>R</div><div>T</div><div>D</div><div>M</div><div>R</div><div>S</div><div>U</div><div>T</div><div>U</div><div>D</div><div>R</div><div>E</div><div>O</div><div>O</div><div>E</div><div>E</div><div>T</div><div>E</div><div>E</div><div>I</div><div>A</div><div>NG</div><div>S</div><div>R</div><div>T</div><div>U</div><div>O</div><div>U</div><div>S</div><div>Y</div><div>D</div><div>R</div><div>R</div><div>T</div><div>T</div><div>R</div><div>I</div><div>A</div><div>NG</div><div>Y</div><div>T</div><div>Y</div><div>U</div><div>T</div><div>U</div><div>O</div><div>U</div><div>S</div><div>Y</div><div>E</div><div>S</div><div>D</div><div>M</div><div>D</div><div>E</div><div>T</div><div>F</div><div>E</div><div>Y</div><div>E</div><div>F</div><div>A</div><div>E</div><div>R</div><div>N</div><div>E</div><div>O</div><div>Y</div><div>N</div><div>R</div><div>S</div><div>Y</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.933):</dt>
+<dt>Words (IoC: 1.933 / 0.840):</dt>
 <dd>
 A MAN GO WITH HE THE THE ARE WISHES HERE MASTER TOLD HIS IS YOU IS YOU WHO WHO STUDY ASCED MAN A REPLIED A IS DO YOU THE ARE WISHES HERE MAN MORE ANSWERED A THAT YOUR WHO WHO WHO STUDY THE AFTER OF PROFESSOR AM INHABITNG BODY MERELY ARE YOU ARE WISHES HERE WAS I STARTED COULD OF TO HE AFTER PAUSE REPLIED ARE COME INSTRUCTIAN UNREASONABLE DAY </dd>
-<dt>Pick every first letter (IoC: 2.522):</dt>
+<dt>Pick every first letter (IoC: 2.522 / 0.252):</dt>
 <dd class="runelist">
 <div>A</div><div>M</div><div>G</div><div>W</div><div>H</div><div>TH</div><div>TH</div><div>A</div><div>W</div><div>H</div><div>M</div><div>T</div><div>H</div><div>I</div><div>Y</div><div>I</div><div>Y</div><div>W</div><div>W</div><div>S</div><div>A</div><div>M</div><div>A</div><div>R</div><div>A</div><div>I</div><div>D</div><div>Y</div><div>TH</div><div>A</div><div>W</div><div>H</div><div>M</div><div>M</div><div>A</div><div>A</div><div>TH</div><div>Y</div><div>W</div><div>W</div><div>W</div><div>S</div><div>TH</div><div>A</div><div>O</div><div>P</div><div>A</div><div>I</div><div>B</div><div>M</div><div>A</div><div>Y</div><div>A</div><div>W</div><div>H</div><div>W</div><div>I</div><div>S</div><div>C</div><div>O</div><div>T</div><div>H</div><div>A</div><div>P</div><div>R</div><div>A</div><div>C</div><div>I</div><div>U</div><div>D</div></dd>
-<dt>Pick every last letter (IoC: 3.230):</dt>
+<dt>Pick every last letter (IoC: 3.230 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>N</div><div>O</div><div>TH</div><div>E</div><div>E</div><div>E</div><div>E</div><div>S</div><div>E</div><div>R</div><div>D</div><div>S</div><div>S</div><div>U</div><div>S</div><div>U</div><div>O</div><div>O</div><div>Y</div><div>D</div><div>N</div><div>A</div><div>D</div><div>A</div><div>S</div><div>O</div><div>U</div><div>E</div><div>E</div><div>S</div><div>E</div><div>N</div><div>E</div><div>D</div><div>A</div><div>T</div><div>R</div><div>O</div><div>O</div><div>O</div><div>Y</div><div>E</div><div>R</div><div>F</div><div>R</div><div>M</div><div>NG</div><div>Y</div><div>Y</div><div>E</div><div>U</div><div>E</div><div>S</div><div>E</div><div>S</div><div>I</div><div>D</div><div>D</div><div>F</div><div>O</div><div>E</div><div>R</div><div>E</div><div>D</div><div>E</div><div>E</div><div>N</div><div>E</div><div>Y</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.926):</dt>
+<dt>Words (IoC: 1.926 / 0.848):</dt>
 <dd>
 COAN DECIDED AND A WENT DOOR MASTER YOU TO ASCED THE THE NAME NOT ARE ONLY ARE ARE WISHES HERE AGAIN THOUGHT MOMENT I PROFESSOR WHAT NOT ARE MASTER YOU TO CONFUSED THOUGHT FINALLY I HUMAN IS SPECIES YOU ARE WISHES HERE MASTER A THOUGHT REPLIED A AN THAT WHAT NOT ARE YOU TO THE GETTNG AM BUT NOT ANYTHNG SAY TRAILED A THE THEN WELCOME STUDY DO THNGS </dd>
-<dt>Pick every first letter (IoC: 2.732):</dt>
+<dt>Pick every first letter (IoC: 2.732 / 0.042):</dt>
 <dd class="runelist">
 <div>C</div><div>D</div><div>A</div><div>A</div><div>W</div><div>D</div><div>M</div><div>Y</div><div>T</div><div>A</div><div>TH</div><div>TH</div><div>N</div><div>N</div><div>A</div><div>O</div><div>A</div><div>A</div><div>W</div><div>H</div><div>A</div><div>TH</div><div>M</div><div>I</div><div>P</div><div>W</div><div>N</div><div>A</div><div>M</div><div>Y</div><div>T</div><div>C</div><div>TH</div><div>F</div><div>I</div><div>H</div><div>I</div><div>S</div><div>Y</div><div>A</div><div>W</div><div>H</div><div>M</div><div>A</div><div>TH</div><div>R</div><div>A</div><div>A</div><div>TH</div><div>W</div><div>N</div><div>A</div><div>Y</div><div>T</div><div>TH</div><div>G</div><div>A</div><div>B</div><div>N</div><div>A</div><div>S</div><div>T</div><div>A</div><div>TH</div><div>TH</div><div>W</div><div>S</div><div>D</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 2.967):</dt>
+<dt>Pick every last letter (IoC: 2.967 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>D</div><div>D</div><div>A</div><div>T</div><div>R</div><div>R</div><div>U</div><div>O</div><div>D</div><div>E</div><div>E</div><div>E</div><div>T</div><div>E</div><div>Y</div><div>E</div><div>E</div><div>S</div><div>E</div><div>N</div><div>T</div><div>T</div><div>I</div><div>R</div><div>T</div><div>T</div><div>E</div><div>R</div><div>U</div><div>O</div><div>D</div><div>T</div><div>Y</div><div>I</div><div>N</div><div>S</div><div>S</div><div>U</div><div>E</div><div>S</div><div>E</div><div>R</div><div>A</div><div>T</div><div>D</div><div>A</div><div>N</div><div>T</div><div>T</div><div>T</div><div>E</div><div>U</div><div>O</div><div>E</div><div>NG</div><div>M</div><div>T</div><div>T</div><div>NG</div><div>Y</div><div>D</div><div>A</div><div>E</div><div>N</div><div>E</div><div>Y</div><div>O</div><div>S</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.812):</dt>
+<dt>Words (IoC: 1.812 / 0.961):</dt>
 <dd>
 A TO STUDY MASTER TO OF WHO WHO STUDY THE STUDENT MASTER THAT WHAT THAT WHAT CALLED YOU TO HE THE FOR AND AM THAT YOU WHAT REPLIED WHO WHO STUDY THE SOME HE AM BENG ONLY NOT ARE YOU TO ASCED AGAIN MOMENT THE I CONSCIAUSNESS ARBITRARY IS YOU WHO WHO WHO STUDY MAN IRRITATED HE HE THINC ELSE SO OFF LONG MASTER YOU TO AN FOUR EACH </dd>
-<dt>Pick every first letter (IoC: 2.151):</dt>
+<dt>Pick every first letter (IoC: 2.151 / 0.623):</dt>
 <dd class="runelist">
 <div>A</div><div>T</div><div>S</div><div>M</div><div>T</div><div>O</div><div>W</div><div>W</div><div>S</div><div>TH</div><div>S</div><div>M</div><div>TH</div><div>W</div><div>TH</div><div>W</div><div>C</div><div>Y</div><div>T</div><div>H</div><div>TH</div><div>F</div><div>A</div><div>A</div><div>TH</div><div>Y</div><div>W</div><div>R</div><div>W</div><div>W</div><div>S</div><div>TH</div><div>S</div><div>H</div><div>A</div><div>B</div><div>O</div><div>N</div><div>A</div><div>Y</div><div>T</div><div>A</div><div>A</div><div>M</div><div>TH</div><div>I</div><div>C</div><div>A</div><div>I</div><div>Y</div><div>W</div><div>W</div><div>W</div><div>S</div><div>M</div><div>I</div><div>H</div><div>H</div><div>TH</div><div>E</div><div>S</div><div>O</div><div>L</div><div>M</div><div>Y</div><div>T</div><div>A</div><div>F</div><div>EA</div></dd>
-<dt>Pick every last letter (IoC: 2.732):</dt>
+<dt>Pick every last letter (IoC: 2.732 / 0.042):</dt>
 <dd class="runelist">
 <div>A</div><div>O</div><div>Y</div><div>R</div><div>O</div><div>F</div><div>O</div><div>O</div><div>Y</div><div>E</div><div>T</div><div>R</div><div>T</div><div>T</div><div>T</div><div>T</div><div>D</div><div>U</div><div>O</div><div>E</div><div>E</div><div>R</div><div>D</div><div>M</div><div>T</div><div>U</div><div>T</div><div>D</div><div>O</div><div>O</div><div>Y</div><div>E</div><div>E</div><div>E</div><div>M</div><div>NG</div><div>Y</div><div>T</div><div>E</div><div>U</div><div>O</div><div>D</div><div>N</div><div>T</div><div>E</div><div>I</div><div>S</div><div>Y</div><div>S</div><div>U</div><div>O</div><div>O</div><div>O</div><div>Y</div><div>N</div><div>D</div><div>E</div><div>E</div><div>C</div><div>E</div><div>O</div><div>F</div><div>NG</div><div>R</div><div>U</div><div>O</div><div>N</div><div>R</div><div>H</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.729):</dt>
+<dt>Words (IoC: 1.729 / 0.956):</dt>
 <dd>
 A DECIDED STUDY HE DOOR WHO WISHES ASCED STUDENT HIS NOT THAT YOU ARE TO ASCED THOUGHT AND A WHAT WHAT THE YOU STUDY MAN FINALLY AM THAT SPECIES ARE WHO HERE AGAIN OF REPLIED CONSCIAUSNESS BODY WHAT WHO ARE TO MAN I BUT THINC TO TRAILED LONG REPLIED WELCOME AN UNREASONABLE </dd>
-<dt>Pick every first letter (IoC: 2.471):</dt>
+<dt>Pick every first letter (IoC: 2.471 / 0.302):</dt>
 <dd class="runelist">
 <div>A</div><div>D</div><div>S</div><div>H</div><div>D</div><div>W</div><div>W</div><div>A</div><div>S</div><div>H</div><div>N</div><div>TH</div><div>Y</div><div>A</div><div>T</div><div>A</div><div>TH</div><div>A</div><div>A</div><div>W</div><div>W</div><div>TH</div><div>Y</div><div>S</div><div>M</div><div>F</div><div>A</div><div>TH</div><div>S</div><div>A</div><div>W</div><div>H</div><div>A</div><div>O</div><div>R</div><div>C</div><div>B</div><div>W</div><div>W</div><div>A</div><div>T</div><div>M</div><div>I</div><div>B</div><div>TH</div><div>T</div><div>T</div><div>L</div><div>R</div><div>W</div><div>A</div><div>U</div></dd>
-<dt>Pick every last letter (IoC: 2.624):</dt>
+<dt>Pick every last letter (IoC: 2.624 / 0.149):</dt>
 <dd class="runelist">
 <div>A</div><div>D</div><div>Y</div><div>E</div><div>R</div><div>O</div><div>S</div><div>D</div><div>T</div><div>S</div><div>T</div><div>T</div><div>U</div><div>E</div><div>O</div><div>D</div><div>T</div><div>D</div><div>A</div><div>T</div><div>T</div><div>E</div><div>U</div><div>Y</div><div>N</div><div>Y</div><div>M</div><div>T</div><div>S</div><div>E</div><div>O</div><div>E</div><div>N</div><div>F</div><div>D</div><div>S</div><div>Y</div><div>T</div><div>O</div><div>E</div><div>O</div><div>N</div><div>I</div><div>T</div><div>C</div><div>O</div><div>D</div><div>NG</div><div>D</div><div>E</div><div>N</div><div>E</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.755):</dt>
+<dt>Words (IoC: 1.755 / 0.981):</dt>
 <dd>
 COAN TO WITH WENT OF ARE TO THE TOLD NAME WHAT IS ARE YOU STUDY AGAIN FOR REPLIED PROFESSOR YOU YOU MASTER WHO HERE THOUGHT HE A IS NOT WHO WISHES ASCED AFTER THOUGHT I INHABITNG THAT YOU YOU YOU STUDY WAS AM HE OF SAY OFF PAUSE THEN TO INSTRUCTIAN THNGS </dd>
-<dt>Pick every first letter (IoC: 2.165):</dt>
+<dt>Pick every first letter (IoC: 2.165 / 0.609):</dt>
 <dd class="runelist">
 <div>C</div><div>T</div><div>W</div><div>W</div><div>O</div><div>A</div><div>T</div><div>TH</div><div>T</div><div>N</div><div>W</div><div>I</div><div>A</div><div>Y</div><div>S</div><div>A</div><div>F</div><div>R</div><div>P</div><div>Y</div><div>Y</div><div>M</div><div>W</div><div>H</div><div>TH</div><div>H</div><div>A</div><div>I</div><div>N</div><div>W</div><div>W</div><div>A</div><div>A</div><div>TH</div><div>I</div><div>I</div><div>TH</div><div>Y</div><div>Y</div><div>Y</div><div>S</div><div>W</div><div>A</div><div>H</div><div>O</div><div>S</div><div>O</div><div>P</div><div>TH</div><div>T</div><div>I</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 2.165):</dt>
+<dt>Pick every last letter (IoC: 2.165 / 0.609):</dt>
 <dd class="runelist">
 <div>N</div><div>O</div><div>TH</div><div>T</div><div>F</div><div>E</div><div>O</div><div>E</div><div>D</div><div>E</div><div>T</div><div>S</div><div>E</div><div>U</div><div>Y</div><div>N</div><div>R</div><div>D</div><div>R</div><div>U</div><div>U</div><div>R</div><div>O</div><div>E</div><div>T</div><div>E</div><div>A</div><div>S</div><div>T</div><div>O</div><div>S</div><div>D</div><div>R</div><div>T</div><div>I</div><div>NG</div><div>T</div><div>U</div><div>U</div><div>U</div><div>Y</div><div>S</div><div>M</div><div>E</div><div>F</div><div>Y</div><div>F</div><div>E</div><div>N</div><div>O</div><div>N</div><div>S</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.983):</dt>
+<dt>Words (IoC: 1.983 / 0.790):</dt>
 <dd>
 A GO A TO THE YOU STUDY MASTER THE THAT YOU ONLY CALLED WHO HERE THE A I THAT DO ARE WHO WISHES CONFUSED SOME ANSWERED HUMAN ONLY WHO ARE TO THE A THE AM AN IS ARE ARE WHO HERE GETTNG HE COULD ANYTHNG SO AFTER THE YOU COME DO EACH </dd>
-<dt>Pick every first letter (IoC: 3.040):</dt>
+<dt>Pick every first letter (IoC: 3.040 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>G</div><div>A</div><div>T</div><div>TH</div><div>Y</div><div>S</div><div>M</div><div>TH</div><div>TH</div><div>Y</div><div>O</div><div>C</div><div>W</div><div>H</div><div>TH</div><div>A</div><div>I</div><div>TH</div><div>D</div><div>A</div><div>W</div><div>W</div><div>C</div><div>S</div><div>A</div><div>H</div><div>O</div><div>W</div><div>A</div><div>T</div><div>TH</div><div>A</div><div>TH</div><div>A</div><div>A</div><div>I</div><div>A</div><div>A</div><div>W</div><div>H</div><div>G</div><div>H</div><div>C</div><div>A</div><div>S</div><div>A</div><div>TH</div><div>Y</div><div>C</div><div>D</div><div>EA</div></dd>
-<dt>Pick every last letter (IoC: 3.784):</dt>
+<dt>Pick every last letter (IoC: 3.784 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>O</div><div>A</div><div>O</div><div>E</div><div>U</div><div>Y</div><div>R</div><div>E</div><div>T</div><div>U</div><div>Y</div><div>D</div><div>O</div><div>E</div><div>E</div><div>A</div><div>I</div><div>T</div><div>O</div><div>E</div><div>O</div><div>S</div><div>D</div><div>E</div><div>D</div><div>N</div><div>Y</div><div>O</div><div>E</div><div>O</div><div>E</div><div>A</div><div>E</div><div>M</div><div>N</div><div>S</div><div>E</div><div>E</div><div>O</div><div>E</div><div>NG</div><div>E</div><div>D</div><div>NG</div><div>O</div><div>R</div><div>E</div><div>U</div><div>E</div><div>O</div><div>H</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 2.191):</dt>
+<dt>Words (IoC: 2.191 / 0.583):</dt>
 <dd>
 MAN AND MASTER THE MASTER WHO HERE THE MASTER IS ARE WHAT WHO WISHES HE MAN MOMENT AM IS NOT REPLIED ARE TO THE MORE I BENG YOUR YOU YOU STUDY MASTER MOMENT PROFESSOR A ARBITRARY MERELY NOT WHO WISHES THE IRRITATED STARTED NOT ELSE HE A MASTER ARE STUDY FOUR DAY </dd>
-<dt>Pick every first letter (IoC: 2.668):</dt>
+<dt>Pick every first letter (IoC: 2.668 / 0.106):</dt>
 <dd class="runelist">
 <div>M</div><div>A</div><div>M</div><div>TH</div><div>M</div><div>W</div><div>H</div><div>TH</div><div>M</div><div>I</div><div>A</div><div>W</div><div>W</div><div>W</div><div>H</div><div>M</div><div>M</div><div>A</div><div>I</div><div>N</div><div>R</div><div>A</div><div>T</div><div>TH</div><div>M</div><div>I</div><div>B</div><div>Y</div><div>Y</div><div>Y</div><div>S</div><div>M</div><div>M</div><div>P</div><div>A</div><div>A</div><div>M</div><div>N</div><div>W</div><div>W</div><div>TH</div><div>I</div><div>S</div><div>N</div><div>E</div><div>H</div><div>A</div><div>M</div><div>A</div><div>S</div><div>F</div><div>D</div></dd>
-<dt>Pick every last letter (IoC: 3.062):</dt>
+<dt>Pick every last letter (IoC: 3.062 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>D</div><div>R</div><div>E</div><div>R</div><div>O</div><div>E</div><div>E</div><div>R</div><div>S</div><div>E</div><div>T</div><div>O</div><div>S</div><div>E</div><div>N</div><div>T</div><div>M</div><div>S</div><div>T</div><div>D</div><div>E</div><div>O</div><div>E</div><div>E</div><div>I</div><div>NG</div><div>R</div><div>U</div><div>U</div><div>Y</div><div>R</div><div>T</div><div>R</div><div>A</div><div>Y</div><div>Y</div><div>T</div><div>O</div><div>S</div><div>E</div><div>D</div><div>D</div><div>T</div><div>E</div><div>E</div><div>A</div><div>R</div><div>E</div><div>Y</div><div>R</div><div>Y</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 2.021):</dt>
+<dt>Words (IoC: 2.021 / 0.753):</dt>
 <dd>
 A TO A THE WHO TO MASTER MASTER NOT IS CALLED WISHES ASCED FOR I IS WHAT MASTER WISHES THE FINALLY A ONLY YOU WHO ASCED A PROFESSOR CONSCIAUSNESS THAT ARE WHO TO WAS HE NOT TO OFF THE ARE AN THNGS </dd>
-<dt>Pick every first letter (IoC: 2.796):</dt>
+<dt>Pick every first letter (IoC: 2.796 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>T</div><div>A</div><div>TH</div><div>W</div><div>T</div><div>M</div><div>M</div><div>N</div><div>I</div><div>C</div><div>W</div><div>A</div><div>F</div><div>I</div><div>I</div><div>W</div><div>M</div><div>W</div><div>TH</div><div>F</div><div>A</div><div>O</div><div>Y</div><div>W</div><div>A</div><div>A</div><div>P</div><div>C</div><div>TH</div><div>A</div><div>W</div><div>T</div><div>W</div><div>H</div><div>N</div><div>T</div><div>O</div><div>TH</div><div>A</div><div>A</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 2.796):</dt>
+<dt>Pick every last letter (IoC: 2.796 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>O</div><div>A</div><div>E</div><div>O</div><div>O</div><div>R</div><div>R</div><div>T</div><div>S</div><div>D</div><div>S</div><div>D</div><div>R</div><div>I</div><div>S</div><div>T</div><div>R</div><div>S</div><div>E</div><div>Y</div><div>A</div><div>Y</div><div>U</div><div>O</div><div>D</div><div>A</div><div>R</div><div>S</div><div>T</div><div>E</div><div>O</div><div>O</div><div>S</div><div>E</div><div>T</div><div>O</div><div>F</div><div>E</div><div>E</div><div>N</div><div>S</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.760):</dt>
+<dt>Words (IoC: 1.760 / 0.986):</dt>
 <dd>
 COAN GO MASTER DOOR ARE STUDY THE HIS WHAT ONLY WHO TO AGAIN A AM WHAT YOU WHO TO MAN HE HUMAN YOUR ARE WISHES THE MOMENT REPLIED INHABITNG IS NOT ARE STUDY GETTNG STARTED THINC SAY AFTER MASTER WELCOME INSTRUCTIAN EACH </dd>
-<dt>Pick every first letter (IoC: 2.021):</dt>
+<dt>Pick every first letter (IoC: 2.021 / 0.753):</dt>
 <dd class="runelist">
 <div>C</div><div>G</div><div>M</div><div>D</div><div>A</div><div>S</div><div>TH</div><div>H</div><div>W</div><div>O</div><div>W</div><div>T</div><div>A</div><div>A</div><div>A</div><div>W</div><div>Y</div><div>W</div><div>T</div><div>M</div><div>H</div><div>H</div><div>Y</div><div>A</div><div>W</div><div>TH</div><div>M</div><div>R</div><div>I</div><div>I</div><div>N</div><div>A</div><div>S</div><div>G</div><div>S</div><div>TH</div><div>S</div><div>A</div><div>M</div><div>W</div><div>I</div><div>EA</div></dd>
-<dt>Pick every last letter (IoC: 2.290):</dt>
+<dt>Pick every last letter (IoC: 2.290 / 0.483):</dt>
 <dd class="runelist">
 <div>N</div><div>O</div><div>R</div><div>R</div><div>E</div><div>Y</div><div>E</div><div>S</div><div>T</div><div>Y</div><div>O</div><div>O</div><div>N</div><div>A</div><div>M</div><div>T</div><div>U</div><div>O</div><div>O</div><div>N</div><div>E</div><div>N</div><div>R</div><div>E</div><div>S</div><div>E</div><div>T</div><div>D</div><div>NG</div><div>S</div><div>T</div><div>E</div><div>Y</div><div>NG</div><div>D</div><div>C</div><div>Y</div><div>R</div><div>R</div><div>E</div><div>N</div><div>H</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.995):</dt>
+<dt>Words (IoC: 1.995 / 0.779):</dt>
 <dd>
 A AND HE OF YOU HERE STUDENT NAME YOU WHAT ARE STUDY THE MOMENT A YOU ARE ARE STUDY THOUGHT ANSWERED BENG SPECIES WHO TO MASTER OF I AN MERELY WHO YOU HERE IRRITATED BUT OF SO A REPLIED TO DO DAY </dd>
-<dt>Pick every first letter (IoC: 2.324):</dt>
+<dt>Pick every first letter (IoC: 2.324 / 0.450):</dt>
 <dd class="runelist">
 <div>A</div><div>A</div><div>H</div><div>O</div><div>Y</div><div>H</div><div>S</div><div>N</div><div>Y</div><div>W</div><div>A</div><div>S</div><div>TH</div><div>M</div><div>A</div><div>Y</div><div>A</div><div>A</div><div>S</div><div>TH</div><div>A</div><div>B</div><div>S</div><div>W</div><div>T</div><div>M</div><div>O</div><div>I</div><div>A</div><div>M</div><div>W</div><div>Y</div><div>H</div><div>I</div><div>B</div><div>O</div><div>S</div><div>A</div><div>R</div><div>T</div><div>D</div><div>D</div></dd>
-<dt>Pick every last letter (IoC: 2.593):</dt>
+<dt>Pick every last letter (IoC: 2.593 / 0.180):</dt>
 <dd class="runelist">
 <div>A</div><div>D</div><div>E</div><div>F</div><div>U</div><div>E</div><div>T</div><div>E</div><div>U</div><div>T</div><div>E</div><div>Y</div><div>E</div><div>T</div><div>A</div><div>U</div><div>E</div><div>E</div><div>Y</div><div>T</div><div>D</div><div>NG</div><div>S</div><div>O</div><div>O</div><div>R</div><div>F</div><div>I</div><div>N</div><div>Y</div><div>O</div><div>U</div><div>E</div><div>D</div><div>T</div><div>F</div><div>O</div><div>A</div><div>D</div><div>O</div><div>O</div><div>Y</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.767):</dt>
+<dt>Words (IoC: 1.767 / 0.994):</dt>
 <dd>
 MAN STUDY WENT THE WHO ASCED TOLD THAT ARE YOU YOU HERE MAN AND PROFESSOR DO REPLIED YOU HERE SOME I THAT NOT ARE STUDY AGAIN THOUGHT AM ARBITRARY WHAT YOU WHO THE I HE ANYTHNG HE LONG THEN COME FOUR </dd>
-<dt>Pick every first letter (IoC: 2.334):</dt>
+<dt>Pick every first letter (IoC: 2.334 / 0.440):</dt>
 <dd class="runelist">
 <div>M</div><div>S</div><div>W</div><div>TH</div><div>W</div><div>A</div><div>T</div><div>TH</div><div>A</div><div>Y</div><div>Y</div><div>H</div><div>M</div><div>A</div><div>P</div><div>D</div><div>R</div><div>Y</div><div>H</div><div>S</div><div>I</div><div>TH</div><div>N</div><div>A</div><div>S</div><div>A</div><div>TH</div><div>A</div><div>A</div><div>W</div><div>Y</div><div>W</div><div>TH</div><div>I</div><div>H</div><div>A</div><div>H</div><div>L</div><div>TH</div><div>C</div><div>F</div></dd>
-<dt>Pick every last letter (IoC: 3.077):</dt>
+<dt>Pick every last letter (IoC: 3.077 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>Y</div><div>T</div><div>E</div><div>O</div><div>D</div><div>D</div><div>T</div><div>E</div><div>U</div><div>U</div><div>E</div><div>N</div><div>D</div><div>R</div><div>O</div><div>D</div><div>U</div><div>E</div><div>E</div><div>I</div><div>T</div><div>T</div><div>E</div><div>Y</div><div>N</div><div>T</div><div>M</div><div>Y</div><div>T</div><div>U</div><div>O</div><div>E</div><div>I</div><div>E</div><div>NG</div><div>E</div><div>NG</div><div>N</div><div>E</div><div>R</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 1.824):</dt>
+<dt>Words (IoC: 1.824 / 0.950):</dt>
 <dd>
 DECIDED WITH TO MASTER WISHES THE THE IS THAT ARE WHO HE THOUGHT REPLIED THAT NOT THE WHO CONFUSED MORE AM IS WHO YOU HERE AFTER THE A BODY YOU ARE WISHES MAN AM COULD ELSE TRAILED PAUSE YOU STUDY UNREASONABLE </dd>
-<dt>Pick every first letter (IoC: 2.157):</dt>
+<dt>Pick every first letter (IoC: 2.157 / 0.616):</dt>
 <dd class="runelist">
 <div>D</div><div>W</div><div>T</div><div>M</div><div>W</div><div>TH</div><div>TH</div><div>I</div><div>TH</div><div>A</div><div>W</div><div>H</div><div>TH</div><div>R</div><div>TH</div><div>N</div><div>TH</div><div>W</div><div>C</div><div>M</div><div>A</div><div>I</div><div>W</div><div>Y</div><div>H</div><div>A</div><div>TH</div><div>A</div><div>B</div><div>Y</div><div>A</div><div>W</div><div>M</div><div>A</div><div>C</div><div>E</div><div>T</div><div>P</div><div>Y</div><div>S</div><div>U</div></dd>
-<dt>Pick every last letter (IoC: 3.537):</dt>
+<dt>Pick every last letter (IoC: 3.537 / 0.000):</dt>
 <dd class="runelist">
 <div>D</div><div>TH</div><div>O</div><div>R</div><div>S</div><div>E</div><div>E</div><div>S</div><div>T</div><div>E</div><div>O</div><div>E</div><div>T</div><div>D</div><div>T</div><div>T</div><div>E</div><div>O</div><div>D</div><div>E</div><div>M</div><div>S</div><div>O</div><div>U</div><div>E</div><div>R</div><div>E</div><div>A</div><div>Y</div><div>U</div><div>E</div><div>S</div><div>N</div><div>M</div><div>D</div><div>E</div><div>D</div><div>E</div><div>U</div><div>Y</div><div>E</div></dd>
 </dl>

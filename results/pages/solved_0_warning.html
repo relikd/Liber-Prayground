@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -80,7 +81,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -101,6 +102,22 @@
 		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
 	</p>
 	<p class="red">Mod-IoC is disabled on solved pages</p>
+
+
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<p class="red">Pattern-IoC is disabled on solved pages</p>
 
 
 	<h2 id="running-ioc">Running IoC</h2>
@@ -140,167 +157,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 1.857):</dt>
+<dt>Words (IoC: 1.857 / 0.917):</dt>
 <dd>
 A WARNNG BELIEUE NOTHNG FROM THIS BOOC EXCEPT WHAT YOU CNOW TO BE TRUE TEST THE CNOWLEDGE FIND YOUR TRUTH EXPERIENCE YOUR DEATH DO NOT EDIT OR CHANGE THIS BOOC OR THE MESSAGE CONTAINED WITHIN EITHER THE WORDS OR THEIR NUMBERS FOR ALL IS SACRED </dd>
-<dt>Pick every first letter (IoC: 1.728):</dt>
+<dt>Pick every first letter (IoC: 1.728 / 0.955):</dt>
 <dd class="runelist">
 <div>A</div><div>W</div><div>B</div><div>N</div><div>F</div><div>TH</div><div>B</div><div>E</div><div>W</div><div>Y</div><div>C</div><div>T</div><div>B</div><div>T</div><div>T</div><div>TH</div><div>C</div><div>F</div><div>Y</div><div>T</div><div>E</div><div>Y</div><div>D</div><div>D</div><div>N</div><div>E</div><div>O</div><div>C</div><div>TH</div><div>B</div><div>O</div><div>TH</div><div>M</div><div>C</div><div>W</div><div>E</div><div>TH</div><div>W</div><div>O</div><div>TH</div><div>N</div><div>F</div><div>A</div><div>I</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 2.929):</dt>
+<dt>Pick every last letter (IoC: 2.929 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>NG</div><div>E</div><div>NG</div><div>M</div><div>S</div><div>C</div><div>T</div><div>T</div><div>U</div><div>W</div><div>O</div><div>E</div><div>E</div><div>T</div><div>E</div><div>E</div><div>D</div><div>R</div><div>TH</div><div>E</div><div>R</div><div>TH</div><div>O</div><div>T</div><div>T</div><div>R</div><div>E</div><div>S</div><div>C</div><div>R</div><div>E</div><div>E</div><div>D</div><div>N</div><div>R</div><div>E</div><div>S</div><div>R</div><div>R</div><div>S</div><div>R</div><div>L</div><div>S</div><div>D</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.788):</dt>
+<dt>Words (IoC: 1.788 / 0.986):</dt>
 <dd>
 A BELIEUE FROM BOOC WHAT CNOW BE TEST CNOWLEDGE YOUR EXPERIENCE DEATH NOT OR THIS OR MESSAGE WITHIN THE OR NUMBERS ALL SACRED </dd>
-<dt>Pick every first letter (IoC: 1.261):</dt>
+<dt>Pick every first letter (IoC: 1.261 / 0.487):</dt>
 <dd class="runelist">
 <div>A</div><div>B</div><div>F</div><div>B</div><div>W</div><div>C</div><div>B</div><div>T</div><div>C</div><div>Y</div><div>E</div><div>D</div><div>N</div><div>O</div><div>TH</div><div>O</div><div>M</div><div>W</div><div>TH</div><div>O</div><div>N</div><div>A</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 2.866):</dt>
+<dt>Pick every last letter (IoC: 2.866 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>E</div><div>M</div><div>C</div><div>T</div><div>W</div><div>E</div><div>T</div><div>E</div><div>R</div><div>E</div><div>TH</div><div>T</div><div>R</div><div>S</div><div>R</div><div>E</div><div>N</div><div>E</div><div>R</div><div>S</div><div>L</div><div>D</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.817):</dt>
+<dt>Words (IoC: 1.817 / 0.957):</dt>
 <dd>
 WARNNG NOTHNG THIS EXCEPT YOU TO TRUE THE FIND TRUTH YOUR DO EDIT CHANGE BOOC THE CONTAINED EITHER WORDS THEIR FOR IS </dd>
-<dt>Pick every first letter (IoC: 2.009):</dt>
+<dt>Pick every first letter (IoC: 2.009 / 0.765):</dt>
 <dd class="runelist">
 <div>W</div><div>N</div><div>TH</div><div>E</div><div>Y</div><div>T</div><div>T</div><div>TH</div><div>F</div><div>T</div><div>Y</div><div>D</div><div>E</div><div>C</div><div>B</div><div>TH</div><div>C</div><div>E</div><div>W</div><div>TH</div><div>F</div><div>I</div></dd>
-<dt>Pick every last letter (IoC: 2.385):</dt>
+<dt>Pick every last letter (IoC: 2.385 / 0.388):</dt>
 <dd class="runelist">
 <div>NG</div><div>NG</div><div>S</div><div>T</div><div>U</div><div>O</div><div>E</div><div>E</div><div>D</div><div>TH</div><div>R</div><div>O</div><div>T</div><div>E</div><div>C</div><div>E</div><div>D</div><div>R</div><div>S</div><div>R</div><div>R</div><div>S</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.946):</dt>
+<dt>Words (IoC: 1.946 / 0.827):</dt>
 <dd>
 A NOTHNG BOOC YOU BE THE YOUR YOUR NOT CHANGE OR CONTAINED THE THEIR ALL </dd>
-<dt>Pick every first letter (IoC: 2.762):</dt>
+<dt>Pick every first letter (IoC: 2.762 / 0.012):</dt>
 <dd class="runelist">
 <div>A</div><div>N</div><div>B</div><div>Y</div><div>B</div><div>TH</div><div>Y</div><div>Y</div><div>N</div><div>C</div><div>O</div><div>C</div><div>TH</div><div>TH</div><div>A</div></dd>
-<dt>Pick every last letter (IoC: 3.314):</dt>
+<dt>Pick every last letter (IoC: 3.314 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>NG</div><div>C</div><div>U</div><div>E</div><div>E</div><div>R</div><div>R</div><div>T</div><div>E</div><div>R</div><div>D</div><div>E</div><div>R</div><div>L</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.495):</dt>
+<dt>Words (IoC: 1.495 / 0.722):</dt>
 <dd>
 WARNNG FROM EXCEPT CNOW TRUE CNOWLEDGE TRUTH DEATH EDIT THIS THE WITHIN WORDS NUMBERS IS </dd>
-<dt>Pick every first letter (IoC: 1.933):</dt>
+<dt>Pick every first letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>W</div><div>F</div><div>E</div><div>C</div><div>T</div><div>C</div><div>T</div><div>D</div><div>E</div><div>TH</div><div>TH</div><div>W</div><div>W</div><div>N</div><div>I</div></dd>
-<dt>Pick every last letter (IoC: 3.038):</dt>
+<dt>Pick every last letter (IoC: 3.038 / 0.000):</dt>
 <dd class="runelist">
 <div>NG</div><div>M</div><div>T</div><div>W</div><div>E</div><div>E</div><div>TH</div><div>TH</div><div>T</div><div>S</div><div>E</div><div>N</div><div>S</div><div>S</div><div>S</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 2.133):</dt>
+<dt>Words (IoC: 2.133 / 0.641):</dt>
 <dd>
 BELIEUE THIS WHAT TO TEST FIND EXPERIENCE DO OR BOOC MESSAGE EITHER OR FOR SACRED </dd>
-<dt>Pick every first letter (IoC: 1.381):</dt>
+<dt>Pick every first letter (IoC: 1.381 / 0.607):</dt>
 <dd class="runelist">
 <div>B</div><div>TH</div><div>W</div><div>T</div><div>T</div><div>F</div><div>E</div><div>D</div><div>O</div><div>B</div><div>M</div><div>E</div><div>O</div><div>F</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 3.314):</dt>
+<dt>Pick every last letter (IoC: 3.314 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>S</div><div>T</div><div>O</div><div>T</div><div>D</div><div>E</div><div>O</div><div>R</div><div>C</div><div>E</div><div>R</div><div>R</div><div>R</div><div>D</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.930):</dt>
+<dt>Words (IoC: 1.930 / 0.844):</dt>
 <dd>
 A FROM WHAT BE CNOWLEDGE EXPERIENCE NOT THIS MESSAGE THE NUMBERS SACRED </dd>
-<dt>Pick every first letter (IoC: 0.879):</dt>
+<dt>Pick every first letter (IoC: 0.879 / 0.105):</dt>
 <dd class="runelist">
 <div>A</div><div>F</div><div>W</div><div>B</div><div>C</div><div>E</div><div>N</div><div>TH</div><div>M</div><div>TH</div><div>N</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 5.273):</dt>
+<dt>Pick every last letter (IoC: 5.273 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>M</div><div>T</div><div>E</div><div>E</div><div>E</div><div>T</div><div>S</div><div>E</div><div>E</div><div>S</div><div>D</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.645):</dt>
+<dt>Words (IoC: 1.645 / 0.872):</dt>
 <dd>
 WARNNG THIS YOU TRUE FIND YOUR EDIT BOOC CONTAINED WORDS FOR </dd>
-<dt>Pick every first letter (IoC: 1.582):</dt>
+<dt>Pick every first letter (IoC: 1.582 / 0.808):</dt>
 <dd class="runelist">
 <div>W</div><div>TH</div><div>Y</div><div>T</div><div>F</div><div>Y</div><div>E</div><div>B</div><div>C</div><div>W</div><div>F</div></dd>
-<dt>Pick every last letter (IoC: 1.582):</dt>
+<dt>Pick every last letter (IoC: 1.582 / 0.808):</dt>
 <dd class="runelist">
 <div>NG</div><div>S</div><div>U</div><div>E</div><div>D</div><div>R</div><div>T</div><div>C</div><div>D</div><div>S</div><div>R</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.710):</dt>
+<dt>Words (IoC: 1.710 / 0.937):</dt>
 <dd>
 BELIEUE BOOC CNOW TEST YOUR DEATH OR OR WITHIN OR ALL </dd>
-<dt>Pick every first letter (IoC: 2.109):</dt>
+<dt>Pick every first letter (IoC: 2.109 / 0.665):</dt>
 <dd class="runelist">
 <div>B</div><div>B</div><div>C</div><div>T</div><div>Y</div><div>D</div><div>O</div><div>O</div><div>W</div><div>O</div><div>A</div></dd>
-<dt>Pick every last letter (IoC: 3.164):</dt>
+<dt>Pick every last letter (IoC: 3.164 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>C</div><div>W</div><div>T</div><div>R</div><div>TH</div><div>R</div><div>R</div><div>N</div><div>R</div><div>L</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 2.351):</dt>
+<dt>Words (IoC: 2.351 / 0.422):</dt>
 <dd>
 NOTHNG EXCEPT TO THE TRUTH DO CHANGE THE EITHER THEIR IS </dd>
-<dt>Pick every first letter (IoC: 2.636):</dt>
+<dt>Pick every first letter (IoC: 2.636 / 0.137):</dt>
 <dd class="runelist">
 <div>N</div><div>E</div><div>T</div><div>TH</div><div>T</div><div>D</div><div>C</div><div>TH</div><div>E</div><div>TH</div><div>I</div></dd>
-<dt>Pick every last letter (IoC: 2.636):</dt>
+<dt>Pick every last letter (IoC: 2.636 / 0.137):</dt>
 <dd class="runelist">
 <div>NG</div><div>T</div><div>O</div><div>E</div><div>TH</div><div>O</div><div>E</div><div>E</div><div>R</div><div>R</div><div>S</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 2.351):</dt>
+<dt>Words (IoC: 2.351 / 0.422):</dt>
 <dd>
 A THIS CNOW THE EXPERIENCE EDIT OR EITHER NUMBERS </dd>
-<dt>Pick every first letter (IoC: 3.222):</dt>
+<dt>Pick every first letter (IoC: 3.222 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>TH</div><div>C</div><div>TH</div><div>E</div><div>E</div><div>O</div><div>E</div><div>N</div></dd>
-<dt>Pick every last letter (IoC: 2.417):</dt>
+<dt>Pick every last letter (IoC: 2.417 / 0.357):</dt>
 <dd class="runelist">
 <div>A</div><div>S</div><div>W</div><div>E</div><div>E</div><div>T</div><div>R</div><div>R</div><div>S</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 2.032):</dt>
+<dt>Words (IoC: 2.032 / 0.741):</dt>
 <dd>
 WARNNG BOOC TO CNOWLEDGE YOUR OR THE THE FOR </dd>
-<dt>Pick every first letter (IoC: 0.806):</dt>
+<dt>Pick every first letter (IoC: 0.806 / 0.032):</dt>
 <dd class="runelist">
 <div>W</div><div>B</div><div>T</div><div>C</div><div>Y</div><div>O</div><div>TH</div><div>TH</div><div>F</div></dd>
-<dt>Pick every last letter (IoC: 4.833):</dt>
+<dt>Pick every last letter (IoC: 4.833 / 0.000):</dt>
 <dd class="runelist">
 <div>NG</div><div>C</div><div>O</div><div>E</div><div>R</div><div>R</div><div>E</div><div>E</div><div>R</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.718):</dt>
+<dt>Words (IoC: 1.718 / 0.944):</dt>
 <dd>
 BELIEUE EXCEPT BE FIND DEATH CHANGE MESSAGE WORDS ALL </dd>
-<dt>Pick every first letter (IoC: 0.806):</dt>
+<dt>Pick every first letter (IoC: 0.806 / 0.032):</dt>
 <dd class="runelist">
 <div>B</div><div>E</div><div>B</div><div>F</div><div>D</div><div>C</div><div>M</div><div>W</div><div>A</div></dd>
-<dt>Pick every last letter (IoC: 4.833):</dt>
+<dt>Pick every last letter (IoC: 4.833 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>T</div><div>E</div><div>D</div><div>TH</div><div>E</div><div>E</div><div>S</div><div>L</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.447):</dt>
+<dt>Words (IoC: 1.447 / 0.674):</dt>
 <dd>
 NOTHNG WHAT TRUE YOUR DO THIS CONTAINED OR IS </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>W</div><div>T</div><div>Y</div><div>D</div><div>TH</div><div>C</div><div>O</div><div>I</div></dd>
-<dt>Pick every last letter (IoC: 1.611):</dt>
+<dt>Pick every last letter (IoC: 1.611 / 0.837):</dt>
 <dd class="runelist">
 <div>NG</div><div>T</div><div>E</div><div>R</div><div>O</div><div>S</div><div>D</div><div>R</div><div>S</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 1.524):</dt>
+<dt>Words (IoC: 1.524 / 0.750):</dt>
 <dd>
 FROM YOU TEST TRUTH NOT BOOC WITHIN THEIR SACRED </dd>
-<dt>Pick every first letter (IoC: 0.806):</dt>
+<dt>Pick every first letter (IoC: 0.806 / 0.032):</dt>
 <dd class="runelist">
 <div>F</div><div>Y</div><div>T</div><div>T</div><div>N</div><div>B</div><div>W</div><div>TH</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 0.806):</dt>
+<dt>Pick every last letter (IoC: 0.806 / 0.032):</dt>
 <dd class="runelist">
 <div>M</div><div>U</div><div>T</div><div>TH</div><div>T</div><div>C</div><div>N</div><div>R</div><div>D</div></dd>
 </dl>

@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -116,7 +117,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -137,6 +138,22 @@
 		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
 	</p>
 	<p class="red">Mod-IoC is disabled on solved pages</p>
+
+
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<p class="red">Pattern-IoC is disabled on solved pages</p>
 
 
 	<h2 id="running-ioc">Running IoC</h2>
@@ -176,167 +193,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 0.942):</dt>
+<dt>Words (IoC: 0.942 / 0.169):</dt>
 <dd>
 AEJ OESR MYLOH OAE CTHGW WLAE XOAP MDDUGW L DNYJ CFIA AETPEOATH CAE CD FN IAE FNCNG RF AEIRDE SYJEAUNGW XO MEAWF RGIA NGRB AENUS </dd>
-<dt>Pick every first letter (IoC: 1.740):</dt>
+<dt>Pick every first letter (IoC: 1.740 / 0.966):</dt>
 <dd class="runelist">
 <div>AE</div><div>OE</div><div>M</div><div>O</div><div>C</div><div>W</div><div>X</div><div>M</div><div>L</div><div>D</div><div>C</div><div>AE</div><div>C</div><div>C</div><div>F</div><div>IA</div><div>F</div><div>R</div><div>AE</div><div>S</div><div>X</div><div>M</div><div>R</div><div>NG</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 0.967):</dt>
+<dt>Pick every last letter (IoC: 0.967 / 0.193):</dt>
 <dd class="runelist">
 <div>J</div><div>R</div><div>H</div><div>AE</div><div>W</div><div>AE</div><div>P</div><div>W</div><div>L</div><div>J</div><div>IA</div><div>TH</div><div>AE</div><div>D</div><div>N</div><div>E</div><div>NG</div><div>F</div><div>E</div><div>W</div><div>O</div><div>F</div><div>IA</div><div>B</div><div>S</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 0.920):</dt>
+<dt>Words (IoC: 0.920 / 0.146):</dt>
 <dd>
 AEJ MYLOH CTHGW XOAP L CFIA CAE FN FNCNG AEIRDE XO RGIA AENUS </dd>
-<dt>Pick every first letter (IoC: 2.974):</dt>
+<dt>Pick every first letter (IoC: 2.974 / 0.000):</dt>
 <dd class="runelist">
 <div>AE</div><div>M</div><div>C</div><div>X</div><div>L</div><div>C</div><div>C</div><div>F</div><div>F</div><div>AE</div><div>X</div><div>R</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 0.372):</dt>
+<dt>Pick every last letter (IoC: 0.372 / 0.000):</dt>
 <dd class="runelist">
 <div>J</div><div>H</div><div>W</div><div>P</div><div>L</div><div>IA</div><div>AE</div><div>N</div><div>NG</div><div>E</div><div>O</div><div>IA</div><div>S</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 0.797):</dt>
+<dt>Words (IoC: 0.797 / 0.023):</dt>
 <dd>
 OESR OAE WLAE MDDUGW DNYJ AETPEOATH CD IAE RF SYJEAUNGW MEAWF NGRB </dd>
-<dt>Pick every first letter (IoC: 0.439):</dt>
+<dt>Pick every first letter (IoC: 0.439 / 0.000):</dt>
 <dd class="runelist">
 <div>OE</div><div>O</div><div>W</div><div>M</div><div>D</div><div>AE</div><div>C</div><div>IA</div><div>R</div><div>S</div><div>M</div><div>NG</div></dd>
-<dt>Pick every last letter (IoC: 1.318):</dt>
+<dt>Pick every last letter (IoC: 1.318 / 0.544):</dt>
 <dd class="runelist">
 <div>R</div><div>AE</div><div>AE</div><div>W</div><div>J</div><div>TH</div><div>D</div><div>E</div><div>F</div><div>W</div><div>F</div><div>B</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.071):</dt>
+<dt>Words (IoC: 1.071 / 0.298):</dt>
 <dd>
 AEJ OAE XOAP DNYJ CAE IAE AEIRDE MEAWF AENUS </dd>
-<dt>Pick every first letter (IoC: 2.417):</dt>
+<dt>Pick every first letter (IoC: 2.417 / 0.357):</dt>
 <dd class="runelist">
 <div>AE</div><div>O</div><div>X</div><div>D</div><div>C</div><div>IA</div><div>AE</div><div>M</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 2.417):</dt>
+<dt>Pick every last letter (IoC: 2.417 / 0.357):</dt>
 <dd class="runelist">
 <div>J</div><div>AE</div><div>P</div><div>J</div><div>AE</div><div>E</div><div>E</div><div>F</div><div>S</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.228):</dt>
+<dt>Words (IoC: 1.228 / 0.454):</dt>
 <dd>
 OESR CTHGW MDDUGW CFIA CD FNCNG SYJEAUNGW RGIA </dd>
-<dt>Pick every first letter (IoC: 3.107):</dt>
+<dt>Pick every first letter (IoC: 3.107 / 0.000):</dt>
 <dd class="runelist">
 <div>OE</div><div>C</div><div>M</div><div>C</div><div>C</div><div>F</div><div>S</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 4.143):</dt>
+<dt>Pick every last letter (IoC: 4.143 / 0.000):</dt>
 <dd class="runelist">
 <div>R</div><div>W</div><div>W</div><div>IA</div><div>D</div><div>NG</div><div>W</div><div>IA</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 0.736):</dt>
+<dt>Words (IoC: 0.736 / 0.000):</dt>
 <dd>
 MYLOH WLAE L AETPEOATH FN RF XO NGRB </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>W</div><div>L</div><div>AE</div><div>F</div><div>R</div><div>X</div><div>NG</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>H</div><div>AE</div><div>L</div><div>TH</div><div>N</div><div>F</div><div>O</div><div>B</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.187):</dt>
+<dt>Words (IoC: 1.187 / 0.413):</dt>
 <dd>
 AEJ CTHGW L CAE FNCNG XO AENUS </dd>
-<dt>Pick every first letter (IoC: 2.762):</dt>
+<dt>Pick every first letter (IoC: 2.762 / 0.012):</dt>
 <dd class="runelist">
 <div>AE</div><div>C</div><div>L</div><div>C</div><div>F</div><div>X</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>J</div><div>W</div><div>L</div><div>AE</div><div>NG</div><div>O</div><div>S</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 0.758):</dt>
+<dt>Words (IoC: 0.758 / 0.000):</dt>
 <dd>
 OESR WLAE DNYJ CD RF MEAWF </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>OE</div><div>W</div><div>D</div><div>C</div><div>R</div><div>M</div></dd>
-<dt>Pick every last letter (IoC: 1.933):</dt>
+<dt>Pick every last letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>R</div><div>AE</div><div>J</div><div>D</div><div>F</div><div>F</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 0.502):</dt>
+<dt>Words (IoC: 0.502 / 0.000):</dt>
 <dd>
 MYLOH XOAP CFIA FN AEIRDE RGIA </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>X</div><div>C</div><div>F</div><div>AE</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 1.933):</dt>
+<dt>Pick every last letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>H</div><div>P</div><div>IA</div><div>N</div><div>E</div><div>IA</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 0.446):</dt>
+<dt>Words (IoC: 0.446 / 0.000):</dt>
 <dd>
 OAE MDDUGW AETPEOATH IAE SYJEAUNGW NGRB </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>O</div><div>M</div><div>AE</div><div>IA</div><div>S</div><div>NG</div></dd>
-<dt>Pick every last letter (IoC: 1.933):</dt>
+<dt>Pick every last letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>AE</div><div>W</div><div>TH</div><div>E</div><div>W</div><div>B</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 0.879):</dt>
+<dt>Words (IoC: 0.879 / 0.105):</dt>
 <dd>
 AEJ WLAE CFIA IAE XO </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>AE</div><div>W</div><div>C</div><div>IA</div><div>X</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>J</div><div>AE</div><div>IA</div><div>E</div><div>O</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 0.414):</dt>
+<dt>Words (IoC: 0.414 / 0.000):</dt>
 <dd>
 OESR XOAP AETPEOATH FNCNG MEAWF </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>OE</div><div>X</div><div>AE</div><div>F</div><div>M</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>R</div><div>P</div><div>TH</div><div>NG</div><div>F</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 0.758):</dt>
+<dt>Words (IoC: 0.758 / 0.000):</dt>
 <dd>
 MYLOH MDDUGW CAE RF RGIA </dd>
-<dt>Pick every first letter (IoC: 5.800):</dt>
+<dt>Pick every first letter (IoC: 5.800 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>M</div><div>C</div><div>R</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>H</div><div>W</div><div>AE</div><div>F</div><div>IA</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.115):</dt>
+<dt>Words (IoC: 1.115 / 0.342):</dt>
 <dd>
 OAE L CD AEIRDE NGRB </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>O</div><div>L</div><div>C</div><div>AE</div><div>NG</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>AE</div><div>L</div><div>D</div><div>E</div><div>B</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 1.105):</dt>
+<dt>Words (IoC: 1.105 / 0.331):</dt>
 <dd>
 CTHGW DNYJ FN SYJEAUNGW AENUS </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>C</div><div>D</div><div>F</div><div>S</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 2.900):</dt>
+<dt>Pick every last letter (IoC: 2.900 / 0.000):</dt>
 <dd class="runelist">
 <div>W</div><div>J</div><div>N</div><div>W</div><div>S</div></dd>
 </dl>

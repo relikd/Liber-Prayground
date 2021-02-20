@@ -60,13 +60,16 @@ class InterruptDB(object):
         for name, entries in InterruptDB.load(dbname).items():
             for irpc, score, irp, kl, nums in entries:
                 if name not in scores:
-                    scores[name] = [[] for _ in range(29)]
-                part = scores[name][irp]
-                while kl >= len(part):
-                    part.append((0, 0))  # (score, irp_count)
-                oldc = part[kl][1]
-                if irpc > oldc or (irpc == oldc and score > part[kl][0]):
-                    part[kl] = (score, irpc)
+                    scores[name] = {}
+                pointer = scores[name]
+                if irp not in pointer:
+                    pointer[irp] = {}
+                pointer = pointer[irp]
+                if kl not in pointer:
+                    pointer[kl] = (0, 0)
+                oldc = pointer[kl][1]
+                if irpc > oldc or (irpc == oldc and score > pointer[kl][0]):
+                    pointer[kl] = (score, irpc)
         return scores
 
 

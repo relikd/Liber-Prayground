@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -116,7 +117,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -137,6 +138,22 @@
 		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
 	</p>
 	<p class="red">Mod-IoC is disabled on solved pages</p>
+
+
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<p class="red">Pattern-IoC is disabled on solved pages</p>
 
 
 	<h2 id="running-ioc">Running IoC</h2>
@@ -176,167 +193,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 1.523):</dt>
+<dt>Words (IoC: 1.523 / 0.749):</dt>
 <dd>
 SOME WISDOM THE PRIMES ARE SACRED THE TOTIENT FUNCTIAN IS SACRED ALL THNGS SHOULD BE ENCRYPTED CNOW THIS SHADOWS AETHEREAL BUFFERS UOID CARNAL OBSCURA FORM MOBIUS ANALOG UOID MOURNFUL AETHEREAL CABAL </dd>
-<dt>Pick every first letter (IoC: 1.684):</dt>
+<dt>Pick every first letter (IoC: 1.684 / 0.910):</dt>
 <dd class="runelist">
 <div>S</div><div>W</div><div>TH</div><div>P</div><div>A</div><div>S</div><div>TH</div><div>T</div><div>F</div><div>I</div><div>S</div><div>A</div><div>TH</div><div>S</div><div>B</div><div>E</div><div>C</div><div>TH</div><div>S</div><div>AE</div><div>B</div><div>U</div><div>C</div><div>O</div><div>F</div><div>M</div><div>A</div><div>U</div><div>M</div><div>AE</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 3.867):</dt>
+<dt>Pick every last letter (IoC: 3.867 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>M</div><div>E</div><div>S</div><div>E</div><div>D</div><div>E</div><div>T</div><div>N</div><div>S</div><div>D</div><div>L</div><div>S</div><div>D</div><div>E</div><div>D</div><div>W</div><div>S</div><div>S</div><div>L</div><div>S</div><div>D</div><div>L</div><div>A</div><div>M</div><div>S</div><div>G</div><div>D</div><div>L</div><div>L</div><div>L</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.628):</dt>
+<dt>Words (IoC: 1.628 / 0.854):</dt>
 <dd>
 SOME THE ARE THE FUNCTIAN SACRED THNGS BE CNOW SHADOWS BUFFERS CARNAL FORM ANALOG MOURNFUL CABAL </dd>
-<dt>Pick every first letter (IoC: 2.900):</dt>
+<dt>Pick every first letter (IoC: 2.900 / 0.000):</dt>
 <dd class="runelist">
 <div>S</div><div>TH</div><div>A</div><div>TH</div><div>F</div><div>S</div><div>TH</div><div>B</div><div>C</div><div>S</div><div>B</div><div>C</div><div>F</div><div>A</div><div>M</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 3.867):</dt>
+<dt>Pick every last letter (IoC: 3.867 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>E</div><div>E</div><div>E</div><div>N</div><div>D</div><div>S</div><div>E</div><div>W</div><div>S</div><div>S</div><div>L</div><div>M</div><div>G</div><div>L</div><div>L</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.531):</dt>
+<dt>Words (IoC: 1.531 / 0.757):</dt>
 <dd>
 WISDOM PRIMES SACRED TOTIENT IS ALL SHOULD ENCRYPTED THIS AETHEREAL UOID OBSCURA MOBIUS UOID AETHEREAL </dd>
-<dt>Pick every first letter (IoC: 0.829):</dt>
+<dt>Pick every first letter (IoC: 0.829 / 0.055):</dt>
 <dd class="runelist">
 <div>W</div><div>P</div><div>S</div><div>T</div><div>I</div><div>A</div><div>S</div><div>E</div><div>TH</div><div>AE</div><div>U</div><div>O</div><div>M</div><div>U</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 5.248):</dt>
+<dt>Pick every last letter (IoC: 5.248 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>S</div><div>D</div><div>T</div><div>S</div><div>L</div><div>D</div><div>D</div><div>S</div><div>L</div><div>D</div><div>A</div><div>S</div><div>D</div><div>L</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.420):</dt>
+<dt>Words (IoC: 1.420 / 0.647):</dt>
 <dd>
 SOME PRIMES THE IS THNGS ENCRYPTED SHADOWS UOID FORM UOID CABAL </dd>
-<dt>Pick every first letter (IoC: 1.582):</dt>
+<dt>Pick every first letter (IoC: 1.582 / 0.808):</dt>
 <dd class="runelist">
 <div>S</div><div>P</div><div>TH</div><div>I</div><div>TH</div><div>E</div><div>S</div><div>U</div><div>F</div><div>U</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 5.273):</dt>
+<dt>Pick every last letter (IoC: 5.273 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>S</div><div>E</div><div>S</div><div>S</div><div>D</div><div>S</div><div>D</div><div>M</div><div>D</div><div>L</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.351):</dt>
+<dt>Words (IoC: 1.351 / 0.577):</dt>
 <dd>
 WISDOM ARE TOTIENT SACRED SHOULD CNOW AETHEREAL CARNAL MOBIUS MOURNFUL </dd>
-<dt>Pick every first letter (IoC: 1.933):</dt>
+<dt>Pick every first letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>W</div><div>A</div><div>T</div><div>S</div><div>S</div><div>C</div><div>AE</div><div>C</div><div>M</div><div>M</div></dd>
-<dt>Pick every last letter (IoC: 2.578):</dt>
+<dt>Pick every last letter (IoC: 2.578 / 0.196):</dt>
 <dd class="runelist">
 <div>M</div><div>E</div><div>T</div><div>D</div><div>D</div><div>W</div><div>L</div><div>L</div><div>S</div><div>L</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.406):</dt>
+<dt>Words (IoC: 1.406 / 0.632):</dt>
 <dd>
 THE SACRED FUNCTIAN ALL BE THIS BUFFERS OBSCURA ANALOG AETHEREAL </dd>
-<dt>Pick every first letter (IoC: 1.933):</dt>
+<dt>Pick every first letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>TH</div><div>S</div><div>F</div><div>A</div><div>B</div><div>TH</div><div>B</div><div>O</div><div>A</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 1.933):</dt>
+<dt>Pick every last letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>E</div><div>D</div><div>N</div><div>L</div><div>E</div><div>S</div><div>S</div><div>A</div><div>G</div><div>L</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.636):</dt>
+<dt>Words (IoC: 1.636 / 0.862):</dt>
 <dd>
 SOME ARE FUNCTIAN THNGS CNOW BUFFERS FORM MOURNFUL </dd>
-<dt>Pick every first letter (IoC: 1.036):</dt>
+<dt>Pick every first letter (IoC: 1.036 / 0.262):</dt>
 <dd class="runelist">
 <div>S</div><div>A</div><div>F</div><div>TH</div><div>C</div><div>B</div><div>F</div><div>M</div></dd>
-<dt>Pick every last letter (IoC: 2.071):</dt>
+<dt>Pick every last letter (IoC: 2.071 / 0.702):</dt>
 <dd class="runelist">
 <div>E</div><div>E</div><div>N</div><div>S</div><div>W</div><div>S</div><div>M</div><div>L</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.761):</dt>
+<dt>Words (IoC: 1.761 / 0.987):</dt>
 <dd>
 WISDOM SACRED IS SHOULD THIS UOID MOBIUS AETHEREAL </dd>
-<dt>Pick every first letter (IoC: 1.036):</dt>
+<dt>Pick every first letter (IoC: 1.036 / 0.262):</dt>
 <dd class="runelist">
 <div>W</div><div>S</div><div>I</div><div>S</div><div>TH</div><div>U</div><div>M</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 6.214):</dt>
+<dt>Pick every last letter (IoC: 6.214 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>D</div><div>S</div><div>D</div><div>S</div><div>D</div><div>S</div><div>L</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 2.256):</dt>
+<dt>Words (IoC: 2.256 / 0.518):</dt>
 <dd>
 THE THE SACRED BE SHADOWS CARNAL ANALOG CABAL </dd>
-<dt>Pick every first letter (IoC: 3.107):</dt>
+<dt>Pick every first letter (IoC: 3.107 / 0.000):</dt>
 <dd class="runelist">
 <div>TH</div><div>TH</div><div>S</div><div>B</div><div>S</div><div>C</div><div>A</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 4.143):</dt>
+<dt>Pick every last letter (IoC: 4.143 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>E</div><div>D</div><div>E</div><div>S</div><div>L</div><div>G</div><div>L</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.280):</dt>
+<dt>Words (IoC: 1.280 / 0.506):</dt>
 <dd>
 PRIMES TOTIENT ALL ENCRYPTED AETHEREAL OBSCURA UOID </dd>
-<dt>Pick every first letter (IoC: 0.000):</dt>
+<dt>Pick every first letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>P</div><div>T</div><div>A</div><div>E</div><div>AE</div><div>O</div><div>U</div></dd>
-<dt>Pick every last letter (IoC: 2.762):</dt>
+<dt>Pick every last letter (IoC: 2.762 / 0.012):</dt>
 <dd class="runelist">
 <div>S</div><div>T</div><div>L</div><div>D</div><div>L</div><div>A</div><div>D</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.702):</dt>
+<dt>Words (IoC: 1.702 / 0.928):</dt>
 <dd>
 SOME SACRED SACRED ENCRYPTED BUFFERS MOBIUS CABAL </dd>
-<dt>Pick every first letter (IoC: 4.143):</dt>
+<dt>Pick every first letter (IoC: 4.143 / 0.000):</dt>
 <dd class="runelist">
 <div>S</div><div>S</div><div>S</div><div>E</div><div>B</div><div>M</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 5.524):</dt>
+<dt>Pick every last letter (IoC: 5.524 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>D</div><div>D</div><div>D</div><div>S</div><div>S</div><div>L</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.547):</dt>
+<dt>Words (IoC: 1.547 / 0.773):</dt>
 <dd>
 WISDOM THE ALL CNOW UOID ANALOG </dd>
-<dt>Pick every first letter (IoC: 1.933):</dt>
+<dt>Pick every first letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>W</div><div>TH</div><div>A</div><div>C</div><div>U</div><div>A</div></dd>
-<dt>Pick every last letter (IoC: 0.000):</dt>
+<dt>Pick every last letter (IoC: 0.000 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>E</div><div>L</div><div>W</div><div>D</div><div>G</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.353):</dt>
+<dt>Words (IoC: 1.353 / 0.580):</dt>
 <dd>
 THE TOTIENT THNGS THIS CARNAL UOID </dd>
-<dt>Pick every first letter (IoC: 5.800):</dt>
+<dt>Pick every first letter (IoC: 5.800 / 0.000):</dt>
 <dd class="runelist">
 <div>TH</div><div>T</div><div>TH</div><div>TH</div><div>C</div><div>U</div></dd>
-<dt>Pick every last letter (IoC: 1.933):</dt>
+<dt>Pick every last letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>E</div><div>T</div><div>S</div><div>S</div><div>L</div><div>D</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.379):</dt>
+<dt>Words (IoC: 1.379 / 0.606):</dt>
 <dd>
 PRIMES FUNCTIAN SHOULD SHADOWS OBSCURA MOURNFUL </dd>
-<dt>Pick every first letter (IoC: 1.933):</dt>
+<dt>Pick every first letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>P</div><div>F</div><div>S</div><div>S</div><div>O</div><div>M</div></dd>
-<dt>Pick every last letter (IoC: 1.933):</dt>
+<dt>Pick every last letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>S</div><div>N</div><div>D</div><div>S</div><div>A</div><div>L</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 1.834):</dt>
+<dt>Words (IoC: 1.834 / 0.940):</dt>
 <dd>
 ARE IS BE AETHEREAL FORM AETHEREAL </dd>
-<dt>Pick every first letter (IoC: 1.933):</dt>
+<dt>Pick every first letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>A</div><div>I</div><div>B</div><div>AE</div><div>F</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 3.867):</dt>
+<dt>Pick every last letter (IoC: 3.867 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>S</div><div>E</div><div>L</div><div>M</div><div>L</div></dd>
 </dl>

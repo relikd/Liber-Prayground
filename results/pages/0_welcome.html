@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -116,7 +117,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -137,6 +138,22 @@
 		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
 	</p>
 	<p class="red">Mod-IoC is disabled on solved pages</p>
+
+
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<p class="red">Pattern-IoC is disabled on solved pages</p>
 
 
 	<h2 id="running-ioc">Running IoC</h2>
@@ -176,167 +193,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 1.174):</dt>
+<dt>Words (IoC: 1.174 / 0.401):</dt>
 <dd>
 UEANGSEOFC REOUGPEAEA FWXTCLEA YM EAEO TCNAE NGMIAIAMMW AEPDNGIAR OEA IAMI FF EUNG EOUAE YP RAE IPAE CAE AENW BXMD RIAI FPC EOEOAEC RTHP FJMO EOCWIA BAEW BEALS RY JAE R MCTHEOAETCPW MGEO CNGPU EOC REW IAPI BYBX FLIR RM CGB YR CFU THPIAJWTFEA JGB AETHFFEAPTH PFAX JMEPNGSOSM WEOJL WXUTHAEWMTH DYJC SIAXONGRMBW RMI DYJC XHUYPL JNGYMFJPEOUIA WEOJ DWXU ALASMIAEOX AEM IAMI PY AEMUF MY YEO AEXRJSE EWN DJUSXYTETM EORY DS NEAEDIA PBUNEANGJIAAE JGB PTHX PNWWILMAE LPBUOEAIA RIAEAF RREOJM RMI DYJ HLFU JUIALTHEA EOJOEORRM UMSC EAEO LIAEAECL WI LT PEUP EAIAPTHTB TME ULOLE EOJP UEA LCG EAGSIATM BMRTHFP WRJ RXC NG JEAOE JEYM DYJCAEIAUF PFA CCEA R UJR AMBP GPBUNEANGF NXE YGIEANGUMTCGEAEA JAE BPWD FYX AEUF EOJP XLTHEAA LTH CYUIA CE LAEEOIXTHSAEHAE THYFLCER PFAX RBE AECBF </dd>
-<dt>Pick every first letter (IoC: 1.373):</dt>
+<dt>Pick every first letter (IoC: 1.373 / 0.599):</dt>
 <dd class="runelist">
 <div>U</div><div>R</div><div>F</div><div>Y</div><div>EA</div><div>T</div><div>NG</div><div>AE</div><div>O</div><div>IA</div><div>F</div><div>E</div><div>EO</div><div>Y</div><div>R</div><div>I</div><div>C</div><div>AE</div><div>B</div><div>R</div><div>F</div><div>EO</div><div>R</div><div>F</div><div>EO</div><div>B</div><div>B</div><div>R</div><div>J</div><div>R</div><div>M</div><div>M</div><div>C</div><div>EO</div><div>R</div><div>IA</div><div>B</div><div>F</div><div>R</div><div>C</div><div>Y</div><div>C</div><div>TH</div><div>J</div><div>AE</div><div>P</div><div>J</div><div>W</div><div>W</div><div>D</div><div>S</div><div>R</div><div>D</div><div>X</div><div>J</div><div>W</div><div>D</div><div>A</div><div>AE</div><div>IA</div><div>P</div><div>AE</div><div>M</div><div>Y</div><div>AE</div><div>E</div><div>D</div><div>EO</div><div>D</div><div>N</div><div>P</div><div>J</div><div>P</div><div>P</div><div>L</div><div>R</div><div>R</div><div>R</div><div>D</div><div>H</div><div>J</div><div>EO</div><div>U</div><div>EA</div><div>L</div><div>W</div><div>L</div><div>P</div><div>EA</div><div>T</div><div>U</div><div>EO</div><div>U</div><div>L</div><div>EA</div><div>B</div><div>W</div><div>R</div><div>NG</div><div>J</div><div>J</div><div>D</div><div>P</div><div>C</div><div>R</div><div>U</div><div>A</div><div>G</div><div>N</div><div>Y</div><div>J</div><div>B</div><div>F</div><div>AE</div><div>EO</div><div>X</div><div>L</div><div>C</div><div>C</div><div>L</div><div>TH</div><div>P</div><div>R</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 1.190):</dt>
+<dt>Pick every last letter (IoC: 1.190 / 0.417):</dt>
 <dd class="runelist">
 <div>C</div><div>EA</div><div>EA</div><div>M</div><div>EO</div><div>AE</div><div>W</div><div>R</div><div>EA</div><div>I</div><div>F</div><div>NG</div><div>AE</div><div>P</div><div>AE</div><div>AE</div><div>AE</div><div>W</div><div>D</div><div>I</div><div>C</div><div>C</div><div>P</div><div>O</div><div>IA</div><div>W</div><div>S</div><div>Y</div><div>AE</div><div>R</div><div>W</div><div>EO</div><div>U</div><div>C</div><div>W</div><div>I</div><div>X</div><div>R</div><div>M</div><div>B</div><div>R</div><div>U</div><div>EA</div><div>B</div><div>TH</div><div>X</div><div>M</div><div>L</div><div>TH</div><div>C</div><div>W</div><div>I</div><div>C</div><div>L</div><div>IA</div><div>J</div><div>U</div><div>X</div><div>M</div><div>I</div><div>Y</div><div>F</div><div>Y</div><div>EO</div><div>E</div><div>N</div><div>M</div><div>Y</div><div>S</div><div>IA</div><div>AE</div><div>B</div><div>X</div><div>AE</div><div>IA</div><div>F</div><div>M</div><div>I</div><div>J</div><div>U</div><div>EA</div><div>M</div><div>C</div><div>EO</div><div>L</div><div>I</div><div>T</div><div>P</div><div>B</div><div>E</div><div>E</div><div>P</div><div>EA</div><div>G</div><div>M</div><div>P</div><div>J</div><div>C</div><div>NG</div><div>OE</div><div>M</div><div>F</div><div>A</div><div>EA</div><div>R</div><div>R</div><div>P</div><div>F</div><div>E</div><div>EA</div><div>AE</div><div>D</div><div>X</div><div>F</div><div>P</div><div>A</div><div>TH</div><div>IA</div><div>E</div><div>AE</div><div>R</div><div>X</div><div>E</div><div>F</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.196):</dt>
+<dt>Words (IoC: 1.196 / 0.423):</dt>
 <dd>
 UEANGSEOFC FWXTCLEA EAEO NGMIAIAMMW OEA FF EOUAE RAE CAE BXMD FPC RTHP EOCWIA BEALS JAE MCTHEOAETCPW CNGPU REW BYBX RM YR THPIAJWTFEA AETHFFEAPTH JMEPNGSOSM WXUTHAEWMTH SIAXONGRMBW DYJC JNGYMFJPEOUIA DWXU AEM PY MY AEXRJSE DJUSXYTETM DS PBUNEANGJIAAE PTHX LPBUOEAIA RREOJM DYJ JUIALTHEA UMSC LIAEAECL LT EAIAPTHTB ULOLE UEA EAGSIATM WRJ NG JEYM PFA R AMBP NXE JAE FYX EOJP LTH CE THYFLCER RBE </dd>
-<dt>Pick every first letter (IoC: 1.365):</dt>
+<dt>Pick every first letter (IoC: 1.365 / 0.591):</dt>
 <dd class="runelist">
 <div>U</div><div>F</div><div>EA</div><div>NG</div><div>O</div><div>F</div><div>EO</div><div>R</div><div>C</div><div>B</div><div>F</div><div>R</div><div>EO</div><div>B</div><div>J</div><div>M</div><div>C</div><div>R</div><div>B</div><div>R</div><div>Y</div><div>TH</div><div>AE</div><div>J</div><div>W</div><div>S</div><div>D</div><div>J</div><div>D</div><div>AE</div><div>P</div><div>M</div><div>AE</div><div>D</div><div>D</div><div>P</div><div>P</div><div>L</div><div>R</div><div>D</div><div>J</div><div>U</div><div>L</div><div>L</div><div>EA</div><div>U</div><div>U</div><div>EA</div><div>W</div><div>NG</div><div>J</div><div>P</div><div>R</div><div>A</div><div>N</div><div>J</div><div>F</div><div>EO</div><div>L</div><div>C</div><div>TH</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 1.334):</dt>
+<dt>Pick every last letter (IoC: 1.334 / 0.561):</dt>
 <dd class="runelist">
 <div>C</div><div>EA</div><div>EO</div><div>W</div><div>EA</div><div>F</div><div>AE</div><div>AE</div><div>AE</div><div>D</div><div>C</div><div>P</div><div>IA</div><div>S</div><div>AE</div><div>W</div><div>U</div><div>W</div><div>X</div><div>M</div><div>R</div><div>EA</div><div>TH</div><div>M</div><div>TH</div><div>W</div><div>C</div><div>IA</div><div>U</div><div>M</div><div>Y</div><div>Y</div><div>E</div><div>M</div><div>S</div><div>AE</div><div>X</div><div>IA</div><div>M</div><div>J</div><div>EA</div><div>C</div><div>L</div><div>T</div><div>B</div><div>E</div><div>EA</div><div>M</div><div>J</div><div>NG</div><div>M</div><div>A</div><div>R</div><div>P</div><div>E</div><div>AE</div><div>X</div><div>P</div><div>TH</div><div>E</div><div>R</div><div>E</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.167):</dt>
+<dt>Words (IoC: 1.167 / 0.394):</dt>
 <dd>
 REOUGPEAEA YM TCNAE AEPDNGIAR IAMI EUNG YP IPAE AENW RIAI EOEOAEC FJMO BAEW RY R MGEO EOC IAPI FLIR CGB CFU JGB PFAX WEOJL DYJC RMI XHUYPL WEOJ ALASMIAEOX IAMI AEMUF YEO EWN EORY NEAEDIA JGB PNWWILMAE RIAEAF RMI HLFU EOJOEORRM EAEO WI PEUP TME EOJP LCG BMRTHFP RXC JEAOE DYJCAEIAUF CCEA UJR GPBUNEANGF YGIEANGUMTCGEAEA BPWD AEUF XLTHEAA CYUIA LAEEOIXTHSAEHAE PFAX AECBF </dd>
-<dt>Pick every first letter (IoC: 1.288):</dt>
+<dt>Pick every first letter (IoC: 1.288 / 0.515):</dt>
 <dd class="runelist">
 <div>R</div><div>Y</div><div>T</div><div>AE</div><div>IA</div><div>E</div><div>Y</div><div>I</div><div>AE</div><div>R</div><div>EO</div><div>F</div><div>B</div><div>R</div><div>R</div><div>M</div><div>EO</div><div>IA</div><div>F</div><div>C</div><div>C</div><div>J</div><div>P</div><div>W</div><div>D</div><div>R</div><div>X</div><div>W</div><div>A</div><div>IA</div><div>AE</div><div>Y</div><div>E</div><div>EO</div><div>N</div><div>J</div><div>P</div><div>R</div><div>R</div><div>H</div><div>EO</div><div>EA</div><div>W</div><div>P</div><div>T</div><div>EO</div><div>L</div><div>B</div><div>R</div><div>J</div><div>D</div><div>C</div><div>U</div><div>G</div><div>Y</div><div>B</div><div>AE</div><div>X</div><div>C</div><div>L</div><div>P</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 1.196):</dt>
+<dt>Pick every last letter (IoC: 1.196 / 0.423):</dt>
 <dd class="runelist">
 <div>EA</div><div>M</div><div>AE</div><div>R</div><div>I</div><div>NG</div><div>P</div><div>AE</div><div>W</div><div>I</div><div>C</div><div>O</div><div>W</div><div>Y</div><div>R</div><div>EO</div><div>C</div><div>I</div><div>R</div><div>B</div><div>U</div><div>B</div><div>X</div><div>L</div><div>C</div><div>I</div><div>L</div><div>J</div><div>X</div><div>I</div><div>F</div><div>EO</div><div>N</div><div>Y</div><div>IA</div><div>B</div><div>AE</div><div>F</div><div>I</div><div>U</div><div>M</div><div>EO</div><div>I</div><div>P</div><div>E</div><div>P</div><div>G</div><div>P</div><div>C</div><div>OE</div><div>F</div><div>EA</div><div>R</div><div>F</div><div>EA</div><div>D</div><div>F</div><div>A</div><div>IA</div><div>AE</div><div>X</div><div>F</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.169):</dt>
+<dt>Words (IoC: 1.169 / 0.395):</dt>
 <dd>
 UEANGSEOFC YM NGMIAIAMMW IAMI EOUAE IPAE BXMD EOEOAEC EOCWIA RY MCTHEOAETCPW EOC BYBX CGB THPIAJWTFEA PFAX WXUTHAEWMTH RMI JNGYMFJPEOUIA ALASMIAEOX PY YEO DJUSXYTETM NEAEDIA PTHX RIAEAF DYJ EOJOEORRM LIAEAECL PEUP ULOLE LCG WRJ JEAOE PFA UJR NXE BPWD EOJP CYUIA THYFLCER AECBF </dd>
-<dt>Pick every first letter (IoC: 1.415):</dt>
+<dt>Pick every first letter (IoC: 1.415 / 0.641):</dt>
 <dd class="runelist">
 <div>U</div><div>Y</div><div>NG</div><div>IA</div><div>EO</div><div>I</div><div>B</div><div>EO</div><div>EO</div><div>R</div><div>M</div><div>EO</div><div>B</div><div>C</div><div>TH</div><div>P</div><div>W</div><div>R</div><div>J</div><div>A</div><div>P</div><div>Y</div><div>D</div><div>N</div><div>P</div><div>R</div><div>D</div><div>EO</div><div>L</div><div>P</div><div>U</div><div>L</div><div>W</div><div>J</div><div>P</div><div>U</div><div>N</div><div>B</div><div>EO</div><div>C</div><div>TH</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 0.943):</dt>
+<dt>Pick every last letter (IoC: 0.943 / 0.169):</dt>
 <dd class="runelist">
 <div>C</div><div>M</div><div>W</div><div>I</div><div>AE</div><div>AE</div><div>D</div><div>C</div><div>IA</div><div>Y</div><div>W</div><div>C</div><div>X</div><div>B</div><div>EA</div><div>X</div><div>TH</div><div>I</div><div>IA</div><div>X</div><div>Y</div><div>EO</div><div>M</div><div>IA</div><div>X</div><div>F</div><div>J</div><div>M</div><div>L</div><div>P</div><div>E</div><div>G</div><div>J</div><div>OE</div><div>A</div><div>R</div><div>E</div><div>D</div><div>P</div><div>IA</div><div>R</div><div>F</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.162):</dt>
+<dt>Words (IoC: 1.162 / 0.389):</dt>
 <dd>
 REOUGPEAEA EAEO AEPDNGIAR FF YP CAE RIAI RTHP BAEW JAE MGEO REW FLIR YR JGB JMEPNGSOSM DYJC DYJC WEOJ AEM AEMUF AEXRJSE EORY PBUNEANGJIAAE PNWWILMAE RREOJM HLFU UMSC WI EAIAPTHTB EOJP EAGSIATM RXC JEYM CCEA AMBP YGIEANGUMTCGEAEA FYX XLTHEAA CE PFAX </dd>
-<dt>Pick every first letter (IoC: 1.591):</dt>
+<dt>Pick every first letter (IoC: 1.591 / 0.818):</dt>
 <dd class="runelist">
 <div>R</div><div>EA</div><div>AE</div><div>F</div><div>Y</div><div>C</div><div>R</div><div>R</div><div>B</div><div>J</div><div>M</div><div>R</div><div>F</div><div>Y</div><div>J</div><div>J</div><div>D</div><div>D</div><div>W</div><div>AE</div><div>AE</div><div>AE</div><div>EO</div><div>P</div><div>P</div><div>R</div><div>H</div><div>U</div><div>W</div><div>EA</div><div>EO</div><div>EA</div><div>R</div><div>J</div><div>C</div><div>A</div><div>Y</div><div>F</div><div>X</div><div>C</div><div>P</div></dd>
-<dt>Pick every last letter (IoC: 1.450):</dt>
+<dt>Pick every last letter (IoC: 1.450 / 0.676):</dt>
 <dd class="runelist">
 <div>EA</div><div>EO</div><div>R</div><div>F</div><div>P</div><div>AE</div><div>I</div><div>P</div><div>W</div><div>AE</div><div>EO</div><div>W</div><div>R</div><div>R</div><div>B</div><div>M</div><div>C</div><div>C</div><div>J</div><div>M</div><div>F</div><div>E</div><div>Y</div><div>AE</div><div>AE</div><div>M</div><div>U</div><div>C</div><div>I</div><div>B</div><div>P</div><div>M</div><div>C</div><div>M</div><div>EA</div><div>P</div><div>EA</div><div>X</div><div>A</div><div>E</div><div>X</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.099):</dt>
+<dt>Words (IoC: 1.099 / 0.325):</dt>
 <dd>
 FWXTCLEA TCNAE OEA EUNG RAE AENW FPC FJMO BEALS R CNGPU IAPI RM CFU AETHFFEAPTH WEOJL SIAXONGRMBW XHUYPL DWXU IAMI MY EWN DS JGB LPBUOEAIA RMI JUIALTHEA EAEO LT TME UEA BMRTHFP NG DYJCAEIAUF R GPBUNEANGF JAE AEUF LTH LAEEOIXTHSAEHAE RBE </dd>
-<dt>Pick every first letter (IoC: 1.344):</dt>
+<dt>Pick every first letter (IoC: 1.344 / 0.570):</dt>
 <dd class="runelist">
 <div>F</div><div>T</div><div>O</div><div>E</div><div>R</div><div>AE</div><div>F</div><div>F</div><div>B</div><div>R</div><div>C</div><div>IA</div><div>R</div><div>C</div><div>AE</div><div>W</div><div>S</div><div>X</div><div>D</div><div>IA</div><div>M</div><div>E</div><div>D</div><div>J</div><div>L</div><div>R</div><div>J</div><div>EA</div><div>L</div><div>T</div><div>U</div><div>B</div><div>NG</div><div>D</div><div>R</div><div>G</div><div>J</div><div>AE</div><div>L</div><div>L</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 0.990):</dt>
+<dt>Pick every last letter (IoC: 0.990 / 0.217):</dt>
 <dd class="runelist">
 <div>EA</div><div>AE</div><div>EA</div><div>NG</div><div>AE</div><div>W</div><div>C</div><div>O</div><div>S</div><div>R</div><div>U</div><div>I</div><div>M</div><div>U</div><div>TH</div><div>L</div><div>W</div><div>L</div><div>U</div><div>I</div><div>Y</div><div>N</div><div>S</div><div>B</div><div>IA</div><div>I</div><div>EA</div><div>EO</div><div>T</div><div>E</div><div>EA</div><div>P</div><div>NG</div><div>F</div><div>R</div><div>F</div><div>AE</div><div>F</div><div>TH</div><div>AE</div><div>E</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.239):</dt>
+<dt>Words (IoC: 1.239 / 0.465):</dt>
 <dd>
 UEANGSEOFC EAEO OEA EOUAE CAE FPC EOCWIA JAE CNGPU BYBX YR AETHFFEAPTH WXUTHAEWMTH DYJC DWXU PY AEXRJSE DS PTHX RREOJM JUIALTHEA LIAEAECL EAIAPTHTB UEA WRJ JEYM R NXE FYX LTH THYFLCER </dd>
-<dt>Pick every first letter (IoC: 0.998):</dt>
+<dt>Pick every first letter (IoC: 0.998 / 0.224):</dt>
 <dd class="runelist">
 <div>U</div><div>EA</div><div>O</div><div>EO</div><div>C</div><div>F</div><div>EO</div><div>J</div><div>C</div><div>B</div><div>Y</div><div>AE</div><div>W</div><div>D</div><div>D</div><div>P</div><div>AE</div><div>D</div><div>P</div><div>R</div><div>J</div><div>L</div><div>EA</div><div>U</div><div>W</div><div>J</div><div>R</div><div>N</div><div>F</div><div>L</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 1.310):</dt>
+<dt>Pick every last letter (IoC: 1.310 / 0.536):</dt>
 <dd class="runelist">
 <div>C</div><div>EO</div><div>EA</div><div>AE</div><div>AE</div><div>C</div><div>IA</div><div>AE</div><div>U</div><div>X</div><div>R</div><div>TH</div><div>TH</div><div>C</div><div>U</div><div>Y</div><div>E</div><div>S</div><div>X</div><div>M</div><div>EA</div><div>L</div><div>B</div><div>EA</div><div>J</div><div>M</div><div>R</div><div>E</div><div>X</div><div>TH</div><div>R</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.163):</dt>
+<dt>Words (IoC: 1.163 / 0.389):</dt>
 <dd>
 REOUGPEAEA TCNAE IAMI YP AENW EOEOAEC BAEW R EOC FLIR CFU PFAX DYJC XHUYPL ALASMIAEOX AEMUF EWN NEAEDIA PNWWILMAE RMI EOJOEORRM WI TME LCG RXC DYJCAEIAUF UJR YGIEANGUMTCGEAEA AEUF CYUIA PFAX </dd>
-<dt>Pick every first letter (IoC: 1.185):</dt>
+<dt>Pick every first letter (IoC: 1.185 / 0.411):</dt>
 <dd class="runelist">
 <div>R</div><div>T</div><div>IA</div><div>Y</div><div>AE</div><div>EO</div><div>B</div><div>R</div><div>EO</div><div>F</div><div>C</div><div>P</div><div>D</div><div>X</div><div>A</div><div>AE</div><div>E</div><div>N</div><div>P</div><div>R</div><div>EO</div><div>W</div><div>T</div><div>L</div><div>R</div><div>D</div><div>U</div><div>Y</div><div>AE</div><div>C</div><div>P</div></dd>
-<dt>Pick every last letter (IoC: 1.372):</dt>
+<dt>Pick every last letter (IoC: 1.372 / 0.598):</dt>
 <dd class="runelist">
 <div>EA</div><div>AE</div><div>I</div><div>P</div><div>W</div><div>C</div><div>W</div><div>R</div><div>C</div><div>R</div><div>U</div><div>X</div><div>C</div><div>L</div><div>X</div><div>F</div><div>N</div><div>IA</div><div>AE</div><div>I</div><div>M</div><div>I</div><div>E</div><div>G</div><div>C</div><div>F</div><div>R</div><div>EA</div><div>F</div><div>IA</div><div>X</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.243):</dt>
+<dt>Words (IoC: 1.243 / 0.469):</dt>
 <dd>
 FWXTCLEA NGMIAIAMMW FF RAE BXMD RTHP BEALS MCTHEOAETCPW REW RM THPIAJWTFEA JMEPNGSOSM SIAXONGRMBW JNGYMFJPEOUIA AEM MY DJUSXYTETM PBUNEANGJIAAE LPBUOEAIA DYJ UMSC LT ULOLE EAGSIATM NG PFA AMBP JAE EOJP CE RBE </dd>
-<dt>Pick every first letter (IoC: 1.310):</dt>
+<dt>Pick every first letter (IoC: 1.310 / 0.536):</dt>
 <dd class="runelist">
 <div>F</div><div>NG</div><div>F</div><div>R</div><div>B</div><div>R</div><div>B</div><div>M</div><div>R</div><div>R</div><div>TH</div><div>J</div><div>S</div><div>J</div><div>AE</div><div>M</div><div>D</div><div>P</div><div>L</div><div>D</div><div>U</div><div>L</div><div>U</div><div>EA</div><div>NG</div><div>P</div><div>A</div><div>J</div><div>EO</div><div>C</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 1.684):</dt>
+<dt>Pick every last letter (IoC: 1.684 / 0.910):</dt>
 <dd class="runelist">
 <div>EA</div><div>W</div><div>F</div><div>AE</div><div>D</div><div>P</div><div>S</div><div>W</div><div>W</div><div>M</div><div>EA</div><div>M</div><div>W</div><div>IA</div><div>M</div><div>Y</div><div>M</div><div>AE</div><div>IA</div><div>J</div><div>C</div><div>T</div><div>E</div><div>M</div><div>NG</div><div>A</div><div>P</div><div>AE</div><div>P</div><div>E</div><div>E</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.126):</dt>
+<dt>Words (IoC: 1.126 / 0.352):</dt>
 <dd>
 YM AEPDNGIAR EUNG IPAE RIAI FJMO RY MGEO IAPI CGB JGB WEOJL RMI WEOJ IAMI YEO EORY JGB RIAEAF HLFU EAEO PEUP EOJP BMRTHFP JEAOE CCEA GPBUNEANGF BPWD XLTHEAA LAEEOIXTHSAEHAE AECBF </dd>
-<dt>Pick every first letter (IoC: 0.998):</dt>
+<dt>Pick every first letter (IoC: 0.998 / 0.224):</dt>
 <dd class="runelist">
 <div>Y</div><div>AE</div><div>E</div><div>I</div><div>R</div><div>F</div><div>R</div><div>M</div><div>IA</div><div>C</div><div>J</div><div>W</div><div>R</div><div>W</div><div>IA</div><div>Y</div><div>EO</div><div>J</div><div>R</div><div>H</div><div>EA</div><div>P</div><div>EO</div><div>B</div><div>J</div><div>C</div><div>G</div><div>B</div><div>X</div><div>L</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 1.247):</dt>
+<dt>Pick every last letter (IoC: 1.247 / 0.474):</dt>
 <dd class="runelist">
 <div>M</div><div>R</div><div>NG</div><div>AE</div><div>I</div><div>O</div><div>Y</div><div>EO</div><div>I</div><div>B</div><div>B</div><div>L</div><div>I</div><div>J</div><div>I</div><div>EO</div><div>Y</div><div>B</div><div>F</div><div>U</div><div>EO</div><div>P</div><div>P</div><div>P</div><div>OE</div><div>EA</div><div>F</div><div>D</div><div>A</div><div>AE</div><div>F</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.084):</dt>
+<dt>Words (IoC: 1.084 / 0.310):</dt>
 <dd>
 UEANGSEOFC TCNAE FF IPAE FPC BAEW MCTHEOAETCPW IAPI YR PFAX SIAXONGRMBW WEOJ PY EWN PBUNEANGJIAAE RIAEAF JUIALTHEA WI ULOLE BMRTHFP JEYM UJR JAE XLTHEAA THYFLCER </dd>
-<dt>Pick every first letter (IoC: 1.160):</dt>
+<dt>Pick every first letter (IoC: 1.160 / 0.386):</dt>
 <dd class="runelist">
 <div>U</div><div>T</div><div>F</div><div>I</div><div>F</div><div>B</div><div>M</div><div>IA</div><div>Y</div><div>P</div><div>S</div><div>W</div><div>P</div><div>E</div><div>P</div><div>R</div><div>J</div><div>W</div><div>U</div><div>B</div><div>J</div><div>U</div><div>J</div><div>X</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 1.450):</dt>
+<dt>Pick every last letter (IoC: 1.450 / 0.676):</dt>
 <dd class="runelist">
 <div>C</div><div>AE</div><div>F</div><div>AE</div><div>C</div><div>W</div><div>W</div><div>I</div><div>R</div><div>X</div><div>W</div><div>J</div><div>Y</div><div>N</div><div>AE</div><div>F</div><div>EA</div><div>I</div><div>E</div><div>P</div><div>M</div><div>R</div><div>AE</div><div>A</div><div>R</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.222):</dt>
+<dt>Words (IoC: 1.222 / 0.449):</dt>
 <dd>
 REOUGPEAEA NGMIAIAMMW EUNG CAE EOEOAEC BEALS MGEO BYBX CFU JMEPNGSOSM RMI DWXU AEMUF DJUSXYTETM JGB RREOJM EOJOEORRM LT EOJP WRJ DYJCAEIAUF AMBP BPWD LTH PFAX </dd>
-<dt>Pick every first letter (IoC: 1.450):</dt>
+<dt>Pick every first letter (IoC: 1.450 / 0.676):</dt>
 <dd class="runelist">
 <div>R</div><div>NG</div><div>E</div><div>C</div><div>EO</div><div>B</div><div>M</div><div>B</div><div>C</div><div>J</div><div>R</div><div>D</div><div>AE</div><div>D</div><div>J</div><div>R</div><div>EO</div><div>L</div><div>EO</div><div>W</div><div>D</div><div>A</div><div>B</div><div>L</div><div>P</div></dd>
-<dt>Pick every last letter (IoC: 0.967):</dt>
+<dt>Pick every last letter (IoC: 0.967 / 0.193):</dt>
 <dd class="runelist">
 <div>EA</div><div>W</div><div>NG</div><div>AE</div><div>C</div><div>S</div><div>EO</div><div>X</div><div>U</div><div>M</div><div>I</div><div>U</div><div>F</div><div>M</div><div>B</div><div>M</div><div>M</div><div>T</div><div>P</div><div>J</div><div>F</div><div>P</div><div>D</div><div>TH</div><div>X</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.137):</dt>
+<dt>Words (IoC: 1.137 / 0.363):</dt>
 <dd>
 FWXTCLEA AEPDNGIAR EOUAE AENW RTHP RY CNGPU FLIR THPIAJWTFEA WEOJL DYJC ALASMIAEOX MY EORY PTHX RMI UMSC PEUP UEA RXC PFA GPBUNEANGF FYX CYUIA RBE </dd>
-<dt>Pick every first letter (IoC: 1.933):</dt>
+<dt>Pick every first letter (IoC: 1.933 / 0.840):</dt>
 <dd class="runelist">
 <div>F</div><div>AE</div><div>EO</div><div>AE</div><div>R</div><div>R</div><div>C</div><div>F</div><div>TH</div><div>W</div><div>D</div><div>A</div><div>M</div><div>EO</div><div>P</div><div>R</div><div>U</div><div>P</div><div>U</div><div>R</div><div>P</div><div>G</div><div>F</div><div>C</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 1.353):</dt>
+<dt>Pick every last letter (IoC: 1.353 / 0.580):</dt>
 <dd class="runelist">
 <div>EA</div><div>R</div><div>AE</div><div>W</div><div>P</div><div>Y</div><div>U</div><div>R</div><div>EA</div><div>L</div><div>C</div><div>X</div><div>Y</div><div>Y</div><div>X</div><div>I</div><div>C</div><div>P</div><div>EA</div><div>C</div><div>A</div><div>F</div><div>X</div><div>IA</div><div>E</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.065):</dt>
+<dt>Words (IoC: 1.065 / 0.291):</dt>
 <dd>
 YM OEA YP BXMD FJMO JAE EOC RM JGB WXUTHAEWMTH XHUYPL AEM YEO DS PNWWILMAE DYJ EAEO EAIAPTHTB LCG NG CCEA NXE AEUF CE AECBF </dd>
-<dt>Pick every first letter (IoC: 0.967):</dt>
+<dt>Pick every first letter (IoC: 0.967 / 0.193):</dt>
 <dd class="runelist">
 <div>Y</div><div>O</div><div>Y</div><div>B</div><div>F</div><div>J</div><div>EO</div><div>R</div><div>J</div><div>W</div><div>X</div><div>AE</div><div>Y</div><div>D</div><div>P</div><div>D</div><div>EA</div><div>EA</div><div>L</div><div>NG</div><div>C</div><div>N</div><div>AE</div><div>C</div><div>AE</div></dd>
-<dt>Pick every last letter (IoC: 0.870):</dt>
+<dt>Pick every last letter (IoC: 0.870 / 0.096):</dt>
 <dd class="runelist">
 <div>M</div><div>EA</div><div>P</div><div>D</div><div>O</div><div>AE</div><div>C</div><div>M</div><div>B</div><div>TH</div><div>L</div><div>M</div><div>EO</div><div>S</div><div>AE</div><div>J</div><div>EO</div><div>B</div><div>G</div><div>NG</div><div>EA</div><div>E</div><div>F</div><div>E</div><div>F</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 1.093):</dt>
+<dt>Words (IoC: 1.093 / 0.319):</dt>
 <dd>
 EAEO IAMI RAE RIAI EOCWIA R REW CGB AETHFFEAPTH DYJC JNGYMFJPEOUIA IAMI AEXRJSE NEAEDIA LPBUOEAIA HLFU LIAEAECL TME EAGSIATM JEAOE R YGIEANGUMTCGEAEA EOJP LAEEOIXTHSAEHAE </dd>
-<dt>Pick every first letter (IoC: 1.891):</dt>
+<dt>Pick every first letter (IoC: 1.891 / 0.882):</dt>
 <dd class="runelist">
 <div>EA</div><div>IA</div><div>R</div><div>R</div><div>EO</div><div>R</div><div>R</div><div>C</div><div>AE</div><div>D</div><div>J</div><div>IA</div><div>AE</div><div>N</div><div>L</div><div>H</div><div>L</div><div>T</div><div>EA</div><div>J</div><div>R</div><div>Y</div><div>EO</div><div>L</div></dd>
-<dt>Pick every last letter (IoC: 1.261):</dt>
+<dt>Pick every last letter (IoC: 1.261 / 0.487):</dt>
 <dd class="runelist">
 <div>EO</div><div>I</div><div>AE</div><div>I</div><div>IA</div><div>R</div><div>W</div><div>B</div><div>TH</div><div>C</div><div>IA</div><div>I</div><div>E</div><div>IA</div><div>IA</div><div>U</div><div>L</div><div>E</div><div>M</div><div>OE</div><div>R</div><div>EA</div><div>P</div><div>AE</div></dd>
 </dl>

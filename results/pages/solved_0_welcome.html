@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -80,7 +81,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -101,6 +102,22 @@
 		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
 	</p>
 	<p class="red">Mod-IoC is disabled on solved pages</p>
+
+
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<p class="red">Pattern-IoC is disabled on solved pages</p>
 
 
 	<h2 id="running-ioc">Running IoC</h2>
@@ -140,167 +157,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 1.723):</dt>
+<dt>Words (IoC: 1.723 / 0.949):</dt>
 <dd>
 WELCOME WELCOME PILGRIM TO THE GREAT JOURNEY TOWARD THE END OF ALL THNGS IT IS NOT AN EASY TRIP BUT FOR THOSE WHO FIND THEIR WAY HERE IT IS A NECESSARY ONE ALONG THE WAY YOU WILL FIND AN END TO ALL STRUGGLE AND SUFFERNG YOUR INNOCENCE YOUR ILLUSIANS YOUR CERTAINTY AND YOUR REALITY ULTIMATELY YOU WILL DISCOUER AN END TO SELF IT IS THROUGH THIS PILGRIMAGE THAT WE SHAPE OURSELUES AND OUR REALITIES JOURNEY DEEP WITHIN AND YOU WILL ARRIUE OUTSIDE LICE THE INSTAR IT IS ONLY THROUGH GONG WITHIN THAT WE MAY EMERGE WIDSOM YOU ARE A BENG UNTO YOURSELF YOU ARE A LAW UNTO YOURSELF EACH INTELLIGENCE IS HOLY FOR ALL THAT LIUES IS HOLY AN INSTRUCTIAN COMMAND YOUR OWN SELF </dd>
-<dt>Pick every first letter (IoC: 2.095):</dt>
+<dt>Pick every first letter (IoC: 2.095 / 0.678):</dt>
 <dd class="runelist">
 <div>W</div><div>W</div><div>P</div><div>T</div><div>TH</div><div>G</div><div>J</div><div>T</div><div>TH</div><div>E</div><div>O</div><div>A</div><div>TH</div><div>I</div><div>I</div><div>N</div><div>A</div><div>EA</div><div>T</div><div>B</div><div>F</div><div>TH</div><div>W</div><div>F</div><div>TH</div><div>W</div><div>H</div><div>I</div><div>I</div><div>A</div><div>N</div><div>O</div><div>A</div><div>TH</div><div>W</div><div>Y</div><div>W</div><div>F</div><div>A</div><div>E</div><div>T</div><div>A</div><div>S</div><div>A</div><div>S</div><div>Y</div><div>I</div><div>Y</div><div>I</div><div>Y</div><div>C</div><div>A</div><div>Y</div><div>R</div><div>U</div><div>Y</div><div>W</div><div>D</div><div>A</div><div>E</div><div>T</div><div>S</div><div>I</div><div>I</div><div>TH</div><div>TH</div><div>P</div><div>TH</div><div>W</div><div>S</div><div>O</div><div>A</div><div>O</div><div>R</div><div>J</div><div>D</div><div>W</div><div>A</div><div>Y</div><div>W</div><div>A</div><div>O</div><div>L</div><div>TH</div><div>I</div><div>I</div><div>I</div><div>O</div><div>TH</div><div>G</div><div>W</div><div>TH</div><div>W</div><div>M</div><div>E</div><div>W</div><div>Y</div><div>A</div><div>A</div><div>B</div><div>U</div><div>Y</div><div>Y</div><div>A</div><div>A</div><div>L</div><div>U</div><div>Y</div><div>EA</div><div>I</div><div>I</div><div>H</div><div>F</div><div>A</div><div>TH</div><div>L</div><div>I</div><div>H</div><div>A</div><div>I</div><div>C</div><div>Y</div><div>O</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 2.365):</dt>
+<dt>Pick every last letter (IoC: 2.365 / 0.408):</dt>
 <dd class="runelist">
 <div>E</div><div>E</div><div>M</div><div>O</div><div>E</div><div>T</div><div>Y</div><div>D</div><div>E</div><div>D</div><div>F</div><div>L</div><div>S</div><div>T</div><div>S</div><div>T</div><div>N</div><div>Y</div><div>P</div><div>T</div><div>R</div><div>E</div><div>O</div><div>D</div><div>R</div><div>Y</div><div>E</div><div>T</div><div>S</div><div>A</div><div>Y</div><div>E</div><div>NG</div><div>E</div><div>Y</div><div>U</div><div>L</div><div>D</div><div>N</div><div>D</div><div>O</div><div>L</div><div>E</div><div>D</div><div>NG</div><div>R</div><div>E</div><div>R</div><div>S</div><div>R</div><div>Y</div><div>D</div><div>R</div><div>Y</div><div>Y</div><div>U</div><div>L</div><div>R</div><div>N</div><div>D</div><div>O</div><div>F</div><div>T</div><div>S</div><div>H</div><div>S</div><div>E</div><div>T</div><div>E</div><div>E</div><div>S</div><div>D</div><div>R</div><div>S</div><div>Y</div><div>P</div><div>N</div><div>D</div><div>U</div><div>L</div><div>E</div><div>E</div><div>E</div><div>E</div><div>R</div><div>T</div><div>S</div><div>Y</div><div>H</div><div>NG</div><div>N</div><div>T</div><div>E</div><div>Y</div><div>E</div><div>M</div><div>U</div><div>E</div><div>A</div><div>NG</div><div>O</div><div>F</div><div>U</div><div>E</div><div>A</div><div>W</div><div>O</div><div>F</div><div>H</div><div>E</div><div>S</div><div>Y</div><div>R</div><div>L</div><div>T</div><div>S</div><div>S</div><div>Y</div><div>N</div><div>N</div><div>D</div><div>R</div><div>N</div><div>F</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.725):</dt>
+<dt>Words (IoC: 1.725 / 0.952):</dt>
 <dd>
 WELCOME PILGRIM THE JOURNEY THE OF THNGS IS AN TRIP FOR WHO THEIR HERE IS NECESSARY ALONG WAY WILL AN TO STRUGGLE SUFFERNG INNOCENCE ILLUSIANS CERTAINTY YOUR ULTIMATELY WILL AN TO IT THROUGH PILGRIMAGE WE OURSELUES OUR JOURNEY WITHIN YOU ARRIUE LICE INSTAR IS THROUGH WITHIN WE EMERGE YOU A UNTO YOU A UNTO EACH IS FOR THAT IS AN COMMAND OWN </dd>
-<dt>Pick every first letter (IoC: 2.208):</dt>
+<dt>Pick every first letter (IoC: 2.208 / 0.565):</dt>
 <dd class="runelist">
 <div>W</div><div>P</div><div>TH</div><div>J</div><div>TH</div><div>O</div><div>TH</div><div>I</div><div>A</div><div>T</div><div>F</div><div>W</div><div>TH</div><div>H</div><div>I</div><div>N</div><div>A</div><div>W</div><div>W</div><div>A</div><div>T</div><div>S</div><div>S</div><div>I</div><div>I</div><div>C</div><div>Y</div><div>U</div><div>W</div><div>A</div><div>T</div><div>I</div><div>TH</div><div>P</div><div>W</div><div>O</div><div>O</div><div>J</div><div>W</div><div>Y</div><div>A</div><div>L</div><div>I</div><div>I</div><div>TH</div><div>W</div><div>W</div><div>E</div><div>Y</div><div>A</div><div>U</div><div>Y</div><div>A</div><div>U</div><div>EA</div><div>I</div><div>F</div><div>TH</div><div>I</div><div>A</div><div>C</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 2.530):</dt>
+<dt>Pick every last letter (IoC: 2.530 / 0.243):</dt>
 <dd class="runelist">
 <div>E</div><div>M</div><div>E</div><div>Y</div><div>E</div><div>F</div><div>S</div><div>S</div><div>N</div><div>P</div><div>R</div><div>O</div><div>R</div><div>E</div><div>S</div><div>Y</div><div>NG</div><div>Y</div><div>L</div><div>N</div><div>O</div><div>E</div><div>NG</div><div>E</div><div>S</div><div>Y</div><div>R</div><div>Y</div><div>L</div><div>N</div><div>O</div><div>T</div><div>H</div><div>E</div><div>E</div><div>S</div><div>R</div><div>Y</div><div>N</div><div>U</div><div>E</div><div>E</div><div>R</div><div>S</div><div>H</div><div>N</div><div>E</div><div>E</div><div>U</div><div>A</div><div>O</div><div>U</div><div>A</div><div>O</div><div>H</div><div>S</div><div>R</div><div>T</div><div>S</div><div>N</div><div>D</div><div>N</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.723):</dt>
+<dt>Words (IoC: 1.723 / 0.949):</dt>
 <dd>
 WELCOME TO GREAT TOWARD END ALL IT NOT EASY BUT THOSE FIND WAY IT A ONE THE YOU FIND END ALL AND YOUR YOUR YOUR AND REALITY YOU DISCOUER END SELF IS THIS THAT SHAPE AND REALITIES DEEP AND WILL OUTSIDE THE IT ONLY GONG THAT MAY WIDSOM ARE BENG YOURSELF ARE LAW YOURSELF INTELLIGENCE HOLY ALL LIUES HOLY INSTRUCTIAN YOUR SELF </dd>
-<dt>Pick every first letter (IoC: 1.932):</dt>
+<dt>Pick every first letter (IoC: 1.932 / 0.841):</dt>
 <dd class="runelist">
 <div>W</div><div>T</div><div>G</div><div>T</div><div>E</div><div>A</div><div>I</div><div>N</div><div>EA</div><div>B</div><div>TH</div><div>F</div><div>W</div><div>I</div><div>A</div><div>O</div><div>TH</div><div>Y</div><div>F</div><div>E</div><div>A</div><div>A</div><div>Y</div><div>Y</div><div>Y</div><div>A</div><div>R</div><div>Y</div><div>D</div><div>E</div><div>S</div><div>I</div><div>TH</div><div>TH</div><div>S</div><div>A</div><div>R</div><div>D</div><div>A</div><div>W</div><div>O</div><div>TH</div><div>I</div><div>O</div><div>G</div><div>TH</div><div>M</div><div>W</div><div>A</div><div>B</div><div>Y</div><div>A</div><div>L</div><div>Y</div><div>I</div><div>H</div><div>A</div><div>L</div><div>H</div><div>I</div><div>Y</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 2.592):</dt>
+<dt>Pick every last letter (IoC: 2.592 / 0.182):</dt>
 <dd class="runelist">
 <div>E</div><div>O</div><div>T</div><div>D</div><div>D</div><div>L</div><div>T</div><div>T</div><div>Y</div><div>T</div><div>E</div><div>D</div><div>Y</div><div>T</div><div>A</div><div>E</div><div>E</div><div>U</div><div>D</div><div>D</div><div>L</div><div>D</div><div>R</div><div>R</div><div>R</div><div>D</div><div>Y</div><div>U</div><div>R</div><div>D</div><div>F</div><div>S</div><div>S</div><div>T</div><div>E</div><div>D</div><div>S</div><div>P</div><div>D</div><div>L</div><div>E</div><div>E</div><div>T</div><div>Y</div><div>NG</div><div>T</div><div>Y</div><div>M</div><div>E</div><div>NG</div><div>F</div><div>E</div><div>W</div><div>F</div><div>E</div><div>Y</div><div>L</div><div>S</div><div>Y</div><div>N</div><div>R</div><div>F</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.603):</dt>
+<dt>Words (IoC: 1.603 / 0.829):</dt>
 <dd>
 WELCOME TO JOURNEY END THNGS NOT TRIP THOSE THEIR IT NECESSARY THE WILL END STRUGGLE YOUR ILLUSIANS AND ULTIMATELY DISCOUER TO IS PILGRIMAGE SHAPE OUR DEEP YOU OUTSIDE INSTAR ONLY WITHIN MAY YOU BENG YOU LAW EACH HOLY THAT HOLY COMMAND SELF </dd>
-<dt>Pick every first letter (IoC: 1.280):</dt>
+<dt>Pick every first letter (IoC: 1.280 / 0.506):</dt>
 <dd class="runelist">
 <div>W</div><div>T</div><div>J</div><div>E</div><div>TH</div><div>N</div><div>T</div><div>TH</div><div>TH</div><div>I</div><div>N</div><div>TH</div><div>W</div><div>E</div><div>S</div><div>Y</div><div>I</div><div>A</div><div>U</div><div>D</div><div>T</div><div>I</div><div>P</div><div>S</div><div>O</div><div>D</div><div>Y</div><div>O</div><div>I</div><div>O</div><div>W</div><div>M</div><div>Y</div><div>B</div><div>Y</div><div>L</div><div>EA</div><div>H</div><div>TH</div><div>H</div><div>C</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 2.324):</dt>
+<dt>Pick every last letter (IoC: 2.324 / 0.450):</dt>
 <dd class="runelist">
 <div>E</div><div>O</div><div>Y</div><div>D</div><div>S</div><div>T</div><div>P</div><div>E</div><div>R</div><div>T</div><div>Y</div><div>E</div><div>L</div><div>D</div><div>E</div><div>R</div><div>S</div><div>D</div><div>Y</div><div>R</div><div>O</div><div>S</div><div>E</div><div>E</div><div>R</div><div>P</div><div>U</div><div>E</div><div>R</div><div>Y</div><div>N</div><div>Y</div><div>U</div><div>NG</div><div>U</div><div>W</div><div>H</div><div>Y</div><div>T</div><div>Y</div><div>D</div><div>F</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.818):</dt>
+<dt>Words (IoC: 1.818 / 0.956):</dt>
 <dd>
 WELCOME THE TOWARD OF IT AN BUT WHO WAY IS ONE WAY FIND TO AND INNOCENCE YOUR YOUR YOU AN SELF THROUGH THAT OURSELUES REALITIES WITHIN WILL LICE IT THROUGH THAT EMERGE ARE UNTO ARE UNTO INTELLIGENCE FOR LIUES AN YOUR </dd>
-<dt>Pick every first letter (IoC: 2.228):</dt>
+<dt>Pick every first letter (IoC: 2.228 / 0.546):</dt>
 <dd class="runelist">
 <div>W</div><div>TH</div><div>T</div><div>O</div><div>I</div><div>A</div><div>B</div><div>W</div><div>W</div><div>I</div><div>O</div><div>W</div><div>F</div><div>T</div><div>A</div><div>I</div><div>Y</div><div>Y</div><div>Y</div><div>A</div><div>S</div><div>TH</div><div>TH</div><div>O</div><div>R</div><div>W</div><div>W</div><div>L</div><div>I</div><div>TH</div><div>TH</div><div>E</div><div>A</div><div>U</div><div>A</div><div>U</div><div>I</div><div>F</div><div>L</div><div>A</div><div>Y</div></dd>
-<dt>Pick every last letter (IoC: 2.688):</dt>
+<dt>Pick every last letter (IoC: 2.688 / 0.086):</dt>
 <dd class="runelist">
 <div>E</div><div>E</div><div>D</div><div>F</div><div>T</div><div>N</div><div>T</div><div>O</div><div>Y</div><div>S</div><div>E</div><div>Y</div><div>D</div><div>O</div><div>D</div><div>E</div><div>R</div><div>R</div><div>U</div><div>N</div><div>F</div><div>H</div><div>T</div><div>S</div><div>S</div><div>N</div><div>L</div><div>E</div><div>T</div><div>H</div><div>T</div><div>E</div><div>E</div><div>O</div><div>E</div><div>O</div><div>E</div><div>R</div><div>S</div><div>N</div><div>R</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.632):</dt>
+<dt>Words (IoC: 1.632 / 0.858):</dt>
 <dd>
 PILGRIM GREAT THE ALL IS EASY FOR FIND HERE A ALONG YOU AN ALL SUFFERNG YOUR CERTAINTY REALITY WILL END IT THIS WE AND JOURNEY AND ARRIUE THE IS GONG WE WIDSOM A YOURSELF A YOURSELF IS ALL IS INSTRUCTIAN OWN </dd>
-<dt>Pick every first letter (IoC: 3.077):</dt>
+<dt>Pick every first letter (IoC: 3.077 / 0.000):</dt>
 <dd class="runelist">
 <div>P</div><div>G</div><div>TH</div><div>A</div><div>I</div><div>EA</div><div>F</div><div>F</div><div>H</div><div>A</div><div>A</div><div>Y</div><div>A</div><div>A</div><div>S</div><div>Y</div><div>C</div><div>R</div><div>W</div><div>E</div><div>I</div><div>TH</div><div>W</div><div>A</div><div>J</div><div>A</div><div>A</div><div>TH</div><div>I</div><div>G</div><div>W</div><div>W</div><div>A</div><div>Y</div><div>A</div><div>Y</div><div>I</div><div>A</div><div>I</div><div>I</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 1.980):</dt>
+<dt>Pick every last letter (IoC: 1.980 / 0.793):</dt>
 <dd class="runelist">
 <div>M</div><div>T</div><div>E</div><div>L</div><div>S</div><div>Y</div><div>R</div><div>D</div><div>E</div><div>A</div><div>NG</div><div>U</div><div>N</div><div>L</div><div>NG</div><div>R</div><div>Y</div><div>Y</div><div>L</div><div>D</div><div>T</div><div>S</div><div>E</div><div>D</div><div>Y</div><div>D</div><div>E</div><div>E</div><div>S</div><div>NG</div><div>E</div><div>M</div><div>A</div><div>F</div><div>A</div><div>F</div><div>S</div><div>L</div><div>S</div><div>N</div><div>N</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.615):</dt>
+<dt>Words (IoC: 1.615 / 0.841):</dt>
 <dd>
 WELCOME THE THE THNGS AN FOR THEIR IS ALONG WILL TO SUFFERNG ILLUSIANS YOUR WILL TO THROUGH WE OUR WITHIN ARRIUE INSTAR THROUGH WE YOU UNTO A EACH FOR IS COMMAND </dd>
-<dt>Pick every first letter (IoC: 2.806):</dt>
+<dt>Pick every first letter (IoC: 2.806 / 0.000):</dt>
 <dd class="runelist">
 <div>W</div><div>TH</div><div>TH</div><div>TH</div><div>A</div><div>F</div><div>TH</div><div>I</div><div>A</div><div>W</div><div>T</div><div>S</div><div>I</div><div>Y</div><div>W</div><div>T</div><div>TH</div><div>W</div><div>O</div><div>W</div><div>A</div><div>I</div><div>TH</div><div>W</div><div>Y</div><div>U</div><div>A</div><div>EA</div><div>F</div><div>I</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 2.806):</dt>
+<dt>Pick every last letter (IoC: 2.806 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>E</div><div>E</div><div>S</div><div>N</div><div>R</div><div>R</div><div>S</div><div>NG</div><div>L</div><div>O</div><div>NG</div><div>S</div><div>R</div><div>L</div><div>O</div><div>H</div><div>E</div><div>R</div><div>N</div><div>E</div><div>R</div><div>H</div><div>E</div><div>U</div><div>O</div><div>A</div><div>H</div><div>R</div><div>S</div><div>D</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.672):</dt>
+<dt>Words (IoC: 1.672 / 0.898):</dt>
 <dd>
 WELCOME GREAT END IT EASY THOSE WAY A THE FIND ALL YOUR YOUR REALITY DISCOUER SELF THIS SHAPE REALITIES AND OUTSIDE IT GONG MAY ARE YOURSELF LAW INTELLIGENCE ALL HOLY YOUR </dd>
-<dt>Pick every first letter (IoC: 1.622):</dt>
+<dt>Pick every first letter (IoC: 1.622 / 0.848):</dt>
 <dd class="runelist">
 <div>W</div><div>G</div><div>E</div><div>I</div><div>EA</div><div>TH</div><div>W</div><div>A</div><div>TH</div><div>F</div><div>A</div><div>Y</div><div>Y</div><div>R</div><div>D</div><div>S</div><div>TH</div><div>S</div><div>R</div><div>A</div><div>O</div><div>I</div><div>G</div><div>M</div><div>A</div><div>Y</div><div>L</div><div>I</div><div>A</div><div>H</div><div>Y</div></dd>
-<dt>Pick every last letter (IoC: 2.869):</dt>
+<dt>Pick every last letter (IoC: 2.869 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>T</div><div>D</div><div>T</div><div>Y</div><div>E</div><div>Y</div><div>A</div><div>E</div><div>D</div><div>L</div><div>R</div><div>R</div><div>Y</div><div>R</div><div>F</div><div>S</div><div>E</div><div>S</div><div>D</div><div>E</div><div>T</div><div>NG</div><div>Y</div><div>E</div><div>F</div><div>W</div><div>E</div><div>L</div><div>Y</div><div>R</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.819):</dt>
+<dt>Words (IoC: 1.819 / 0.955):</dt>
 <dd>
 PILGRIM JOURNEY OF IS TRIP WHO HERE NECESSARY WAY AN STRUGGLE INNOCENCE CERTAINTY ULTIMATELY AN IT PILGRIMAGE OURSELUES JOURNEY YOU LICE IS WITHIN EMERGE A YOU UNTO IS THAT AN OWN </dd>
-<dt>Pick every first letter (IoC: 1.622):</dt>
+<dt>Pick every first letter (IoC: 1.622 / 0.848):</dt>
 <dd class="runelist">
 <div>P</div><div>J</div><div>O</div><div>I</div><div>T</div><div>W</div><div>H</div><div>N</div><div>W</div><div>A</div><div>S</div><div>I</div><div>C</div><div>U</div><div>A</div><div>I</div><div>P</div><div>O</div><div>J</div><div>Y</div><div>L</div><div>I</div><div>W</div><div>E</div><div>A</div><div>Y</div><div>U</div><div>I</div><div>TH</div><div>A</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 3.056):</dt>
+<dt>Pick every last letter (IoC: 3.056 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>Y</div><div>F</div><div>S</div><div>P</div><div>O</div><div>E</div><div>Y</div><div>Y</div><div>N</div><div>E</div><div>E</div><div>Y</div><div>Y</div><div>N</div><div>T</div><div>E</div><div>S</div><div>Y</div><div>U</div><div>E</div><div>S</div><div>N</div><div>E</div><div>A</div><div>U</div><div>O</div><div>S</div><div>T</div><div>N</div><div>N</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.709):</dt>
+<dt>Words (IoC: 1.709 / 0.935):</dt>
 <dd>
 TO TOWARD ALL NOT BUT FIND IT ONE YOU END AND YOUR AND YOU END IS THAT AND DEEP WILL THE ONLY THAT WIDSOM BENG ARE YOURSELF HOLY LIUES INSTRUCTIAN SELF </dd>
-<dt>Pick every first letter (IoC: 1.684):</dt>
+<dt>Pick every first letter (IoC: 1.684 / 0.910):</dt>
 <dd class="runelist">
 <div>T</div><div>T</div><div>A</div><div>N</div><div>B</div><div>F</div><div>I</div><div>O</div><div>Y</div><div>E</div><div>A</div><div>Y</div><div>A</div><div>Y</div><div>E</div><div>I</div><div>TH</div><div>A</div><div>D</div><div>W</div><div>TH</div><div>O</div><div>TH</div><div>W</div><div>B</div><div>A</div><div>Y</div><div>H</div><div>L</div><div>I</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 2.432):</dt>
+<dt>Pick every last letter (IoC: 2.432 / 0.341):</dt>
 <dd class="runelist">
 <div>O</div><div>D</div><div>L</div><div>T</div><div>T</div><div>D</div><div>T</div><div>E</div><div>U</div><div>D</div><div>D</div><div>R</div><div>D</div><div>U</div><div>D</div><div>S</div><div>T</div><div>D</div><div>P</div><div>L</div><div>E</div><div>Y</div><div>T</div><div>M</div><div>NG</div><div>E</div><div>F</div><div>Y</div><div>S</div><div>N</div><div>F</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.737):</dt>
+<dt>Words (IoC: 1.737 / 0.963):</dt>
 <dd>
 WELCOME GREAT OF NOT FOR WAY NECESSARY YOU TO YOUR CERTAINTY YOU TO THIS OURSELUES DEEP ARRIUE IT WITHIN WIDSOM UNTO LAW IS LIUES COMMAND </dd>
-<dt>Pick every first letter (IoC: 1.450):</dt>
+<dt>Pick every first letter (IoC: 1.450 / 0.676):</dt>
 <dd class="runelist">
 <div>W</div><div>G</div><div>O</div><div>N</div><div>F</div><div>W</div><div>N</div><div>Y</div><div>T</div><div>Y</div><div>C</div><div>Y</div><div>T</div><div>TH</div><div>O</div><div>D</div><div>A</div><div>I</div><div>W</div><div>W</div><div>U</div><div>L</div><div>I</div><div>L</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 1.740):</dt>
+<dt>Pick every last letter (IoC: 1.740 / 0.966):</dt>
 <dd class="runelist">
 <div>E</div><div>T</div><div>F</div><div>T</div><div>R</div><div>Y</div><div>Y</div><div>U</div><div>O</div><div>R</div><div>Y</div><div>U</div><div>O</div><div>S</div><div>S</div><div>P</div><div>E</div><div>T</div><div>N</div><div>M</div><div>O</div><div>W</div><div>S</div><div>S</div><div>D</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.838):</dt>
+<dt>Words (IoC: 1.838 / 0.936):</dt>
 <dd>
 WELCOME JOURNEY ALL AN THOSE HERE ONE WILL ALL INNOCENCE AND WILL SELF PILGRIMAGE AND WITHIN OUTSIDE IS THAT YOU YOURSELF UNTO HOLY IS YOUR </dd>
-<dt>Pick every first letter (IoC: 2.417):</dt>
+<dt>Pick every first letter (IoC: 2.417 / 0.357):</dt>
 <dd class="runelist">
 <div>W</div><div>J</div><div>A</div><div>A</div><div>TH</div><div>H</div><div>O</div><div>W</div><div>A</div><div>I</div><div>A</div><div>W</div><div>S</div><div>P</div><div>A</div><div>W</div><div>O</div><div>I</div><div>TH</div><div>Y</div><div>Y</div><div>U</div><div>H</div><div>I</div><div>Y</div></dd>
-<dt>Pick every last letter (IoC: 3.093):</dt>
+<dt>Pick every last letter (IoC: 3.093 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>Y</div><div>L</div><div>N</div><div>E</div><div>E</div><div>E</div><div>L</div><div>L</div><div>E</div><div>D</div><div>L</div><div>F</div><div>E</div><div>D</div><div>N</div><div>E</div><div>S</div><div>T</div><div>U</div><div>F</div><div>O</div><div>Y</div><div>S</div><div>R</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.608):</dt>
+<dt>Words (IoC: 1.608 / 0.834):</dt>
 <dd>
 PILGRIM TOWARD THNGS EASY WHO IT ALONG FIND STRUGGLE YOUR YOUR DISCOUER IT THAT OUR AND LICE ONLY WE ARE YOU YOURSELF FOR HOLY OWN </dd>
-<dt>Pick every first letter (IoC: 1.547):</dt>
+<dt>Pick every first letter (IoC: 1.547 / 0.773):</dt>
 <dd class="runelist">
 <div>P</div><div>T</div><div>TH</div><div>EA</div><div>W</div><div>I</div><div>A</div><div>F</div><div>S</div><div>Y</div><div>Y</div><div>D</div><div>I</div><div>TH</div><div>O</div><div>A</div><div>L</div><div>O</div><div>W</div><div>A</div><div>Y</div><div>Y</div><div>F</div><div>H</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 2.417):</dt>
+<dt>Pick every last letter (IoC: 2.417 / 0.357):</dt>
 <dd class="runelist">
 <div>M</div><div>D</div><div>S</div><div>Y</div><div>O</div><div>T</div><div>NG</div><div>D</div><div>E</div><div>R</div><div>R</div><div>R</div><div>T</div><div>T</div><div>R</div><div>D</div><div>E</div><div>Y</div><div>E</div><div>E</div><div>U</div><div>F</div><div>R</div><div>Y</div><div>N</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.584):</dt>
+<dt>Words (IoC: 1.584 / 0.811):</dt>
 <dd>
 TO THE IT TRIP FIND IS THE AN AND ILLUSIANS REALITY AN IS WE REALITIES YOU THE THROUGH MAY A ARE EACH ALL AN SELF </dd>
-<dt>Pick every first letter (IoC: 3.383):</dt>
+<dt>Pick every first letter (IoC: 3.383 / 0.000):</dt>
 <dd class="runelist">
 <div>T</div><div>TH</div><div>I</div><div>T</div><div>F</div><div>I</div><div>TH</div><div>A</div><div>A</div><div>I</div><div>R</div><div>A</div><div>I</div><div>W</div><div>R</div><div>Y</div><div>TH</div><div>TH</div><div>M</div><div>A</div><div>A</div><div>EA</div><div>A</div><div>A</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 2.127):</dt>
+<dt>Pick every last letter (IoC: 2.127 / 0.647):</dt>
 <dd class="runelist">
 <div>O</div><div>E</div><div>T</div><div>P</div><div>D</div><div>S</div><div>E</div><div>N</div><div>D</div><div>S</div><div>Y</div><div>N</div><div>S</div><div>E</div><div>S</div><div>U</div><div>E</div><div>H</div><div>Y</div><div>A</div><div>E</div><div>H</div><div>L</div><div>N</div><div>F</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 1.629):</dt>
+<dt>Words (IoC: 1.629 / 0.856):</dt>
 <dd>
 THE END IS BUT THEIR A WAY END SUFFERNG YOUR ULTIMATELY END THROUGH SHAPE JOURNEY WILL INSTAR GONG EMERGE BENG A INTELLIGENCE THAT INSTRUCTIAN </dd>
-<dt>Pick every first letter (IoC: 2.312):</dt>
+<dt>Pick every first letter (IoC: 2.312 / 0.462):</dt>
 <dd class="runelist">
 <div>TH</div><div>E</div><div>I</div><div>B</div><div>TH</div><div>A</div><div>W</div><div>E</div><div>S</div><div>Y</div><div>U</div><div>E</div><div>TH</div><div>S</div><div>J</div><div>W</div><div>I</div><div>G</div><div>E</div><div>B</div><div>A</div><div>I</div><div>TH</div><div>I</div></dd>
-<dt>Pick every last letter (IoC: 2.101):</dt>
+<dt>Pick every last letter (IoC: 2.101 / 0.672):</dt>
 <dd class="runelist">
 <div>E</div><div>D</div><div>S</div><div>T</div><div>R</div><div>A</div><div>Y</div><div>D</div><div>NG</div><div>R</div><div>Y</div><div>D</div><div>H</div><div>E</div><div>Y</div><div>L</div><div>R</div><div>NG</div><div>E</div><div>NG</div><div>A</div><div>E</div><div>T</div><div>N</div></dd>
 </dl>

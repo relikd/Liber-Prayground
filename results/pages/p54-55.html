@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -116,7 +117,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -204,6 +205,115 @@
 </dl>
 
 
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<dl>
+<dt>Mirror Pattern (IoC-<a href="../ioc/high.html">high</a>):</dt>
+<dd>
+<table>
+<tr><th></th><th>runes</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th></tr>
+<tr><th>ᚠ.a</th><td>308</td><td class="m0">1.13</td><td class="m0">1.04</td><td class="m0">1.07</td><td class="m0">1.10</td><td class="m1">1.26</td><td class="m0">1.13</td><td class="m0">1.11</td><td class="m0">1.12</td><td class="m0">1.17</td><td class="m0">1.10</td><td class="m0">1.17</td><td class="m0">1.14</td><td class="m3">1.31</td><td class="m0">1.10</td><td class="m0">1.15</td></tr>
+<tr><th>ᚠ.b</th><td>308</td><td class="m0">1.04</td><td class="m0">1.16</td><td class="m0">1.11</td><td class="m0">1.08</td><td class="m0">1.23</td><td class="m2">1.31</td><td class="m0">1.12</td><td class="m0">1.14</td><td class="m0">1.17</td><td class="m0">1.16</td><td class="m1">1.26</td><td class="m0">1.19</td><td class="m0">1.18</td><td class="m3">1.33</td><td class="m0">1.10</td></tr>
+<tr><th>ᛠ.a</th><td>308</td><td class="m0">1.12</td><td class="m0">1.08</td><td class="m0">1.15</td><td class="m0">1.16</td><td class="m1">1.26</td><td class="m0">1.24</td><td class="m0">1.10</td><td class="m0">1.17</td><td class="m1">1.27</td><td class="m3">1.32</td><td class="m0">1.18</td><td class="m0">1.23</td><td class="m2">1.29</td><td class="m3">1.31</td><td class="m1">1.28</td></tr>
+<tr><th>ᛠ.b</th><td>308</td><td class="m0">1.16</td><td class="m0">1.20</td><td class="m0">1.19</td><td class="m0">1.25</td><td class="m0">1.24</td><td class="m1">1.28</td><td class="m4">1.36</td><td class="m0">1.25</td><td class="m0">1.22</td><td class="m4">1.35</td><td class="m3">1.33</td><td class="m1">1.27</td><td class="m2">1.31</td><td class="m3">1.33</td><td class="m1">1.28</td></tr>
+</table>
+</dd>
+<dt>Mirror Pattern (IoC-<a href="../ioc/norm.html">norm</a>):</dt>
+<dd>
+<table>
+<tr><th></th><th>runes</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th></tr>
+<tr><th>ᚠ.a</th><td>308</td><td class="m0">0.36</td><td class="m0">0.27</td><td class="m0">0.30</td><td class="m0">0.33</td><td class="m3">0.49</td><td class="m0">0.36</td><td class="m0">0.34</td><td class="m0">0.33</td><td class="m0">0.37</td><td class="m0">0.33</td><td class="m0">0.35</td><td class="m0">0.35</td><td class="m3">0.50</td><td class="m0">0.32</td><td class="m0">0.30</td></tr>
+<tr><th>ᚠ.b</th><td>308</td><td class="m0">0.27</td><td class="m0">0.36</td><td class="m0">0.34</td><td class="m0">0.31</td><td class="m0">0.33</td><td class="m3">0.49</td><td class="m0">0.32</td><td class="m0">0.37</td><td class="m0">0.40</td><td class="m0">0.36</td><td class="m0">0.34</td><td class="m0">0.37</td><td class="m0">0.37</td><td class="m1">0.40</td><td class="m0">0.25</td></tr>
+<tr><th>ᛠ.a</th><td>308</td><td class="m0">0.35</td><td class="m0">0.31</td><td class="m0">0.38</td><td class="m0">0.38</td><td class="m2">0.48</td><td class="m2">0.47</td><td class="m0">0.33</td><td class="m0">0.40</td><td class="m2">0.46</td><td class="m4">0.54</td><td class="m0">0.39</td><td class="m1">0.42</td><td class="m2">0.45</td><td class="m2">0.48</td><td class="m1">0.43</td></tr>
+<tr><th>ᛠ.b</th><td>308</td><td class="m0">0.39</td><td class="m1">0.41</td><td class="m1">0.40</td><td class="m2">0.46</td><td class="m0">0.38</td><td class="m1">0.43</td><td class="m2">0.46</td><td class="m1">0.43</td><td class="m1">0.42</td><td class="m3">0.51</td><td class="m4">0.56</td><td class="m1">0.42</td><td class="m1">0.43</td><td class="m1">0.43</td><td class="m0">0.38</td></tr>
+</table>
+</dd>
+<dt>Shift Pattern (IoC-<a href="../ioc/high.html">high</a>):</dt>
+<dd>
+<table>
+<tr><th></th><th>runes</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th></tr>
+<tr><th>ᚠ.4</th><td class="m10">77</td><td class="m0">1.10</td><td class="m0">1.08</td><td class="m0">1.11</td></tr>
+<tr><th>ᚠ.5</th><td class="m7">61</td><td class="m0">1.10</td><td class="m0">1.09</td><td class="m0">1.11</td><td class="m0">1.07</td></tr>
+<tr><th>ᚠ.6</th><td class="m5">51</td><td class="m0">1.08</td><td class="m0">1.07</td><td class="m0">1.09</td><td class="m0">1.07</td><td class="m0">1.09</td></tr>
+<tr><th>ᚠ.7</th><td class="m4">44</td><td class="m0">1.10</td><td class="m0">1.15</td><td class="m0">1.11</td><td class="m0">1.10</td><td class="m0">1.07</td><td class="m0">1.05</td></tr>
+<tr><th>ᚠ.8</th><td class="m2">38</td><td class="m0">1.08</td><td class="m0">1.24</td><td class="m0">1.09</td><td class="m0">1.22</td><td class="m0">1.18</td><td class="m0">1.16</td><td class="m0">1.19</td></tr>
+<tr><th>ᚠ.9</th><td class="m2">34</td><td class="m0">1.10</td><td class="m0">1.10</td><td class="m1">1.26</td><td class="m0">1.21</td><td class="m0">1.15</td><td class="m0">1.08</td><td class="m0">1.09</td><td class="m0">1.02</td></tr>
+<tr><th>ᚠ.10</th><td class="m1">30</td><td class="m0">1.13</td><td class="m0">1.09</td><td class="m0">1.13</td><td class="m0">1.11</td><td class="m0">1.10</td><td class="m0">1.20</td><td class="m0">1.11</td><td class="m0">1.12</td><td class="m0">1.09</td></tr>
+<tr><th>ᚠ.11</th><td class="m0">28</td><td class="m0">1.04</td><td class="m0">1.04</td><td class="m0">1.21</td><td class="m1">1.28</td><td class="m0">1.05</td><td class="m0">1.16</td><td class="m0">1.01</td><td class="m0">1.13</td><td class="m0">1.11</td><td class="m0">1.13</td></tr>
+<tr><th>ᚠ.12</th><td class="m0">25</td><td class="m0">1.08</td><td class="m0">1.10</td><td class="m2">1.28</td><td class="m0">1.15</td><td class="m0">1.12</td><td class="m0">1.10</td><td class="m5">1.38</td><td class="m0">1.25</td><td class="m0">1.12</td><td class="m0">1.12</td><td class="m0">1.23</td></tr>
+<tr><th>ᚠ.13</th><td class="m0">23</td><td class="m0">1.09</td><td class="m0">1.10</td><td class="m0">1.10</td><td class="m0">1.08</td><td class="m0">1.24</td><td class="m0">1.13</td><td class="m0">1.18</td><td class="m0">1.14</td><td class="m0">1.15</td><td class="m3">1.33</td><td class="m0">1.14</td><td class="m0">1.11</td></tr>
+<tr><th>ᚠ.14</th><td class="m0">22</td><td class="m1">1.26</td><td class="m0">1.21</td><td class="m0">1.15</td><td class="m0">1.21</td><td class="m0">1.15</td><td class="m0">1.11</td><td class="m0">1.10</td><td class="m0">1.15</td><td class="m3">1.32</td><td class="m0">1.06</td><td class="m1">1.27</td><td class="m0">1.13</td><td class="m0">1.13</td></tr>
+<tr><th>ᚠ.15</th><td class="m0">20</td><td class="m0">1.09</td><td class="m0">1.20</td><td class="m0">1.08</td><td class="m1">1.26</td><td class="m0">1.13</td><td class="m0">1.06</td><td class="m0">1.24</td><td class="m0">1.15</td><td class="m0">1.20</td><td class="m1">1.26</td><td class="m0">1.17</td><td class="m0">1.11</td><td class="m0">1.14</td><td class="m3">1.33</td></tr>
+<tr><th>ᚠ.16</th><td class="m0">19</td><td class="m0">1.11</td><td class="m0">1.16</td><td class="m0">1.12</td><td class="m0">1.14</td><td class="m0">1.06</td><td class="m0">1.18</td><td class="m0">1.09</td><td class="m2">1.30</td><td class="m0">0.99</td><td class="m0">1.13</td><td class="m0">1.15</td><td class="m0">1.19</td><td class="m0">1.23</td><td class="m0">1.22</td><td class="m0">1.18</td></tr>
+<tr><th>ᚠ.17</th><td class="m0">18</td><td class="m4">1.35</td><td class="m0">1.10</td><td class="m0">1.16</td><td class="m0">1.23</td><td class="m0">1.15</td><td class="m1">1.27</td><td class="m1">1.27</td><td class="m1">1.26</td><td class="m0">1.14</td><td class="m0">1.16</td><td class="m0">1.18</td><td class="m0">1.16</td><td class="m0">1.22</td><td class="m0">1.13</td><td class="m1">1.26</td><td class="m0">1.15</td></tr>
+<tr><th>ᚠ.18</th><td class="m0">17</td><td class="m0">1.17</td><td class="m0">1.20</td><td class="m0">1.08</td><td class="m0">1.20</td><td class="m0">1.17</td><td class="m0">1.24</td><td class="m0">1.11</td><td class="m2">1.30</td><td class="m0">1.17</td><td class="m0">1.10</td><td class="m0">1.22</td><td class="m2">1.30</td><td class="m0">1.23</td><td class="m0">1.12</td><td class="m3">1.33</td><td class="m0">1.22</td><td class="m0">1.23</td></tr>
+<tr><th>ᛠ.4</th><td class="m10">77</td><td class="m0">1.12</td><td class="m0">1.11</td><td class="m0">1.14</td></tr>
+<tr><th>ᛠ.5</th><td class="m7">61</td><td class="m0">1.16</td><td class="m0">1.15</td><td class="m0">1.14</td><td class="m0">1.20</td></tr>
+<tr><th>ᛠ.6</th><td class="m5">51</td><td class="m0">1.14</td><td class="m0">1.14</td><td class="m0">1.19</td><td class="m0">1.16</td><td class="m0">1.17</td></tr>
+<tr><th>ᛠ.7</th><td class="m4">44</td><td class="m0">1.12</td><td class="m0">1.15</td><td class="m0">1.23</td><td class="m0">1.17</td><td class="m0">1.14</td><td class="m0">1.13</td></tr>
+<tr><th>ᛠ.8</th><td class="m2">38</td><td class="m0">1.15</td><td class="m1">1.26</td><td class="m0">1.18</td><td class="m0">1.20</td><td class="m2">1.28</td><td class="m0">1.19</td><td class="m0">1.24</td></tr>
+<tr><th>ᛠ.9</th><td class="m2">34</td><td class="m0">1.17</td><td class="m0">1.21</td><td class="m0">1.23</td><td class="m1">1.26</td><td class="m0">1.25</td><td class="m0">1.15</td><td class="m0">1.16</td><td class="m0">1.14</td></tr>
+<tr><th>ᛠ.10</th><td class="m1">30</td><td class="m0">1.22</td><td class="m1">1.28</td><td class="m0">1.19</td><td class="m0">1.20</td><td class="m0">1.23</td><td class="m0">1.17</td><td class="m0">1.23</td><td class="m0">1.21</td><td class="m0">1.14</td></tr>
+<tr><th>ᛠ.11</th><td class="m0">28</td><td class="m0">1.10</td><td class="m1">1.26</td><td class="m1">1.26</td><td class="m0">1.21</td><td class="m0">1.20</td><td class="m5">1.37</td><td class="m3">1.31</td><td class="m1">1.25</td><td class="m0">1.13</td><td class="m0">1.19</td></tr>
+<tr><th>ᛠ.12</th><td class="m0">25</td><td class="m0">1.17</td><td class="m0">1.18</td><td class="m1">1.28</td><td class="m0">1.24</td><td class="m0">1.20</td><td class="m0">1.23</td><td class="m5">1.37</td><td class="m1">1.26</td><td class="m2">1.30</td><td class="m0">1.22</td><td class="m1">1.28</td></tr>
+<tr><th>ᛠ.13</th><td class="m0">23</td><td class="m0">1.24</td><td class="m0">1.13</td><td class="m0">1.24</td><td class="m0">1.19</td><td class="m2">1.31</td><td class="m0">1.19</td><td class="m6">1.41</td><td class="m0">1.20</td><td class="m0">1.19</td><td class="m3">1.32</td><td class="m0">1.23</td><td class="m0">1.21</td></tr>
+<tr><th>ᛠ.14</th><td class="m0">22</td><td class="m4">1.34</td><td class="m0">1.16</td><td class="m3">1.32</td><td class="m3">1.31</td><td class="m0">1.25</td><td class="m2">1.29</td><td class="m0">1.19</td><td class="m1">1.26</td><td class="m2">1.30</td><td class="m0">1.22</td><td class="m1">1.25</td><td class="m0">1.24</td><td class="m0">1.23</td></tr>
+<tr><th>ᛠ.15</th><td class="m0">20</td><td class="m0">1.22</td><td class="m0">1.21</td><td class="m0">1.17</td><td class="m3">1.33</td><td class="m0">1.23</td><td class="m0">1.25</td><td class="m3">1.31</td><td class="m0">1.19</td><td class="m0">1.24</td><td class="m2">1.31</td><td class="m2">1.28</td><td class="m3">1.31</td><td class="m3">1.31</td><td class="m5">1.38</td></tr>
+<tr><th>ᛠ.16</th><td class="m0">19</td><td class="m2">1.29</td><td class="m0">1.23</td><td class="m0">1.19</td><td class="m4">1.35</td><td class="m0">1.15</td><td class="m1">1.27</td><td class="m0">1.20</td><td class="m0">1.25</td><td class="m2">1.28</td><td class="m2">1.28</td><td class="m3">1.31</td><td class="m1">1.28</td><td class="m1">1.27</td><td class="m2">1.30</td><td class="m1">1.26</td></tr>
+<tr><th>ᛠ.17</th><td class="m0">18</td><td class="m5">1.37</td><td class="m0">1.23</td><td class="m0">1.23</td><td class="m0">1.23</td><td class="m1">1.26</td><td class="m1">1.28</td><td class="m1">1.27</td><td class="m2">1.30</td><td class="m0">1.25</td><td class="m2">1.28</td><td class="m0">1.17</td><td class="m1">1.27</td><td class="m5">1.39</td><td class="m3">1.31</td><td class="m0">1.25</td><td class="m5">1.37</td></tr>
+<tr><th>ᛠ.18</th><td class="m0">17</td><td class="m0">1.24</td><td class="m0">1.17</td><td class="m5">1.38</td><td class="m4">1.34</td><td class="m0">1.25</td><td class="m6">1.40</td><td class="m0">1.20</td><td class="m1">1.27</td><td class="m7">1.42</td><td class="m2">1.29</td><td class="m0">1.22</td><td class="m1">1.26</td><td class="m2">1.30</td><td class="m0">1.21</td><td class="m6">1.41</td><td class="m3">1.33</td><td class="m3">1.34</td></tr>
+</table>
+</dd>
+<dt>Shift Pattern (IoC-<a href="../ioc/norm.html">norm</a>):</dt>
+<dd>
+<table>
+<tr><th></th><th>runes</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th></tr>
+<tr><th>ᚠ.4</th><td class="m10">77</td><td class="m0">0.33</td><td class="m0">0.30</td><td class="m0">0.33</td></tr>
+<tr><th>ᚠ.5</th><td class="m7">61</td><td class="m0">0.32</td><td class="m0">0.31</td><td class="m0">0.34</td><td class="m0">0.29</td></tr>
+<tr><th>ᚠ.6</th><td class="m5">51</td><td class="m0">0.31</td><td class="m0">0.30</td><td class="m0">0.31</td><td class="m0">0.29</td><td class="m0">0.32</td></tr>
+<tr><th>ᚠ.7</th><td class="m4">44</td><td class="m0">0.33</td><td class="m0">0.38</td><td class="m0">0.33</td><td class="m0">0.33</td><td class="m0">0.29</td><td class="m0">0.27</td></tr>
+<tr><th>ᚠ.8</th><td class="m2">38</td><td class="m0">0.30</td><td class="m2">0.47</td><td class="m0">0.32</td><td class="m2">0.45</td><td class="m1">0.41</td><td class="m0">0.38</td><td class="m1">0.41</td></tr>
+<tr><th>ᚠ.9</th><td class="m2">34</td><td class="m0">0.32</td><td class="m0">0.33</td><td class="m2">0.46</td><td class="m0">0.37</td><td class="m0">0.37</td><td class="m0">0.31</td><td class="m0">0.31</td><td class="m0">0.25</td></tr>
+<tr><th>ᚠ.10</th><td class="m1">30</td><td class="m0">0.35</td><td class="m0">0.28</td><td class="m0">0.36</td><td class="m0">0.34</td><td class="m0">0.32</td><td class="m1">0.42</td><td class="m0">0.34</td><td class="m0">0.34</td><td class="m0">0.31</td></tr>
+<tr><th>ᚠ.11</th><td class="m0">28</td><td class="m0">0.26</td><td class="m0">0.26</td><td class="m0">0.38</td><td class="m3">0.50</td><td class="m0">0.27</td><td class="m0">0.39</td><td class="m0">0.24</td><td class="m0">0.35</td><td class="m0">0.34</td><td class="m0">0.35</td></tr>
+<tr><th>ᚠ.12</th><td class="m0">25</td><td class="m0">0.29</td><td class="m0">0.32</td><td class="m3">0.51</td><td class="m0">0.35</td><td class="m0">0.32</td><td class="m0">0.32</td><td class="m4">0.55</td><td class="m2">0.44</td><td class="m0">0.34</td><td class="m0">0.35</td><td class="m1">0.43</td></tr>
+<tr><th>ᚠ.13</th><td class="m0">23</td><td class="m0">0.32</td><td class="m0">0.32</td><td class="m0">0.33</td><td class="m0">0.28</td><td class="m2">0.46</td><td class="m0">0.36</td><td class="m0">0.40</td><td class="m0">0.33</td><td class="m0">0.31</td><td class="m4">0.55</td><td class="m0">0.35</td><td class="m0">0.34</td></tr>
+<tr><th>ᚠ.14</th><td class="m0">22</td><td class="m1">0.40</td><td class="m0">0.34</td><td class="m0">0.35</td><td class="m0">0.39</td><td class="m0">0.32</td><td class="m0">0.34</td><td class="m0">0.33</td><td class="m0">0.37</td><td class="m1">0.40</td><td class="m0">0.28</td><td class="m3">0.50</td><td class="m0">0.36</td><td class="m0">0.35</td></tr>
+<tr><th>ᚠ.15</th><td class="m0">20</td><td class="m0">0.30</td><td class="m1">0.41</td><td class="m0">0.29</td><td class="m1">0.42</td><td class="m0">0.34</td><td class="m0">0.27</td><td class="m0">0.38</td><td class="m0">0.37</td><td class="m1">0.43</td><td class="m1">0.44</td><td class="m0">0.37</td><td class="m0">0.33</td><td class="m0">0.37</td><td class="m3">0.52</td></tr>
+<tr><th>ᚠ.16</th><td class="m0">19</td><td class="m0">0.32</td><td class="m0">0.36</td><td class="m0">0.33</td><td class="m0">0.35</td><td class="m0">0.25</td><td class="m0">0.38</td><td class="m0">0.32</td><td class="m1">0.41</td><td class="m0">0.22</td><td class="m0">0.27</td><td class="m0">0.33</td><td class="m0">0.38</td><td class="m1">0.40</td><td class="m0">0.35</td><td class="m0">0.35</td></tr>
+<tr><th>ᚠ.17</th><td class="m0">18</td><td class="m2">0.46</td><td class="m0">0.33</td><td class="m0">0.37</td><td class="m0">0.36</td><td class="m0">0.32</td><td class="m1">0.43</td><td class="m0">0.39</td><td class="m0">0.39</td><td class="m0">0.29</td><td class="m0">0.27</td><td class="m0">0.35</td><td class="m0">0.32</td><td class="m0">0.34</td><td class="m0">0.34</td><td class="m0">0.34</td><td class="m0">0.38</td></tr>
+<tr><th>ᚠ.18</th><td class="m0">17</td><td class="m0">0.34</td><td class="m0">0.35</td><td class="m0">0.29</td><td class="m0">0.32</td><td class="m0">0.33</td><td class="m2">0.45</td><td class="m0">0.34</td><td class="m0">0.33</td><td class="m0">0.33</td><td class="m0">0.33</td><td class="m1">0.43</td><td class="m0">0.38</td><td class="m0">0.36</td><td class="m0">0.30</td><td class="m0">0.39</td><td class="m0">0.36</td><td class="m0">0.35</td></tr>
+<tr><th>ᛠ.4</th><td class="m10">77</td><td class="m0">0.35</td><td class="m0">0.33</td><td class="m0">0.37</td></tr>
+<tr><th>ᛠ.5</th><td class="m7">61</td><td class="m0">0.38</td><td class="m0">0.37</td><td class="m0">0.36</td><td class="m1">0.43</td></tr>
+<tr><th>ᛠ.6</th><td class="m5">51</td><td class="m0">0.37</td><td class="m0">0.37</td><td class="m1">0.41</td><td class="m0">0.39</td><td class="m0">0.39</td></tr>
+<tr><th>ᛠ.7</th><td class="m4">44</td><td class="m0">0.35</td><td class="m0">0.38</td><td class="m2">0.46</td><td class="m0">0.40</td><td class="m0">0.36</td><td class="m0">0.36</td></tr>
+<tr><th>ᛠ.8</th><td class="m2">38</td><td class="m0">0.37</td><td class="m3">0.48</td><td class="m0">0.36</td><td class="m1">0.42</td><td class="m1">0.44</td><td class="m1">0.42</td><td class="m2">0.47</td></tr>
+<tr><th>ᛠ.9</th><td class="m2">34</td><td class="m0">0.40</td><td class="m1">0.44</td><td class="m1">0.42</td><td class="m3">0.49</td><td class="m2">0.47</td><td class="m0">0.37</td><td class="m0">0.39</td><td class="m0">0.36</td></tr>
+<tr><th>ᛠ.10</th><td class="m1">30</td><td class="m1">0.44</td><td class="m2">0.48</td><td class="m0">0.38</td><td class="m1">0.42</td><td class="m1">0.43</td><td class="m0">0.39</td><td class="m2">0.46</td><td class="m1">0.43</td><td class="m0">0.35</td></tr>
+<tr><th>ᛠ.11</th><td class="m0">28</td><td class="m0">0.32</td><td class="m3">0.49</td><td class="m3">0.49</td><td class="m1">0.43</td><td class="m1">0.41</td><td class="m4">0.54</td><td class="m3">0.50</td><td class="m2">0.46</td><td class="m0">0.35</td><td class="m1">0.41</td></tr>
+<tr><th>ᛠ.12</th><td class="m0">25</td><td class="m0">0.39</td><td class="m0">0.37</td><td class="m2">0.47</td><td class="m2">0.44</td><td class="m1">0.41</td><td class="m1">0.44</td><td class="m5">0.59</td><td class="m2">0.46</td><td class="m2">0.45</td><td class="m0">0.38</td><td class="m2">0.47</td></tr>
+<tr><th>ᛠ.13</th><td class="m0">23</td><td class="m1">0.43</td><td class="m0">0.35</td><td class="m2">0.45</td><td class="m1">0.42</td><td class="m2">0.45</td><td class="m1">0.42</td><td class="m2">0.47</td><td class="m0">0.38</td><td class="m1">0.42</td><td class="m4">0.53</td><td class="m1">0.42</td><td class="m0">0.37</td></tr>
+<tr><th>ᛠ.14</th><td class="m0">22</td><td class="m4">0.55</td><td class="m0">0.38</td><td class="m2">0.47</td><td class="m3">0.50</td><td class="m1">0.43</td><td class="m2">0.44</td><td class="m1">0.40</td><td class="m1">0.41</td><td class="m2">0.47</td><td class="m1">0.44</td><td class="m2">0.46</td><td class="m2">0.45</td><td class="m1">0.42</td></tr>
+<tr><th>ᛠ.15</th><td class="m0">20</td><td class="m1">0.43</td><td class="m1">0.43</td><td class="m0">0.37</td><td class="m3">0.51</td><td class="m2">0.45</td><td class="m1">0.43</td><td class="m2">0.45</td><td class="m0">0.37</td><td class="m2">0.44</td><td class="m3">0.51</td><td class="m3">0.51</td><td class="m0">0.40</td><td class="m2">0.46</td><td class="m3">0.49</td></tr>
+<tr><th>ᛠ.16</th><td class="m0">19</td><td class="m3">0.48</td><td class="m0">0.39</td><td class="m0">0.39</td><td class="m3">0.50</td><td class="m0">0.36</td><td class="m1">0.42</td><td class="m1">0.42</td><td class="m2">0.45</td><td class="m2">0.45</td><td class="m2">0.45</td><td class="m2">0.48</td><td class="m2">0.46</td><td class="m0">0.39</td><td class="m2">0.46</td><td class="m0">0.39</td></tr>
+<tr><th>ᛠ.17</th><td class="m0">18</td><td class="m3">0.49</td><td class="m1">0.41</td><td class="m1">0.42</td><td class="m0">0.39</td><td class="m2">0.45</td><td class="m1">0.40</td><td class="m2">0.45</td><td class="m1">0.42</td><td class="m1">0.43</td><td class="m1">0.41</td><td class="m0">0.36</td><td class="m0">0.40</td><td class="m3">0.50</td><td class="m1">0.43</td><td class="m1">0.42</td><td class="m3">0.50</td></tr>
+<tr><th>ᛠ.18</th><td class="m0">17</td><td class="m0">0.39</td><td class="m0">0.34</td><td class="m0">0.40</td><td class="m1">0.43</td><td class="m1">0.43</td><td class="m2">0.45</td><td class="m1">0.41</td><td class="m2">0.45</td><td class="m2">0.44</td><td class="m2">0.45</td><td class="m0">0.39</td><td class="m2">0.47</td><td class="m1">0.41</td><td class="m1">0.40</td><td class="m2">0.48</td><td class="m0">0.37</td><td class="m2">0.44</td></tr>
+</table>
+</dd>
+</dl>
+
+
 	<h2 id="running-ioc">Running IoC</h2>
 	<p>
 		This section perfoms a running IoC with a window size on the whole text.
@@ -241,167 +351,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 0.981):</dt>
+<dt>Words (IoC: 0.981 / 0.207):</dt>
 <dd>
 A MNGDIATHXIM IADPNGUWAM TANG NGTHIAWSH IC AEPAEGO MIA EO TWO FYUTJ THJEAECNEA CEAE ROUX DWHBNGFACJU OJIAEAILGH BUJ XACWIA MOPYDIALP EOITHR YGM XOEGS MPJOED OETIAOE TNGI MNGYAAE NG RYJ NLUXB HPJOEA GAEW XSDC UT OEHEONPT EAYBUG GAEO NGOELMBTH YIAOEEOY MCOETH ELREOPRDY XD NGYP SEXW CGFDRE DEWOEOOE HOOE BS HEAACIMXJME ML GOTTHXEEARGYNG AEMIW SB XM SEOGDTHAE FIAABCU WR BEAFXIMUCPHNGLEO MSDIAPF BHEOC EOE EAEIGXGS ESEOTHTHES THOE CEAIMCX DJU BEI </dd>
-<dt>Pick every first letter (IoC: 1.095):</dt>
+<dt>Pick every first letter (IoC: 1.095 / 0.321):</dt>
 <dd class="runelist">
 <div>A</div><div>M</div><div>IA</div><div>T</div><div>NG</div><div>I</div><div>AE</div><div>M</div><div>E</div><div>T</div><div>F</div><div>TH</div><div>C</div><div>R</div><div>D</div><div>O</div><div>B</div><div>X</div><div>M</div><div>EO</div><div>Y</div><div>X</div><div>M</div><div>OE</div><div>T</div><div>M</div><div>NG</div><div>R</div><div>N</div><div>H</div><div>G</div><div>X</div><div>U</div><div>OE</div><div>EA</div><div>G</div><div>N</div><div>Y</div><div>M</div><div>E</div><div>X</div><div>NG</div><div>S</div><div>C</div><div>D</div><div>H</div><div>B</div><div>H</div><div>M</div><div>G</div><div>AE</div><div>S</div><div>X</div><div>S</div><div>F</div><div>W</div><div>B</div><div>M</div><div>B</div><div>EO</div><div>EA</div><div>E</div><div>TH</div><div>C</div><div>D</div><div>B</div></dd>
-<dt>Pick every last letter (IoC: 0.757):</dt>
+<dt>Pick every last letter (IoC: 0.757 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>M</div><div>M</div><div>NG</div><div>H</div><div>C</div><div>O</div><div>A</div><div>O</div><div>O</div><div>J</div><div>EA</div><div>E</div><div>X</div><div>U</div><div>H</div><div>J</div><div>IA</div><div>P</div><div>R</div><div>M</div><div>S</div><div>D</div><div>OE</div><div>I</div><div>AE</div><div>NG</div><div>J</div><div>B</div><div>EA</div><div>W</div><div>C</div><div>T</div><div>T</div><div>G</div><div>EO</div><div>TH</div><div>Y</div><div>TH</div><div>Y</div><div>D</div><div>P</div><div>W</div><div>E</div><div>OE</div><div>OE</div><div>S</div><div>E</div><div>L</div><div>NG</div><div>W</div><div>B</div><div>M</div><div>AE</div><div>U</div><div>R</div><div>EO</div><div>F</div><div>C</div><div>E</div><div>S</div><div>S</div><div>OE</div><div>X</div><div>U</div><div>I</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 0.992):</dt>
+<dt>Words (IoC: 0.992 / 0.218):</dt>
 <dd>
 A IADPNGUWAM NGTHIAWSH AEPAEGO EO FYUTJ CEAE DWHBNGFACJU BUJ MOPYDIALP YGM MPJOED TNGI NG NLUXB GAEW UT EAYBUG NGOELMBTH MCOETH XD SEXW DEWOEOOE BS ML AEMIW XM FIAABCU BEAFXIMUCPHNGLEO BHEOC EAEIGXGS THOE DJU </dd>
-<dt>Pick every first letter (IoC: 1.153):</dt>
+<dt>Pick every first letter (IoC: 1.153 / 0.380):</dt>
 <dd class="runelist">
 <div>A</div><div>IA</div><div>NG</div><div>AE</div><div>E</div><div>F</div><div>C</div><div>D</div><div>B</div><div>M</div><div>Y</div><div>M</div><div>T</div><div>NG</div><div>N</div><div>G</div><div>U</div><div>EA</div><div>N</div><div>M</div><div>X</div><div>S</div><div>D</div><div>B</div><div>M</div><div>AE</div><div>X</div><div>F</div><div>B</div><div>B</div><div>EA</div><div>TH</div><div>D</div></dd>
-<dt>Pick every last letter (IoC: 0.824):</dt>
+<dt>Pick every last letter (IoC: 0.824 / 0.050):</dt>
 <dd class="runelist">
 <div>A</div><div>M</div><div>H</div><div>O</div><div>O</div><div>J</div><div>E</div><div>U</div><div>J</div><div>P</div><div>M</div><div>D</div><div>I</div><div>NG</div><div>B</div><div>W</div><div>T</div><div>G</div><div>TH</div><div>TH</div><div>D</div><div>W</div><div>OE</div><div>S</div><div>L</div><div>W</div><div>M</div><div>U</div><div>EO</div><div>C</div><div>S</div><div>OE</div><div>U</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 0.995):</dt>
+<dt>Words (IoC: 0.995 / 0.222):</dt>
 <dd>
 MNGDIATHXIM TANG IC MIA TWO THJEAECNEA ROUX OJIAEAILGH XACWIA EOITHR XOEGS OETIAOE MNGYAAE RYJ HPJOEA XSDC OEHEONPT GAEO YIAOEEOY ELREOPRDY NGYP CGFDRE HOOE HEAACIMXJME GOTTHXEEARGYNG SB SEOGDTHAE WR MSDIAPF EOE ESEOTHTHES CEAIMCX BEI </dd>
-<dt>Pick every first letter (IoC: 1.098):</dt>
+<dt>Pick every first letter (IoC: 1.098 / 0.325):</dt>
 <dd class="runelist">
 <div>M</div><div>T</div><div>I</div><div>M</div><div>T</div><div>TH</div><div>R</div><div>O</div><div>X</div><div>EO</div><div>X</div><div>OE</div><div>M</div><div>R</div><div>H</div><div>X</div><div>OE</div><div>G</div><div>Y</div><div>E</div><div>NG</div><div>C</div><div>H</div><div>H</div><div>G</div><div>S</div><div>S</div><div>W</div><div>M</div><div>EO</div><div>E</div><div>C</div><div>B</div></dd>
-<dt>Pick every last letter (IoC: 0.659):</dt>
+<dt>Pick every last letter (IoC: 0.659 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>NG</div><div>C</div><div>A</div><div>O</div><div>EA</div><div>X</div><div>H</div><div>IA</div><div>R</div><div>S</div><div>OE</div><div>AE</div><div>J</div><div>EA</div><div>C</div><div>T</div><div>EO</div><div>Y</div><div>Y</div><div>P</div><div>E</div><div>OE</div><div>E</div><div>NG</div><div>B</div><div>AE</div><div>R</div><div>F</div><div>E</div><div>S</div><div>X</div><div>I</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 0.895):</dt>
+<dt>Words (IoC: 0.895 / 0.121):</dt>
 <dd>
 A TANG AEPAEGO TWO CEAE OJIAEAILGH MOPYDIALP XOEGS TNGI RYJ GAEW OEHEONPT NGOELMBTH ELREOPRDY SEXW HOOE ML SB FIAABCU MSDIAPF EAEIGXGS CEAIMCX </dd>
-<dt>Pick every first letter (IoC: 1.004):</dt>
+<dt>Pick every first letter (IoC: 1.004 / 0.231):</dt>
 <dd class="runelist">
 <div>A</div><div>T</div><div>AE</div><div>T</div><div>C</div><div>O</div><div>M</div><div>X</div><div>T</div><div>R</div><div>G</div><div>OE</div><div>N</div><div>E</div><div>S</div><div>H</div><div>M</div><div>S</div><div>F</div><div>M</div><div>EA</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 0.377):</dt>
+<dt>Pick every last letter (IoC: 0.377 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>NG</div><div>O</div><div>O</div><div>E</div><div>H</div><div>P</div><div>S</div><div>I</div><div>J</div><div>W</div><div>T</div><div>TH</div><div>Y</div><div>W</div><div>OE</div><div>L</div><div>B</div><div>U</div><div>F</div><div>S</div><div>X</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 0.993):</dt>
+<dt>Words (IoC: 0.993 / 0.220):</dt>
 <dd>
 MNGDIATHXIM NGTHIAWSH MIA FYUTJ ROUX BUJ EOITHR MPJOED MNGYAAE NLUXB XSDC EAYBUG YIAOEEOY XD CGFDRE BS GOTTHXEEARGYNG XM WR BHEOC ESEOTHTHES DJU </dd>
-<dt>Pick every first letter (IoC: 1.506):</dt>
+<dt>Pick every first letter (IoC: 1.506 / 0.733):</dt>
 <dd class="runelist">
 <div>M</div><div>NG</div><div>M</div><div>F</div><div>R</div><div>B</div><div>EO</div><div>M</div><div>M</div><div>N</div><div>X</div><div>EA</div><div>Y</div><div>X</div><div>C</div><div>B</div><div>G</div><div>X</div><div>W</div><div>B</div><div>E</div><div>D</div></dd>
-<dt>Pick every last letter (IoC: 0.753):</dt>
+<dt>Pick every last letter (IoC: 0.753 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>H</div><div>A</div><div>J</div><div>X</div><div>J</div><div>R</div><div>D</div><div>AE</div><div>B</div><div>C</div><div>G</div><div>Y</div><div>D</div><div>E</div><div>S</div><div>NG</div><div>M</div><div>R</div><div>C</div><div>S</div><div>U</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 0.967):</dt>
+<dt>Words (IoC: 0.967 / 0.193):</dt>
 <dd>
 IADPNGUWAM IC EO THJEAECNEA DWHBNGFACJU XACWIA YGM OETIAOE NG HPJOEA UT GAEO MCOETH NGYP DEWOEOOE HEAACIMXJME AEMIW SEOGDTHAE BEAFXIMUCPHNGLEO EOE THOE BEI </dd>
-<dt>Pick every first letter (IoC: 0.628):</dt>
+<dt>Pick every first letter (IoC: 0.628 / 0.000):</dt>
 <dd class="runelist">
 <div>IA</div><div>I</div><div>E</div><div>TH</div><div>D</div><div>X</div><div>Y</div><div>OE</div><div>NG</div><div>H</div><div>U</div><div>G</div><div>M</div><div>NG</div><div>D</div><div>H</div><div>AE</div><div>S</div><div>B</div><div>EO</div><div>TH</div><div>B</div></dd>
-<dt>Pick every last letter (IoC: 0.879):</dt>
+<dt>Pick every last letter (IoC: 0.879 / 0.105):</dt>
 <dd class="runelist">
 <div>M</div><div>C</div><div>O</div><div>EA</div><div>U</div><div>IA</div><div>M</div><div>OE</div><div>NG</div><div>EA</div><div>T</div><div>EO</div><div>TH</div><div>P</div><div>OE</div><div>E</div><div>W</div><div>AE</div><div>EO</div><div>E</div><div>OE</div><div>I</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 0.957):</dt>
+<dt>Words (IoC: 0.957 / 0.183):</dt>
 <dd>
 A NGTHIAWSH EO CEAE BUJ YGM TNGI NLUXB UT NGOELMBTH XD DEWOEOOE ML XM BEAFXIMUCPHNGLEO EAEIGXGS DJU </dd>
-<dt>Pick every first letter (IoC: 0.853):</dt>
+<dt>Pick every first letter (IoC: 0.853 / 0.079):</dt>
 <dd class="runelist">
 <div>A</div><div>NG</div><div>E</div><div>C</div><div>B</div><div>Y</div><div>T</div><div>N</div><div>U</div><div>N</div><div>X</div><div>D</div><div>M</div><div>X</div><div>B</div><div>EA</div><div>D</div></dd>
-<dt>Pick every last letter (IoC: 0.213):</dt>
+<dt>Pick every last letter (IoC: 0.213 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>H</div><div>O</div><div>E</div><div>J</div><div>M</div><div>I</div><div>B</div><div>T</div><div>TH</div><div>D</div><div>OE</div><div>L</div><div>M</div><div>EO</div><div>S</div><div>U</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 0.920):</dt>
+<dt>Words (IoC: 0.920 / 0.147):</dt>
 <dd>
 MNGDIATHXIM IC TWO ROUX XACWIA XOEGS MNGYAAE HPJOEA OEHEONPT YIAOEEOY NGYP HOOE GOTTHXEEARGYNG SEOGDTHAE MSDIAPF ESEOTHTHES BEI </dd>
-<dt>Pick every first letter (IoC: 1.066):</dt>
+<dt>Pick every first letter (IoC: 1.066 / 0.292):</dt>
 <dd class="runelist">
 <div>M</div><div>I</div><div>T</div><div>R</div><div>X</div><div>X</div><div>M</div><div>H</div><div>OE</div><div>Y</div><div>NG</div><div>H</div><div>G</div><div>S</div><div>M</div><div>E</div><div>B</div></dd>
-<dt>Pick every last letter (IoC: 0.426):</dt>
+<dt>Pick every last letter (IoC: 0.426 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>C</div><div>O</div><div>X</div><div>IA</div><div>S</div><div>AE</div><div>EA</div><div>T</div><div>Y</div><div>P</div><div>OE</div><div>NG</div><div>AE</div><div>F</div><div>S</div><div>I</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 0.977):</dt>
+<dt>Words (IoC: 0.977 / 0.203):</dt>
 <dd>
 IADPNGUWAM AEPAEGO FYUTJ DWHBNGFACJU MOPYDIALP MPJOED NG GAEW EAYBUG MCOETH SEXW BS AEMIW FIAABCU BHEOC THOE </dd>
-<dt>Pick every first letter (IoC: 1.450):</dt>
+<dt>Pick every first letter (IoC: 1.450 / 0.676):</dt>
 <dd class="runelist">
 <div>IA</div><div>AE</div><div>F</div><div>D</div><div>M</div><div>M</div><div>NG</div><div>G</div><div>EA</div><div>M</div><div>S</div><div>B</div><div>AE</div><div>F</div><div>B</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 0.967):</dt>
+<dt>Pick every last letter (IoC: 0.967 / 0.193):</dt>
 <dd class="runelist">
 <div>M</div><div>O</div><div>J</div><div>U</div><div>P</div><div>D</div><div>NG</div><div>W</div><div>G</div><div>TH</div><div>W</div><div>S</div><div>W</div><div>U</div><div>C</div><div>OE</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.055):</dt>
+<dt>Words (IoC: 1.055 / 0.282):</dt>
 <dd>
 TANG MIA THJEAECNEA OJIAEAILGH EOITHR OETIAOE RYJ XSDC GAEO ELREOPRDY CGFDRE HEAACIMXJME SB WR EOE CEAIMCX </dd>
-<dt>Pick every first letter (IoC: 0.483):</dt>
+<dt>Pick every first letter (IoC: 0.483 / 0.000):</dt>
 <dd class="runelist">
 <div>T</div><div>M</div><div>TH</div><div>O</div><div>EO</div><div>OE</div><div>R</div><div>X</div><div>G</div><div>E</div><div>C</div><div>H</div><div>S</div><div>W</div><div>EO</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 0.967):</dt>
+<dt>Pick every last letter (IoC: 0.967 / 0.193):</dt>
 <dd class="runelist">
 <div>NG</div><div>A</div><div>EA</div><div>H</div><div>R</div><div>OE</div><div>J</div><div>C</div><div>EO</div><div>Y</div><div>E</div><div>E</div><div>B</div><div>R</div><div>E</div><div>X</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.046):</dt>
+<dt>Words (IoC: 1.046 / 0.273):</dt>
 <dd>
 A IC FYUTJ OJIAEAILGH YGM MNGYAAE GAEW GAEO XD HOOE AEMIW WR EAEIGXGS BEI </dd>
-<dt>Pick every first letter (IoC: 0.319):</dt>
+<dt>Pick every first letter (IoC: 0.319 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>I</div><div>F</div><div>O</div><div>Y</div><div>M</div><div>G</div><div>G</div><div>X</div><div>H</div><div>AE</div><div>W</div><div>EA</div><div>B</div></dd>
-<dt>Pick every last letter (IoC: 0.319):</dt>
+<dt>Pick every last letter (IoC: 0.319 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>C</div><div>J</div><div>H</div><div>M</div><div>AE</div><div>W</div><div>EO</div><div>D</div><div>OE</div><div>W</div><div>R</div><div>S</div><div>I</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.049):</dt>
+<dt>Words (IoC: 1.049 / 0.276):</dt>
 <dd>
 MNGDIATHXIM AEPAEGO THJEAECNEA BUJ XOEGS NG XSDC NGOELMBTH NGYP BS SB BEAFXIMUCPHNGLEO ESEOTHTHES </dd>
-<dt>Pick every first letter (IoC: 1.859):</dt>
+<dt>Pick every first letter (IoC: 1.859 / 0.915):</dt>
 <dd class="runelist">
 <div>M</div><div>AE</div><div>TH</div><div>B</div><div>X</div><div>NG</div><div>X</div><div>N</div><div>NG</div><div>B</div><div>S</div><div>B</div><div>E</div></dd>
-<dt>Pick every last letter (IoC: 1.115):</dt>
+<dt>Pick every last letter (IoC: 1.115 / 0.342):</dt>
 <dd class="runelist">
 <div>M</div><div>O</div><div>EA</div><div>J</div><div>S</div><div>NG</div><div>C</div><div>TH</div><div>P</div><div>S</div><div>B</div><div>EO</div><div>S</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.175):</dt>
+<dt>Words (IoC: 1.175 / 0.402):</dt>
 <dd>
 IADPNGUWAM MIA CEAE XACWIA MPJOED RYJ UT YIAOEEOY SEXW HEAACIMXJME XM MSDIAPF THOE </dd>
-<dt>Pick every first letter (IoC: 1.487):</dt>
+<dt>Pick every first letter (IoC: 1.487 / 0.713):</dt>
 <dd class="runelist">
 <div>IA</div><div>M</div><div>C</div><div>X</div><div>M</div><div>R</div><div>U</div><div>Y</div><div>S</div><div>H</div><div>X</div><div>M</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 0.744):</dt>
+<dt>Pick every last letter (IoC: 0.744 / 0.000):</dt>
 <dd class="runelist">
 <div>M</div><div>A</div><div>E</div><div>IA</div><div>D</div><div>J</div><div>T</div><div>Y</div><div>W</div><div>E</div><div>M</div><div>F</div><div>OE</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 0.852):</dt>
+<dt>Words (IoC: 0.852 / 0.078):</dt>
 <dd>
 TANG EO ROUX MOPYDIALP OETIAOE NLUXB OEHEONPT MCOETH CGFDRE ML SEOGDTHAE BHEOC CEAIMCX </dd>
-<dt>Pick every first letter (IoC: 1.859):</dt>
+<dt>Pick every first letter (IoC: 1.859 / 0.915):</dt>
 <dd class="runelist">
 <div>T</div><div>E</div><div>R</div><div>M</div><div>OE</div><div>N</div><div>OE</div><div>M</div><div>C</div><div>M</div><div>S</div><div>B</div><div>C</div></dd>
-<dt>Pick every last letter (IoC: 0.372):</dt>
+<dt>Pick every last letter (IoC: 0.372 / 0.000):</dt>
 <dd class="runelist">
 <div>NG</div><div>O</div><div>X</div><div>P</div><div>OE</div><div>B</div><div>T</div><div>TH</div><div>E</div><div>L</div><div>AE</div><div>C</div><div>X</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 0.885):</dt>
+<dt>Words (IoC: 0.885 / 0.111):</dt>
 <dd>
 NGTHIAWSH TWO DWHBNGFACJU EOITHR TNGI HPJOEA EAYBUG ELREOPRDY DEWOEOOE GOTTHXEEARGYNG FIAABCU EOE DJU </dd>
-<dt>Pick every first letter (IoC: 1.859):</dt>
+<dt>Pick every first letter (IoC: 1.859 / 0.915):</dt>
 <dd class="runelist">
 <div>NG</div><div>T</div><div>D</div><div>EO</div><div>T</div><div>H</div><div>EA</div><div>E</div><div>D</div><div>G</div><div>F</div><div>EO</div><div>D</div></dd>
-<dt>Pick every last letter (IoC: 1.115):</dt>
+<dt>Pick every last letter (IoC: 1.115 / 0.342):</dt>
 <dd class="runelist">
 <div>H</div><div>O</div><div>U</div><div>R</div><div>I</div><div>EA</div><div>G</div><div>Y</div><div>OE</div><div>NG</div><div>U</div><div>E</div><div>U</div></dd>
 </dl>

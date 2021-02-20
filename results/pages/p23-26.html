@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -116,7 +117,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -204,6 +205,115 @@
 </dl>
 
 
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<dl>
+<dt>Mirror Pattern (IoC-<a href="../ioc/high.html">high</a>):</dt>
+<dd>
+<table>
+<tr><th></th><th>runes</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th></tr>
+<tr><th>ᚠ.a</th><td>537</td><td class="m0">1.09</td><td class="m0">1.11</td><td class="m0">1.17</td><td class="m0">1.17</td><td class="m0">1.15</td><td class="m0">1.12</td><td class="m0">1.18</td><td class="m0">1.17</td><td class="m0">1.20</td><td class="m1">1.26</td><td class="m1">1.25</td><td class="m0">1.23</td><td class="m0">1.20</td><td class="m0">1.23</td><td class="m0">1.24</td></tr>
+<tr><th>ᚠ.b</th><td>537</td><td class="m0">1.12</td><td class="m0">1.17</td><td class="m0">1.19</td><td class="m0">1.20</td><td class="m0">1.19</td><td class="m0">1.20</td><td class="m0">1.21</td><td class="m0">1.23</td><td class="m0">1.23</td><td class="m1">1.26</td><td class="m6">1.39</td><td class="m2">1.29</td><td class="m2">1.30</td><td class="m2">1.29</td><td class="m0">1.25</td></tr>
+<tr><th>ᛠ.a</th><td>605</td><td class="m0">1.12</td><td class="m0">1.13</td><td class="m0">1.14</td><td class="m0">1.13</td><td class="m0">1.18</td><td class="m0">1.14</td><td class="m0">1.16</td><td class="m0">1.16</td><td class="m0">1.18</td><td class="m0">1.22</td><td class="m0">1.19</td><td class="m0">1.23</td><td class="m1">1.26</td><td class="m0">1.18</td><td class="m0">1.21</td></tr>
+<tr><th>ᛠ.b</th><td>605</td><td class="m0">1.12</td><td class="m0">1.19</td><td class="m0">1.18</td><td class="m0">1.20</td><td class="m0">1.21</td><td class="m0">1.24</td><td class="m0">1.17</td><td class="m0">1.17</td><td class="m0">1.19</td><td class="m1">1.25</td><td class="m0">1.25</td><td class="m1">1.27</td><td class="m1">1.28</td><td class="m3">1.33</td><td class="m1">1.26</td></tr>
+</table>
+</dd>
+<dt>Mirror Pattern (IoC-<a href="../ioc/norm.html">norm</a>):</dt>
+<dd>
+<table>
+<tr><th></th><th>runes</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th><th>18</th></tr>
+<tr><th>ᚠ.a</th><td>537</td><td class="m0">0.31</td><td class="m0">0.34</td><td class="m0">0.39</td><td class="m0">0.40</td><td class="m0">0.37</td><td class="m0">0.35</td><td class="m1">0.41</td><td class="m0">0.40</td><td class="m1">0.42</td><td class="m3">0.49</td><td class="m2">0.47</td><td class="m2">0.46</td><td class="m1">0.43</td><td class="m2">0.44</td><td class="m2">0.45</td></tr>
+<tr><th>ᚠ.b</th><td>537</td><td class="m0">0.35</td><td class="m0">0.39</td><td class="m1">0.42</td><td class="m1">0.42</td><td class="m1">0.42</td><td class="m1">0.42</td><td class="m1">0.41</td><td class="m2">0.45</td><td class="m1">0.44</td><td class="m2">0.47</td><td class="m2">0.48</td><td class="m1">0.44</td><td class="m3">0.49</td><td class="m2">0.46</td><td class="m2">0.46</td></tr>
+<tr><th>ᛠ.a</th><td>605</td><td class="m0">0.34</td><td class="m0">0.35</td><td class="m0">0.37</td><td class="m0">0.36</td><td class="m1">0.41</td><td class="m0">0.37</td><td class="m0">0.39</td><td class="m0">0.39</td><td class="m1">0.41</td><td class="m1">0.44</td><td class="m1">0.40</td><td class="m2">0.46</td><td class="m2">0.47</td><td class="m1">0.40</td><td class="m1">0.43</td></tr>
+<tr><th>ᛠ.b</th><td>605</td><td class="m0">0.35</td><td class="m1">0.42</td><td class="m1">0.41</td><td class="m1">0.43</td><td class="m1">0.41</td><td class="m2">0.44</td><td class="m0">0.40</td><td class="m0">0.40</td><td class="m1">0.41</td><td class="m2">0.44</td><td class="m2">0.46</td><td class="m2">0.47</td><td class="m2">0.46</td><td class="m3">0.48</td><td class="m1">0.43</td></tr>
+</table>
+</dd>
+<dt>Shift Pattern (IoC-<a href="../ioc/high.html">high</a>):</dt>
+<dd>
+<table>
+<tr><th></th><th>runes</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th></tr>
+<tr><th>ᚠ.4</th><td class="m15">134</td><td class="m0">1.12</td><td class="m0">1.09</td><td class="m0">1.09</td></tr>
+<tr><th>ᚠ.5</th><td class="m15">107</td><td class="m0">1.13</td><td class="m0">1.12</td><td class="m0">1.13</td><td class="m0">1.14</td></tr>
+<tr><th>ᚠ.6</th><td class="m12">89</td><td class="m0">1.17</td><td class="m0">1.10</td><td class="m0">1.18</td><td class="m0">1.13</td><td class="m0">1.12</td></tr>
+<tr><th>ᚠ.7</th><td class="m10">76</td><td class="m0">1.12</td><td class="m0">1.13</td><td class="m0">1.16</td><td class="m0">1.15</td><td class="m0">1.15</td><td class="m0">1.12</td></tr>
+<tr><th>ᚠ.8</th><td class="m8">67</td><td class="m0">1.19</td><td class="m0">1.17</td><td class="m0">1.14</td><td class="m0">1.15</td><td class="m0">1.13</td><td class="m0">1.11</td><td class="m0">1.15</td></tr>
+<tr><th>ᚠ.9</th><td class="m7">59</td><td class="m0">1.18</td><td class="m0">1.13</td><td class="m0">1.16</td><td class="m0">1.22</td><td class="m0">1.14</td><td class="m0">1.16</td><td class="m0">1.23</td><td class="m0">1.21</td></tr>
+<tr><th>ᚠ.10</th><td class="m5">53</td><td class="m0">1.16</td><td class="m0">1.16</td><td class="m0">1.21</td><td class="m0">1.14</td><td class="m0">1.15</td><td class="m0">1.16</td><td class="m0">1.20</td><td class="m0">1.24</td><td class="m0">1.13</td></tr>
+<tr><th>ᚠ.11</th><td class="m4">48</td><td class="m0">1.17</td><td class="m0">1.18</td><td class="m0">1.21</td><td class="m0">1.18</td><td class="m0">1.20</td><td class="m0">1.20</td><td class="m0">1.21</td><td class="m0">1.21</td><td class="m0">1.16</td><td class="m0">1.22</td></tr>
+<tr><th>ᚠ.12</th><td class="m4">44</td><td class="m0">1.18</td><td class="m0">1.20</td><td class="m0">1.18</td><td class="m0">1.22</td><td class="m0">1.23</td><td class="m0">1.18</td><td class="m0">1.23</td><td class="m0">1.19</td><td class="m0">1.21</td><td class="m0">1.20</td><td class="m0">1.18</td></tr>
+<tr><th>ᚠ.13</th><td class="m3">41</td><td class="m0">1.21</td><td class="m0">1.18</td><td class="m0">1.13</td><td class="m0">1.22</td><td class="m0">1.17</td><td class="m0">1.18</td><td class="m0">1.18</td><td class="m0">1.22</td><td class="m0">1.19</td><td class="m0">1.24</td><td class="m0">1.24</td><td class="m2">1.30</td></tr>
+<tr><th>ᚠ.14</th><td class="m2">38</td><td class="m0">1.19</td><td class="m0">1.24</td><td class="m1">1.27</td><td class="m0">1.17</td><td class="m0">1.16</td><td class="m0">1.20</td><td class="m0">1.20</td><td class="m0">1.19</td><td class="m0">1.24</td><td class="m0">1.23</td><td class="m0">1.25</td><td class="m0">1.23</td><td class="m0">1.19</td></tr>
+<tr><th>ᚠ.15</th><td class="m2">35</td><td class="m1">1.27</td><td class="m0">1.18</td><td class="m0">1.20</td><td class="m0">1.24</td><td class="m0">1.17</td><td class="m0">1.15</td><td class="m0">1.22</td><td class="m0">1.22</td><td class="m0">1.21</td><td class="m0">1.19</td><td class="m0">1.21</td><td class="m0">1.19</td><td class="m2">1.29</td><td class="m0">1.24</td></tr>
+<tr><th>ᚠ.16</th><td class="m1">33</td><td class="m0">1.21</td><td class="m1">1.25</td><td class="m0">1.22</td><td class="m0">1.20</td><td class="m0">1.24</td><td class="m0">1.19</td><td class="m0">1.19</td><td class="m0">1.21</td><td class="m0">1.23</td><td class="m0">1.24</td><td class="m0">1.24</td><td class="m0">1.22</td><td class="m2">1.30</td><td class="m0">1.18</td><td class="m3">1.32</td></tr>
+<tr><th>ᚠ.17</th><td class="m1">31</td><td class="m1">1.27</td><td class="m1">1.26</td><td class="m2">1.29</td><td class="m0">1.20</td><td class="m0">1.22</td><td class="m3">1.31</td><td class="m3">1.34</td><td class="m0">1.19</td><td class="m0">1.23</td><td class="m0">1.25</td><td class="m1">1.27</td><td class="m0">1.21</td><td class="m0">1.22</td><td class="m0">1.21</td><td class="m3">1.32</td><td class="m0">1.18</td></tr>
+<tr><th>ᚠ.18</th><td class="m1">29</td><td class="m3">1.33</td><td class="m0">1.20</td><td class="m0">1.23</td><td class="m1">1.27</td><td class="m1">1.27</td><td class="m0">1.18</td><td class="m0">1.22</td><td class="m0">1.24</td><td class="m1">1.28</td><td class="m5">1.37</td><td class="m2">1.29</td><td class="m0">1.18</td><td class="m0">1.22</td><td class="m0">1.18</td><td class="m0">1.17</td><td class="m0">1.22</td><td class="m2">1.29</td></tr>
+<tr><th>ᛠ.4</th><td class="m15">151</td><td class="m0">1.12</td><td class="m0">1.12</td><td class="m0">1.13</td></tr>
+<tr><th>ᛠ.5</th><td class="m15">121</td><td class="m0">1.14</td><td class="m0">1.12</td><td class="m0">1.12</td><td class="m0">1.11</td></tr>
+<tr><th>ᛠ.6</th><td class="m15">100</td><td class="m0">1.12</td><td class="m0">1.13</td><td class="m0">1.16</td><td class="m0">1.12</td><td class="m0">1.15</td></tr>
+<tr><th>ᛠ.7</th><td class="m12">86</td><td class="m0">1.12</td><td class="m0">1.14</td><td class="m0">1.13</td><td class="m0">1.15</td><td class="m0">1.15</td><td class="m0">1.12</td></tr>
+<tr><th>ᛠ.8</th><td class="m10">75</td><td class="m0">1.15</td><td class="m0">1.21</td><td class="m0">1.12</td><td class="m0">1.14</td><td class="m0">1.15</td><td class="m0">1.18</td><td class="m0">1.17</td></tr>
+<tr><th>ᛠ.9</th><td class="m8">67</td><td class="m0">1.15</td><td class="m0">1.13</td><td class="m0">1.23</td><td class="m0">1.18</td><td class="m0">1.16</td><td class="m0">1.14</td><td class="m0">1.25</td><td class="m0">1.17</td></tr>
+<tr><th>ᛠ.10</th><td class="m7">60</td><td class="m0">1.17</td><td class="m0">1.15</td><td class="m0">1.13</td><td class="m0">1.16</td><td class="m0">1.15</td><td class="m0">1.13</td><td class="m0">1.19</td><td class="m0">1.19</td><td class="m0">1.14</td></tr>
+<tr><th>ᛠ.11</th><td class="m6">55</td><td class="m0">1.20</td><td class="m0">1.14</td><td class="m0">1.15</td><td class="m0">1.16</td><td class="m0">1.20</td><td class="m0">1.22</td><td class="m0">1.24</td><td class="m0">1.16</td><td class="m0">1.21</td><td class="m0">1.17</td></tr>
+<tr><th>ᛠ.12</th><td class="m5">50</td><td class="m0">1.21</td><td class="m0">1.16</td><td class="m0">1.18</td><td class="m0">1.17</td><td class="m0">1.19</td><td class="m0">1.20</td><td class="m0">1.20</td><td class="m0">1.19</td><td class="m0">1.23</td><td class="m0">1.22</td><td class="m0">1.16</td></tr>
+<tr><th>ᛠ.13</th><td class="m4">46</td><td class="m0">1.20</td><td class="m0">1.17</td><td class="m0">1.17</td><td class="m0">1.18</td><td class="m0">1.18</td><td class="m0">1.20</td><td class="m0">1.20</td><td class="m0">1.17</td><td class="m0">1.20</td><td class="m0">1.17</td><td class="m0">1.19</td><td class="m0">1.16</td></tr>
+<tr><th>ᛠ.14</th><td class="m3">43</td><td class="m0">1.19</td><td class="m0">1.18</td><td class="m0">1.21</td><td class="m0">1.21</td><td class="m0">1.17</td><td class="m0">1.20</td><td class="m0">1.17</td><td class="m0">1.20</td><td class="m0">1.18</td><td class="m0">1.18</td><td class="m0">1.19</td><td class="m0">1.19</td><td class="m0">1.21</td></tr>
+<tr><th>ᛠ.15</th><td class="m3">40</td><td class="m0">1.21</td><td class="m0">1.23</td><td class="m0">1.19</td><td class="m2">1.29</td><td class="m0">1.15</td><td class="m0">1.19</td><td class="m0">1.17</td><td class="m0">1.23</td><td class="m0">1.22</td><td class="m0">1.19</td><td class="m0">1.18</td><td class="m0">1.19</td><td class="m1">1.28</td><td class="m0">1.23</td></tr>
+<tr><th>ᛠ.16</th><td class="m2">37</td><td class="m1">1.25</td><td class="m0">1.20</td><td class="m0">1.19</td><td class="m0">1.20</td><td class="m0">1.24</td><td class="m0">1.19</td><td class="m0">1.18</td><td class="m0">1.21</td><td class="m0">1.19</td><td class="m1">1.25</td><td class="m0">1.23</td><td class="m0">1.19</td><td class="m0">1.22</td><td class="m0">1.24</td><td class="m1">1.26</td></tr>
+<tr><th>ᛠ.17</th><td class="m2">35</td><td class="m0">1.24</td><td class="m0">1.21</td><td class="m0">1.21</td><td class="m0">1.20</td><td class="m0">1.18</td><td class="m0">1.25</td><td class="m0">1.20</td><td class="m4">1.34</td><td class="m1">1.28</td><td class="m0">1.18</td><td class="m0">1.21</td><td class="m0">1.21</td><td class="m0">1.23</td><td class="m0">1.18</td><td class="m0">1.25</td><td class="m0">1.20</td></tr>
+<tr><th>ᛠ.18</th><td class="m1">33</td><td class="m0">1.24</td><td class="m0">1.21</td><td class="m1">1.28</td><td class="m0">1.17</td><td class="m0">1.23</td><td class="m1">1.26</td><td class="m0">1.23</td><td class="m0">1.22</td><td class="m0">1.19</td><td class="m0">1.22</td><td class="m0">1.23</td><td class="m0">1.20</td><td class="m0">1.19</td><td class="m0">1.20</td><td class="m1">1.28</td><td class="m0">1.23</td><td class="m0">1.20</td></tr>
+</table>
+</dd>
+<dt>Shift Pattern (IoC-<a href="../ioc/norm.html">norm</a>):</dt>
+<dd>
+<table>
+<tr><th></th><th>runes</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th><th>13</th><th>14</th><th>15</th><th>16</th><th>17</th></tr>
+<tr><th>ᚠ.4</th><td class="m15">134</td><td class="m0">0.34</td><td class="m0">0.31</td><td class="m0">0.32</td></tr>
+<tr><th>ᚠ.5</th><td class="m15">107</td><td class="m0">0.36</td><td class="m0">0.35</td><td class="m0">0.35</td><td class="m0">0.36</td></tr>
+<tr><th>ᚠ.6</th><td class="m12">89</td><td class="m0">0.39</td><td class="m0">0.33</td><td class="m1">0.41</td><td class="m0">0.35</td><td class="m0">0.35</td></tr>
+<tr><th>ᚠ.7</th><td class="m10">76</td><td class="m0">0.35</td><td class="m0">0.36</td><td class="m0">0.39</td><td class="m0">0.38</td><td class="m0">0.38</td><td class="m0">0.34</td></tr>
+<tr><th>ᚠ.8</th><td class="m8">67</td><td class="m1">0.41</td><td class="m0">0.39</td><td class="m0">0.37</td><td class="m0">0.38</td><td class="m0">0.36</td><td class="m0">0.33</td><td class="m0">0.37</td></tr>
+<tr><th>ᚠ.9</th><td class="m7">59</td><td class="m1">0.40</td><td class="m0">0.36</td><td class="m0">0.39</td><td class="m2">0.44</td><td class="m0">0.37</td><td class="m0">0.38</td><td class="m2">0.46</td><td class="m1">0.43</td></tr>
+<tr><th>ᚠ.10</th><td class="m5">53</td><td class="m0">0.38</td><td class="m0">0.38</td><td class="m1">0.44</td><td class="m0">0.37</td><td class="m0">0.38</td><td class="m0">0.39</td><td class="m1">0.43</td><td class="m2">0.46</td><td class="m0">0.36</td></tr>
+<tr><th>ᚠ.11</th><td class="m4">48</td><td class="m0">0.40</td><td class="m1">0.41</td><td class="m1">0.43</td><td class="m1">0.41</td><td class="m1">0.43</td><td class="m1">0.42</td><td class="m1">0.43</td><td class="m1">0.44</td><td class="m0">0.39</td><td class="m1">0.43</td></tr>
+<tr><th>ᚠ.12</th><td class="m4">44</td><td class="m1">0.41</td><td class="m1">0.43</td><td class="m1">0.41</td><td class="m2">0.45</td><td class="m2">0.45</td><td class="m1">0.41</td><td class="m2">0.46</td><td class="m1">0.42</td><td class="m1">0.44</td><td class="m1">0.43</td><td class="m1">0.41</td></tr>
+<tr><th>ᚠ.13</th><td class="m3">41</td><td class="m1">0.44</td><td class="m1">0.41</td><td class="m0">0.36</td><td class="m1">0.44</td><td class="m1">0.40</td><td class="m1">0.41</td><td class="m1">0.41</td><td class="m2">0.45</td><td class="m1">0.42</td><td class="m2">0.46</td><td class="m2">0.46</td><td class="m3">0.52</td></tr>
+<tr><th>ᚠ.14</th><td class="m2">38</td><td class="m1">0.42</td><td class="m2">0.47</td><td class="m2">0.47</td><td class="m0">0.40</td><td class="m0">0.39</td><td class="m1">0.43</td><td class="m1">0.41</td><td class="m1">0.42</td><td class="m2">0.46</td><td class="m1">0.44</td><td class="m2">0.47</td><td class="m2">0.44</td><td class="m1">0.42</td></tr>
+<tr><th>ᚠ.15</th><td class="m2">35</td><td class="m3">0.50</td><td class="m1">0.41</td><td class="m1">0.42</td><td class="m2">0.46</td><td class="m0">0.39</td><td class="m0">0.37</td><td class="m1">0.44</td><td class="m2">0.45</td><td class="m1">0.44</td><td class="m1">0.40</td><td class="m1">0.42</td><td class="m1">0.42</td><td class="m3">0.51</td><td class="m2">0.46</td></tr>
+<tr><th>ᚠ.16</th><td class="m1">33</td><td class="m1">0.44</td><td class="m2">0.47</td><td class="m1">0.42</td><td class="m1">0.43</td><td class="m2">0.45</td><td class="m0">0.40</td><td class="m1">0.40</td><td class="m1">0.44</td><td class="m2">0.45</td><td class="m2">0.47</td><td class="m2">0.45</td><td class="m1">0.44</td><td class="m3">0.50</td><td class="m1">0.41</td><td class="m3">0.49</td></tr>
+<tr><th>ᚠ.17</th><td class="m1">31</td><td class="m3">0.50</td><td class="m2">0.48</td><td class="m3">0.52</td><td class="m1">0.42</td><td class="m1">0.44</td><td class="m4">0.53</td><td class="m3">0.51</td><td class="m1">0.41</td><td class="m2">0.44</td><td class="m2">0.45</td><td class="m2">0.46</td><td class="m1">0.43</td><td class="m1">0.43</td><td class="m1">0.44</td><td class="m4">0.54</td><td class="m1">0.40</td></tr>
+<tr><th>ᚠ.18</th><td class="m1">29</td><td class="m3">0.49</td><td class="m1">0.42</td><td class="m2">0.46</td><td class="m2">0.47</td><td class="m3">0.50</td><td class="m0">0.39</td><td class="m1">0.43</td><td class="m2">0.46</td><td class="m3">0.48</td><td class="m4">0.54</td><td class="m3">0.49</td><td class="m0">0.39</td><td class="m1">0.44</td><td class="m0">0.39</td><td class="m0">0.40</td><td class="m1">0.43</td><td class="m3">0.52</td></tr>
+<tr><th>ᛠ.4</th><td class="m15">151</td><td class="m0">0.34</td><td class="m0">0.35</td><td class="m0">0.36</td></tr>
+<tr><th>ᛠ.5</th><td class="m15">121</td><td class="m0">0.36</td><td class="m0">0.35</td><td class="m0">0.34</td><td class="m0">0.34</td></tr>
+<tr><th>ᛠ.6</th><td class="m15">100</td><td class="m0">0.35</td><td class="m0">0.36</td><td class="m0">0.39</td><td class="m0">0.35</td><td class="m0">0.37</td></tr>
+<tr><th>ᛠ.7</th><td class="m12">86</td><td class="m0">0.35</td><td class="m0">0.36</td><td class="m0">0.36</td><td class="m0">0.38</td><td class="m0">0.37</td><td class="m0">0.35</td></tr>
+<tr><th>ᛠ.8</th><td class="m10">75</td><td class="m0">0.38</td><td class="m1">0.43</td><td class="m0">0.35</td><td class="m0">0.36</td><td class="m0">0.38</td><td class="m1">0.40</td><td class="m0">0.39</td></tr>
+<tr><th>ᛠ.9</th><td class="m8">67</td><td class="m0">0.37</td><td class="m0">0.36</td><td class="m2">0.45</td><td class="m1">0.41</td><td class="m0">0.38</td><td class="m0">0.37</td><td class="m2">0.47</td><td class="m0">0.40</td></tr>
+<tr><th>ᛠ.10</th><td class="m7">60</td><td class="m0">0.40</td><td class="m0">0.38</td><td class="m0">0.36</td><td class="m0">0.39</td><td class="m0">0.37</td><td class="m0">0.36</td><td class="m1">0.41</td><td class="m1">0.42</td><td class="m0">0.37</td></tr>
+<tr><th>ᛠ.11</th><td class="m6">55</td><td class="m1">0.43</td><td class="m0">0.37</td><td class="m0">0.38</td><td class="m0">0.39</td><td class="m1">0.42</td><td class="m2">0.45</td><td class="m2">0.46</td><td class="m0">0.38</td><td class="m1">0.43</td><td class="m0">0.40</td></tr>
+<tr><th>ᛠ.12</th><td class="m5">50</td><td class="m1">0.43</td><td class="m0">0.38</td><td class="m1">0.40</td><td class="m0">0.39</td><td class="m1">0.42</td><td class="m1">0.42</td><td class="m1">0.43</td><td class="m1">0.42</td><td class="m2">0.45</td><td class="m1">0.43</td><td class="m0">0.38</td></tr>
+<tr><th>ᛠ.13</th><td class="m4">46</td><td class="m1">0.42</td><td class="m0">0.40</td><td class="m0">0.38</td><td class="m1">0.40</td><td class="m1">0.40</td><td class="m1">0.42</td><td class="m1">0.42</td><td class="m0">0.39</td><td class="m1">0.43</td><td class="m1">0.40</td><td class="m1">0.42</td><td class="m0">0.38</td></tr>
+<tr><th>ᛠ.14</th><td class="m3">43</td><td class="m1">0.42</td><td class="m1">0.41</td><td class="m1">0.43</td><td class="m1">0.43</td><td class="m0">0.39</td><td class="m1">0.42</td><td class="m0">0.39</td><td class="m1">0.42</td><td class="m1">0.40</td><td class="m1">0.40</td><td class="m1">0.42</td><td class="m1">0.41</td><td class="m1">0.43</td></tr>
+<tr><th>ᛠ.15</th><td class="m3">40</td><td class="m1">0.43</td><td class="m2">0.46</td><td class="m1">0.41</td><td class="m3">0.52</td><td class="m0">0.38</td><td class="m1">0.42</td><td class="m1">0.40</td><td class="m2">0.46</td><td class="m1">0.44</td><td class="m1">0.42</td><td class="m1">0.41</td><td class="m1">0.41</td><td class="m2">0.47</td><td class="m1">0.44</td></tr>
+<tr><th>ᛠ.16</th><td class="m2">37</td><td class="m2">0.48</td><td class="m1">0.43</td><td class="m1">0.42</td><td class="m1">0.43</td><td class="m2">0.46</td><td class="m1">0.42</td><td class="m0">0.40</td><td class="m1">0.44</td><td class="m1">0.41</td><td class="m2">0.48</td><td class="m1">0.43</td><td class="m1">0.42</td><td class="m2">0.45</td><td class="m2">0.47</td><td class="m2">0.47</td></tr>
+<tr><th>ᛠ.17</th><td class="m2">35</td><td class="m2">0.47</td><td class="m1">0.44</td><td class="m1">0.44</td><td class="m1">0.43</td><td class="m1">0.41</td><td class="m2">0.46</td><td class="m1">0.42</td><td class="m3">0.52</td><td class="m3">0.50</td><td class="m1">0.40</td><td class="m1">0.42</td><td class="m1">0.43</td><td class="m1">0.44</td><td class="m1">0.41</td><td class="m2">0.47</td><td class="m1">0.43</td></tr>
+<tr><th>ᛠ.18</th><td class="m1">33</td><td class="m2">0.44</td><td class="m1">0.44</td><td class="m2">0.48</td><td class="m0">0.37</td><td class="m2">0.44</td><td class="m2">0.45</td><td class="m2">0.46</td><td class="m1">0.43</td><td class="m1">0.41</td><td class="m1">0.43</td><td class="m2">0.46</td><td class="m1">0.42</td><td class="m1">0.42</td><td class="m1">0.43</td><td class="m2">0.48</td><td class="m2">0.45</td><td class="m1">0.42</td></tr>
+</table>
+</dd>
+</dl>
+
+
 	<h2 id="running-ioc">Running IoC</h2>
 	<p>
 		This section perfoms a running IoC with a window size on the whole text.
@@ -241,167 +351,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 0.994):</dt>
+<dt>Words (IoC: 0.994 / 0.220):</dt>
 <dd>
 UA WNGGXDG IBI EOTBIY EAGSAEPWMEA EOJEO WHI GEABUYHY NGWURS OIAFIAEA DOETHMCNX DTHEREOC AJSOE UWRT SEST YREAAEND PBIASUDEYTH LWOES GLJ AEEOCTHWM UOG FAOIANGBEATHCA RIAT OEWFYNGUYI LTAEAE A RPFMWOD EABP NGOE NGM IAEO NLXNG IIAAEM HEWM NGPEOMIAJ AEOIA FYXOEAETH AEBO ATHJRJNTH IAFATNH GU D CTHURUOE DHR GWTPEF AHEATHDRF EJAE NCHW EOIAPEAW ML WOEWEA ANA CA GLTHBOWU GLFSH NXNGM ETHUNGIA PYU XGG WDIS THIAIAPCAO UMUXOYHT OAEMU ONTEABOEBFIP LSNGAEC AEOET UOXNIASFE XR MOOAE FUTHEDNY IAS SRLOE UH UNP IH EX THDM POEF PFNGAENGS OEJW EABY OEWD FYJITXL OTHNG FASIAIHBR AUY AEU OEEAAY EOEAE EPFB PJI SNGB RTHCEO LIUPTCBX EAYFMCYR HWTNIAXAETHOE CW EAF TEA NGOH IAEABSHOE AEI EATIS TAEHR HJSIAWNNIAWL UE T RNGCY AXEONGSEEOIHN G WXCXY SPCOER BYJNGEI NGA YG LB UJO NGXXAE BTHXIAR TGWJSIF EAIIATHNGNENFOMEYA CECWAAEW EOUTHHXUN EALUNTHPSUPR DAEOERIAAEAU UMLTHEA LNGPY OSOEARMTHOEP LS TIFSEWNG MDO EAAEIABTOS ETAF AEB LN SAXOE NLWE OLIJT BAFXT OOEJ NGS GLGEA BGEOAOED GEOM CRG PDOFWEO EADYNG NIFPL EOE UCM LAETXJRX IEAGL GCSONG AETH MHOEF RSCTH YO BIAEHEUTLL EOGOEY BNTHH EAEJBNILEAR JFCSNGCP GHSM EODEO Y IAETEAUIA ONEAO JYEOXEAAIA NDNGH PEAHIAU NGHTHP XU EAYPOETHSYP FT BIOEAGL EAH NGIIALNGNDAPG NTTHSB SSEA GC EAMU EXBGAEFOIX FA EAREO OIDSLTHEBEO OEGYGNG THFCM OEE OFBHNG CIJANOA PHRM RMOE THGJ BRTHAEA XEIADTH RNGJB NTY TSBNAE UEIOIA JEOUTHLCE LI BUFAREA MB DXM UEATY AJPUPEAYG MIAMUAMNG YIA AET ESAOE CHISFIN POENG EOTHYTAEX EOET DIALEPTA TFRN AEAR EAC NHWBEOS IHYSWOXW ONGU HNGOE TLF JGTNGJNG </dd>
-<dt>Pick every first letter (IoC: 1.026):</dt>
+<dt>Pick every first letter (IoC: 1.026 / 0.253):</dt>
 <dd class="runelist">
 <div>U</div><div>W</div><div>I</div><div>EO</div><div>EA</div><div>EO</div><div>W</div><div>G</div><div>NG</div><div>O</div><div>D</div><div>D</div><div>A</div><div>U</div><div>S</div><div>Y</div><div>P</div><div>L</div><div>G</div><div>AE</div><div>U</div><div>F</div><div>R</div><div>OE</div><div>L</div><div>A</div><div>R</div><div>EA</div><div>NG</div><div>N</div><div>IA</div><div>N</div><div>I</div><div>H</div><div>NG</div><div>AE</div><div>F</div><div>AE</div><div>A</div><div>IA</div><div>G</div><div>D</div><div>C</div><div>D</div><div>G</div><div>A</div><div>E</div><div>N</div><div>EO</div><div>M</div><div>W</div><div>A</div><div>C</div><div>G</div><div>G</div><div>N</div><div>E</div><div>P</div><div>X</div><div>W</div><div>TH</div><div>U</div><div>O</div><div>O</div><div>L</div><div>AE</div><div>U</div><div>X</div><div>M</div><div>F</div><div>IA</div><div>S</div><div>U</div><div>U</div><div>I</div><div>E</div><div>TH</div><div>P</div><div>P</div><div>OE</div><div>EA</div><div>OE</div><div>F</div><div>O</div><div>F</div><div>A</div><div>AE</div><div>OE</div><div>E</div><div>E</div><div>P</div><div>S</div><div>R</div><div>L</div><div>E</div><div>H</div><div>C</div><div>EA</div><div>T</div><div>NG</div><div>IA</div><div>AE</div><div>EA</div><div>T</div><div>H</div><div>U</div><div>T</div><div>R</div><div>A</div><div>G</div><div>W</div><div>S</div><div>B</div><div>N</div><div>Y</div><div>L</div><div>U</div><div>NG</div><div>B</div><div>T</div><div>EA</div><div>C</div><div>EO</div><div>EA</div><div>D</div><div>U</div><div>L</div><div>O</div><div>L</div><div>T</div><div>M</div><div>EA</div><div>E</div><div>AE</div><div>L</div><div>S</div><div>N</div><div>O</div><div>B</div><div>O</div><div>N</div><div>G</div><div>B</div><div>G</div><div>C</div><div>P</div><div>EA</div><div>N</div><div>E</div><div>U</div><div>L</div><div>I</div><div>G</div><div>AE</div><div>M</div><div>R</div><div>Y</div><div>B</div><div>EO</div><div>B</div><div>EA</div><div>J</div><div>G</div><div>EO</div><div>Y</div><div>IA</div><div>O</div><div>J</div><div>N</div><div>P</div><div>NG</div><div>X</div><div>EA</div><div>F</div><div>B</div><div>EA</div><div>NG</div><div>N</div><div>S</div><div>G</div><div>EA</div><div>E</div><div>F</div><div>EA</div><div>O</div><div>OE</div><div>TH</div><div>O</div><div>O</div><div>C</div><div>P</div><div>R</div><div>TH</div><div>B</div><div>X</div><div>R</div><div>N</div><div>T</div><div>U</div><div>J</div><div>L</div><div>B</div><div>M</div><div>D</div><div>U</div><div>A</div><div>M</div><div>Y</div><div>A</div><div>E</div><div>C</div><div>P</div><div>EO</div><div>E</div><div>D</div><div>T</div><div>A</div><div>EA</div><div>N</div><div>I</div><div>O</div><div>H</div><div>T</div><div>J</div></dd>
-<dt>Pick every last letter (IoC: 0.970):</dt>
+<dt>Pick every last letter (IoC: 0.970 / 0.196):</dt>
 <dd class="runelist">
 <div>A</div><div>G</div><div>I</div><div>Y</div><div>EA</div><div>EO</div><div>I</div><div>Y</div><div>S</div><div>EA</div><div>X</div><div>C</div><div>OE</div><div>T</div><div>T</div><div>D</div><div>TH</div><div>S</div><div>J</div><div>M</div><div>G</div><div>A</div><div>T</div><div>I</div><div>AE</div><div>A</div><div>D</div><div>P</div><div>OE</div><div>M</div><div>O</div><div>NG</div><div>M</div><div>M</div><div>J</div><div>IA</div><div>TH</div><div>O</div><div>TH</div><div>H</div><div>U</div><div>D</div><div>OE</div><div>R</div><div>F</div><div>F</div><div>AE</div><div>W</div><div>W</div><div>L</div><div>EA</div><div>A</div><div>A</div><div>U</div><div>H</div><div>M</div><div>IA</div><div>U</div><div>G</div><div>S</div><div>O</div><div>T</div><div>U</div><div>P</div><div>C</div><div>T</div><div>E</div><div>R</div><div>AE</div><div>Y</div><div>S</div><div>OE</div><div>H</div><div>P</div><div>H</div><div>X</div><div>M</div><div>F</div><div>S</div><div>W</div><div>Y</div><div>D</div><div>L</div><div>NG</div><div>R</div><div>Y</div><div>U</div><div>Y</div><div>AE</div><div>B</div><div>I</div><div>B</div><div>EO</div><div>X</div><div>R</div><div>OE</div><div>W</div><div>F</div><div>EA</div><div>H</div><div>OE</div><div>I</div><div>S</div><div>R</div><div>L</div><div>E</div><div>T</div><div>Y</div><div>N</div><div>G</div><div>Y</div><div>R</div><div>I</div><div>A</div><div>G</div><div>B</div><div>O</div><div>E</div><div>R</div><div>F</div><div>A</div><div>W</div><div>N</div><div>R</div><div>U</div><div>EA</div><div>Y</div><div>P</div><div>S</div><div>NG</div><div>O</div><div>S</div><div>F</div><div>B</div><div>N</div><div>OE</div><div>E</div><div>T</div><div>T</div><div>J</div><div>S</div><div>EA</div><div>D</div><div>M</div><div>G</div><div>EO</div><div>NG</div><div>L</div><div>OE</div><div>M</div><div>X</div><div>L</div><div>NG</div><div>TH</div><div>F</div><div>TH</div><div>O</div><div>L</div><div>Y</div><div>H</div><div>R</div><div>P</div><div>M</div><div>EO</div><div>Y</div><div>IA</div><div>O</div><div>IA</div><div>H</div><div>U</div><div>P</div><div>U</div><div>P</div><div>T</div><div>L</div><div>H</div><div>G</div><div>B</div><div>EA</div><div>C</div><div>U</div><div>X</div><div>A</div><div>EO</div><div>EO</div><div>G</div><div>M</div><div>E</div><div>NG</div><div>A</div><div>M</div><div>OE</div><div>J</div><div>EA</div><div>TH</div><div>B</div><div>Y</div><div>AE</div><div>IA</div><div>E</div><div>I</div><div>EA</div><div>B</div><div>M</div><div>Y</div><div>G</div><div>NG</div><div>IA</div><div>T</div><div>OE</div><div>N</div><div>NG</div><div>X</div><div>T</div><div>A</div><div>N</div><div>R</div><div>C</div><div>S</div><div>W</div><div>U</div><div>OE</div><div>F</div><div>NG</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 0.986):</dt>
+<dt>Words (IoC: 0.986 / 0.212):</dt>
 <dd>
 UA IBI EAGSAEPWMEA WHI NGWURS DOETHMCNX AJSOE SEST PBIASUDEYTH GLJ UOG RIAT LTAEAE RPFMWOD NGOE IAEO IIAAEM NGPEOMIAJ FYXOEAETH ATHJRJNTH GU CTHURUOE GWTPEF EJAE EOIAPEAW WOEWEA CA GLFSH ETHUNGIA XGG THIAIAPCAO OAEMU LSNGAEC UOXNIASFE MOOAE IAS UH IH THDM PFNGAENGS EABY FYJITXL FASIAIHBR AEU EOEAE PJI RTHCEO EAYFMCYR CW TEA IAEABSHOE EATIS HJSIAWNNIAWL T AXEONGSEEOIHN WXCXY BYJNGEI YG UJO BTHXIAR EAIIATHNGNENFOMEYA EOUTHHXUN DAEOERIAAEAU LNGPY LS MDO ETAF LN NLWE BAFXT NGS BGEOAOED CRG EADYNG EOE LAETXJRX GCSONG MHOEF YO EOGOEY EAEJBNILEAR GHSM Y ONEAO NDNGH NGHTHP EAYPOETHSYP BIOEAGL NGIIALNGNDAPG SSEA EAMU FA OIDSLTHEBEO THFCM OFBHNG PHRM THGJ XEIADTH NTY UEIOIA LI MB UEATY MIAMUAMNG AET CHISFIN EOTHYTAEX DIALEPTA AEAR NHWBEOS ONGU TLF </dd>
-<dt>Pick every first letter (IoC: 1.012):</dt>
+<dt>Pick every first letter (IoC: 1.012 / 0.239):</dt>
 <dd class="runelist">
 <div>U</div><div>I</div><div>EA</div><div>W</div><div>NG</div><div>D</div><div>A</div><div>S</div><div>P</div><div>G</div><div>U</div><div>R</div><div>L</div><div>R</div><div>NG</div><div>IA</div><div>I</div><div>NG</div><div>F</div><div>A</div><div>G</div><div>C</div><div>G</div><div>E</div><div>EO</div><div>W</div><div>C</div><div>G</div><div>E</div><div>X</div><div>TH</div><div>O</div><div>L</div><div>U</div><div>M</div><div>IA</div><div>U</div><div>I</div><div>TH</div><div>P</div><div>EA</div><div>F</div><div>F</div><div>AE</div><div>E</div><div>P</div><div>R</div><div>E</div><div>C</div><div>T</div><div>IA</div><div>EA</div><div>H</div><div>T</div><div>A</div><div>W</div><div>B</div><div>Y</div><div>U</div><div>B</div><div>EA</div><div>EO</div><div>D</div><div>L</div><div>L</div><div>M</div><div>E</div><div>L</div><div>N</div><div>B</div><div>N</div><div>B</div><div>C</div><div>EA</div><div>E</div><div>L</div><div>G</div><div>M</div><div>Y</div><div>EO</div><div>EA</div><div>G</div><div>Y</div><div>O</div><div>N</div><div>NG</div><div>EA</div><div>B</div><div>NG</div><div>S</div><div>EA</div><div>F</div><div>O</div><div>TH</div><div>O</div><div>P</div><div>TH</div><div>X</div><div>N</div><div>U</div><div>L</div><div>M</div><div>U</div><div>M</div><div>A</div><div>C</div><div>EO</div><div>D</div><div>A</div><div>N</div><div>O</div><div>T</div></dd>
-<dt>Pick every last letter (IoC: 0.928):</dt>
+<dt>Pick every last letter (IoC: 0.928 / 0.155):</dt>
 <dd class="runelist">
 <div>A</div><div>I</div><div>EA</div><div>I</div><div>S</div><div>X</div><div>OE</div><div>T</div><div>TH</div><div>J</div><div>G</div><div>T</div><div>AE</div><div>D</div><div>OE</div><div>O</div><div>M</div><div>J</div><div>TH</div><div>TH</div><div>U</div><div>OE</div><div>F</div><div>AE</div><div>W</div><div>EA</div><div>A</div><div>H</div><div>IA</div><div>G</div><div>O</div><div>U</div><div>C</div><div>E</div><div>AE</div><div>S</div><div>H</div><div>H</div><div>M</div><div>S</div><div>Y</div><div>L</div><div>R</div><div>U</div><div>AE</div><div>I</div><div>EO</div><div>R</div><div>W</div><div>EA</div><div>OE</div><div>S</div><div>L</div><div>T</div><div>N</div><div>Y</div><div>I</div><div>G</div><div>O</div><div>R</div><div>A</div><div>N</div><div>U</div><div>Y</div><div>S</div><div>O</div><div>F</div><div>N</div><div>E</div><div>T</div><div>S</div><div>D</div><div>G</div><div>NG</div><div>OE</div><div>X</div><div>NG</div><div>F</div><div>O</div><div>Y</div><div>R</div><div>M</div><div>Y</div><div>O</div><div>H</div><div>P</div><div>P</div><div>L</div><div>G</div><div>EA</div><div>U</div><div>A</div><div>EO</div><div>M</div><div>NG</div><div>M</div><div>J</div><div>TH</div><div>Y</div><div>IA</div><div>I</div><div>B</div><div>Y</div><div>NG</div><div>T</div><div>N</div><div>X</div><div>A</div><div>R</div><div>S</div><div>U</div><div>F</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 0.979):</dt>
+<dt>Words (IoC: 0.979 / 0.206):</dt>
 <dd>
 WNGGXDG EOTBIY EOJEO GEABUYHY OIAFIAEA DTHEREOC UWRT YREAAEND LWOES AEEOCTHWM FAOIANGBEATHCA OEWFYNGUYI A EABP NGM NLXNG HEWM AEOIA AEBO IAFATNH D DHR AHEATHDRF NCHW ML ANA GLTHBOWU NXNGM PYU WDIS UMUXOYHT ONTEABOEBFIP AEOET XR FUTHEDNY SRLOE UNP EX POEF OEJW OEWD OTHNG AUY OEEAAY EPFB SNGB LIUPTCBX HWTNIAXAETHOE EAF NGOH AEI TAEHR UE RNGCY G SPCOER NGA LB NGXXAE TGWJSIF CECWAAEW EALUNTHPSUPR UMLTHEA OSOEARMTHOEP TIFSEWNG EAAEIABTOS AEB SAXOE OLIJT OOEJ GLGEA GEOM PDOFWEO NIFPL UCM IEAGL AETH RSCTH BIAEHEUTLL BNTHH JFCSNGCP EODEO IAETEAUIA JYEOXEAAIA PEAHIAU XU FT EAH NTTHSB GC EXBGAEFOIX EAREO OEGYGNG OEE CIJANOA RMOE BRTHAEA RNGJB TSBNAE JEOUTHLCE BUFAREA DXM AJPUPEAYG YIA ESAOE POENG EOET TFRN EAC IHYSWOXW HNGOE JGTNGJNG </dd>
-<dt>Pick every first letter (IoC: 0.994):</dt>
+<dt>Pick every first letter (IoC: 0.994 / 0.220):</dt>
 <dd class="runelist">
 <div>W</div><div>EO</div><div>EO</div><div>G</div><div>O</div><div>D</div><div>U</div><div>Y</div><div>L</div><div>AE</div><div>F</div><div>OE</div><div>A</div><div>EA</div><div>N</div><div>N</div><div>H</div><div>AE</div><div>AE</div><div>IA</div><div>D</div><div>D</div><div>A</div><div>N</div><div>M</div><div>A</div><div>G</div><div>N</div><div>P</div><div>W</div><div>U</div><div>O</div><div>AE</div><div>X</div><div>F</div><div>S</div><div>U</div><div>E</div><div>P</div><div>OE</div><div>OE</div><div>O</div><div>A</div><div>OE</div><div>E</div><div>S</div><div>L</div><div>H</div><div>EA</div><div>NG</div><div>AE</div><div>T</div><div>U</div><div>R</div><div>G</div><div>S</div><div>N</div><div>L</div><div>NG</div><div>T</div><div>C</div><div>EA</div><div>U</div><div>O</div><div>T</div><div>EA</div><div>AE</div><div>S</div><div>O</div><div>O</div><div>G</div><div>G</div><div>P</div><div>N</div><div>U</div><div>I</div><div>AE</div><div>R</div><div>B</div><div>B</div><div>J</div><div>EO</div><div>IA</div><div>J</div><div>P</div><div>X</div><div>F</div><div>EA</div><div>N</div><div>G</div><div>E</div><div>EA</div><div>OE</div><div>O</div><div>C</div><div>R</div><div>B</div><div>R</div><div>T</div><div>J</div><div>B</div><div>D</div><div>A</div><div>Y</div><div>E</div><div>P</div><div>E</div><div>T</div><div>EA</div><div>I</div><div>H</div><div>J</div></dd>
-<dt>Pick every last letter (IoC: 0.928):</dt>
+<dt>Pick every last letter (IoC: 0.928 / 0.155):</dt>
 <dd class="runelist">
 <div>G</div><div>Y</div><div>EO</div><div>Y</div><div>EA</div><div>C</div><div>T</div><div>D</div><div>S</div><div>M</div><div>A</div><div>I</div><div>A</div><div>P</div><div>M</div><div>NG</div><div>M</div><div>IA</div><div>O</div><div>H</div><div>D</div><div>R</div><div>F</div><div>W</div><div>L</div><div>A</div><div>U</div><div>M</div><div>U</div><div>S</div><div>T</div><div>P</div><div>T</div><div>R</div><div>Y</div><div>OE</div><div>P</div><div>X</div><div>F</div><div>W</div><div>D</div><div>NG</div><div>Y</div><div>Y</div><div>B</div><div>B</div><div>X</div><div>OE</div><div>F</div><div>H</div><div>I</div><div>R</div><div>E</div><div>Y</div><div>G</div><div>R</div><div>A</div><div>B</div><div>E</div><div>F</div><div>W</div><div>R</div><div>EA</div><div>P</div><div>NG</div><div>S</div><div>B</div><div>OE</div><div>T</div><div>J</div><div>EA</div><div>M</div><div>EO</div><div>L</div><div>M</div><div>L</div><div>TH</div><div>TH</div><div>L</div><div>H</div><div>P</div><div>EO</div><div>IA</div><div>IA</div><div>U</div><div>U</div><div>T</div><div>H</div><div>B</div><div>C</div><div>X</div><div>EO</div><div>G</div><div>E</div><div>A</div><div>OE</div><div>EA</div><div>B</div><div>AE</div><div>E</div><div>EA</div><div>M</div><div>G</div><div>IA</div><div>OE</div><div>NG</div><div>T</div><div>N</div><div>C</div><div>W</div><div>OE</div><div>NG</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.042):</dt>
+<dt>Words (IoC: 1.042 / 0.268):</dt>
 <dd>
 UA EOTBIY WHI OIAFIAEA AJSOE YREAAEND GLJ FAOIANGBEATHCA LTAEAE EABP IAEO HEWM FYXOEAETH IAFATNH CTHURUOE AHEATHDRF EOIAPEAW ANA GLFSH PYU THIAIAPCAO ONTEABOEBFIP UOXNIASFE FUTHEDNY UH EX PFNGAENGS OEWD FASIAIHBR OEEAAY PJI LIUPTCBX CW NGOH EATIS UE AXEONGSEEOIHN SPCOER YG NGXXAE EAIIATHNGNENFOMEYA EALUNTHPSUPR LNGPY TIFSEWNG ETAF SAXOE BAFXT GLGEA CRG NIFPL LAETXJRX AETH YO BNTHH GHSM IAETEAUIA NDNGH XU BIOEAGL NTTHSB EAMU EAREO THFCM CIJANOA THGJ RNGJB UEIOIA BUFAREA UEATY YIA CHISFIN EOET AEAR IHYSWOXW TLF </dd>
-<dt>Pick every first letter (IoC: 1.055):</dt>
+<dt>Pick every first letter (IoC: 1.055 / 0.282):</dt>
 <dd class="runelist">
 <div>U</div><div>EO</div><div>W</div><div>O</div><div>A</div><div>Y</div><div>G</div><div>F</div><div>L</div><div>EA</div><div>IA</div><div>H</div><div>F</div><div>IA</div><div>C</div><div>A</div><div>EO</div><div>A</div><div>G</div><div>P</div><div>TH</div><div>O</div><div>U</div><div>F</div><div>U</div><div>E</div><div>P</div><div>OE</div><div>F</div><div>OE</div><div>P</div><div>L</div><div>C</div><div>NG</div><div>EA</div><div>U</div><div>A</div><div>S</div><div>Y</div><div>NG</div><div>EA</div><div>EA</div><div>L</div><div>T</div><div>E</div><div>S</div><div>B</div><div>G</div><div>C</div><div>N</div><div>L</div><div>AE</div><div>Y</div><div>B</div><div>G</div><div>IA</div><div>N</div><div>X</div><div>B</div><div>N</div><div>EA</div><div>EA</div><div>TH</div><div>C</div><div>TH</div><div>R</div><div>U</div><div>B</div><div>U</div><div>Y</div><div>C</div><div>E</div><div>A</div><div>I</div><div>T</div></dd>
-<dt>Pick every last letter (IoC: 0.857):</dt>
+<dt>Pick every last letter (IoC: 0.857 / 0.083):</dt>
 <dd class="runelist">
 <div>A</div><div>Y</div><div>I</div><div>EA</div><div>OE</div><div>D</div><div>J</div><div>A</div><div>AE</div><div>P</div><div>O</div><div>M</div><div>TH</div><div>H</div><div>OE</div><div>F</div><div>W</div><div>A</div><div>H</div><div>U</div><div>O</div><div>P</div><div>E</div><div>Y</div><div>H</div><div>X</div><div>S</div><div>D</div><div>R</div><div>Y</div><div>I</div><div>X</div><div>W</div><div>H</div><div>S</div><div>E</div><div>N</div><div>R</div><div>G</div><div>E</div><div>A</div><div>R</div><div>Y</div><div>NG</div><div>F</div><div>OE</div><div>T</div><div>EA</div><div>G</div><div>L</div><div>X</div><div>TH</div><div>O</div><div>H</div><div>M</div><div>IA</div><div>H</div><div>U</div><div>L</div><div>B</div><div>U</div><div>EO</div><div>M</div><div>A</div><div>J</div><div>B</div><div>IA</div><div>EA</div><div>Y</div><div>IA</div><div>N</div><div>T</div><div>R</div><div>W</div><div>F</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 0.986):</dt>
+<dt>Words (IoC: 0.986 / 0.212):</dt>
 <dd>
 WNGGXDG EAGSAEPWMEA GEABUYHY DOETHMCNX UWRT PBIASUDEYTH AEEOCTHWM RIAT A NGOE NLXNG NGPEOMIAJ AEBO GU DHR EJAE ML CA NXNGM XGG UMUXOYHT LSNGAEC XR IAS UNP THDM OEJW FYJITXL AUY EOEAE SNGB EAYFMCYR EAF IAEABSHOE TAEHR T G BYJNGEI LB BTHXIAR CECWAAEW DAEOERIAAEAU OSOEARMTHOEP MDO AEB NLWE OOEJ BGEOAOED PDOFWEO EOE IEAGL MHOEF BIAEHEUTLL EAEJBNILEAR EODEO ONEAO PEAHIAU EAYPOETHSYP EAH SSEA EXBGAEFOIX OIDSLTHEBEO OEE PHRM BRTHAEA NTY JEOUTHLCE MB AJPUPEAYG AET POENG DIALEPTA EAC ONGU JGTNGJNG </dd>
-<dt>Pick every first letter (IoC: 1.055):</dt>
+<dt>Pick every first letter (IoC: 1.055 / 0.282):</dt>
 <dd class="runelist">
 <div>W</div><div>EA</div><div>G</div><div>D</div><div>U</div><div>P</div><div>AE</div><div>R</div><div>A</div><div>NG</div><div>N</div><div>NG</div><div>AE</div><div>G</div><div>D</div><div>E</div><div>M</div><div>C</div><div>N</div><div>X</div><div>U</div><div>L</div><div>X</div><div>IA</div><div>U</div><div>TH</div><div>OE</div><div>F</div><div>A</div><div>E</div><div>S</div><div>E</div><div>EA</div><div>IA</div><div>T</div><div>T</div><div>G</div><div>B</div><div>L</div><div>B</div><div>C</div><div>D</div><div>O</div><div>M</div><div>AE</div><div>N</div><div>O</div><div>B</div><div>P</div><div>E</div><div>I</div><div>M</div><div>B</div><div>EA</div><div>EO</div><div>O</div><div>P</div><div>EA</div><div>EA</div><div>S</div><div>E</div><div>O</div><div>O</div><div>P</div><div>B</div><div>N</div><div>J</div><div>M</div><div>A</div><div>A</div><div>P</div><div>D</div><div>EA</div><div>O</div><div>J</div></dd>
-<dt>Pick every last letter (IoC: 0.920):</dt>
+<dt>Pick every last letter (IoC: 0.920 / 0.146):</dt>
 <dd class="runelist">
 <div>G</div><div>EA</div><div>Y</div><div>X</div><div>T</div><div>TH</div><div>M</div><div>T</div><div>A</div><div>OE</div><div>NG</div><div>J</div><div>O</div><div>U</div><div>R</div><div>AE</div><div>L</div><div>A</div><div>M</div><div>G</div><div>T</div><div>C</div><div>R</div><div>S</div><div>P</div><div>M</div><div>W</div><div>L</div><div>Y</div><div>AE</div><div>B</div><div>R</div><div>F</div><div>OE</div><div>R</div><div>T</div><div>G</div><div>I</div><div>B</div><div>R</div><div>W</div><div>U</div><div>P</div><div>O</div><div>B</div><div>E</div><div>J</div><div>D</div><div>EO</div><div>OE</div><div>L</div><div>F</div><div>L</div><div>R</div><div>EO</div><div>O</div><div>U</div><div>P</div><div>H</div><div>EA</div><div>X</div><div>EO</div><div>E</div><div>M</div><div>EA</div><div>Y</div><div>E</div><div>B</div><div>G</div><div>T</div><div>NG</div><div>A</div><div>C</div><div>U</div><div>NG</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 0.977):</dt>
+<dt>Words (IoC: 0.977 / 0.203):</dt>
 <dd>
 IBI EOJEO NGWURS DTHEREOC SEST LWOES UOG OEWFYNGUYI RPFMWOD NGM IIAAEM AEOIA ATHJRJNTH D GWTPEF NCHW WOEWEA GLTHBOWU ETHUNGIA WDIS OAEMU AEOET MOOAE SRLOE IH POEF EABY OTHNG AEU EPFB RTHCEO HWTNIAXAETHOE TEA AEI HJSIAWNNIAWL RNGCY WXCXY NGA UJO TGWJSIF EOUTHHXUN UMLTHEA LS EAAEIABTOS LN OLIJT NGS GEOM EADYNG UCM GCSONG RSCTH EOGOEY JFCSNGCP Y JYEOXEAAIA NGHTHP FT NGIIALNGNDAPG GC FA OEGYGNG OFBHNG RMOE XEIADTH TSBNAE LI DXM MIAMUAMNG ESAOE EOTHYTAEX TFRN NHWBEOS HNGOE </dd>
-<dt>Pick every first letter (IoC: 0.988):</dt>
+<dt>Pick every first letter (IoC: 0.988 / 0.214):</dt>
 <dd class="runelist">
 <div>I</div><div>EO</div><div>NG</div><div>D</div><div>S</div><div>L</div><div>U</div><div>OE</div><div>R</div><div>N</div><div>I</div><div>AE</div><div>A</div><div>D</div><div>G</div><div>N</div><div>W</div><div>G</div><div>E</div><div>W</div><div>O</div><div>AE</div><div>M</div><div>S</div><div>I</div><div>P</div><div>EA</div><div>O</div><div>AE</div><div>E</div><div>R</div><div>H</div><div>T</div><div>AE</div><div>H</div><div>R</div><div>W</div><div>N</div><div>U</div><div>T</div><div>EO</div><div>U</div><div>L</div><div>EA</div><div>L</div><div>O</div><div>N</div><div>G</div><div>EA</div><div>U</div><div>G</div><div>R</div><div>EO</div><div>J</div><div>Y</div><div>J</div><div>NG</div><div>F</div><div>NG</div><div>G</div><div>F</div><div>OE</div><div>O</div><div>R</div><div>X</div><div>T</div><div>L</div><div>D</div><div>M</div><div>E</div><div>EO</div><div>T</div><div>N</div><div>H</div></dd>
-<dt>Pick every last letter (IoC: 1.074):</dt>
+<dt>Pick every last letter (IoC: 1.074 / 0.300):</dt>
 <dd class="runelist">
 <div>I</div><div>EO</div><div>S</div><div>C</div><div>T</div><div>S</div><div>G</div><div>I</div><div>D</div><div>M</div><div>M</div><div>IA</div><div>TH</div><div>D</div><div>F</div><div>W</div><div>EA</div><div>U</div><div>IA</div><div>S</div><div>U</div><div>T</div><div>AE</div><div>OE</div><div>H</div><div>F</div><div>Y</div><div>NG</div><div>U</div><div>B</div><div>EO</div><div>OE</div><div>EA</div><div>I</div><div>L</div><div>Y</div><div>Y</div><div>A</div><div>O</div><div>F</div><div>N</div><div>EA</div><div>S</div><div>S</div><div>N</div><div>T</div><div>S</div><div>M</div><div>NG</div><div>M</div><div>NG</div><div>TH</div><div>Y</div><div>P</div><div>Y</div><div>IA</div><div>P</div><div>T</div><div>G</div><div>C</div><div>A</div><div>G</div><div>NG</div><div>OE</div><div>TH</div><div>AE</div><div>I</div><div>M</div><div>NG</div><div>OE</div><div>X</div><div>N</div><div>S</div><div>OE</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 0.991):</dt>
+<dt>Words (IoC: 0.991 / 0.217):</dt>
 <dd>
 UA EAGSAEPWMEA NGWURS AJSOE PBIASUDEYTH UOG LTAEAE NGOE IIAAEM FYXOEAETH GU GWTPEF EOIAPEAW CA ETHUNGIA THIAIAPCAO LSNGAEC MOOAE UH THDM EABY FASIAIHBR EOEAE RTHCEO CW IAEABSHOE HJSIAWNNIAWL AXEONGSEEOIHN BYJNGEI UJO EAIIATHNGNENFOMEYA DAEOERIAAEAU LS ETAF NLWE NGS CRG EOE GCSONG YO EAEJBNILEAR Y NDNGH EAYPOETHSYP NGIIALNGNDAPG EAMU OIDSLTHEBEO OFBHNG THGJ NTY LI UEATY AET EOTHYTAEX AEAR ONGU </dd>
-<dt>Pick every first letter (IoC: 1.262):</dt>
+<dt>Pick every first letter (IoC: 1.262 / 0.488):</dt>
 <dd class="runelist">
 <div>U</div><div>EA</div><div>NG</div><div>A</div><div>P</div><div>U</div><div>L</div><div>NG</div><div>I</div><div>F</div><div>G</div><div>G</div><div>EO</div><div>C</div><div>E</div><div>TH</div><div>L</div><div>M</div><div>U</div><div>TH</div><div>EA</div><div>F</div><div>E</div><div>R</div><div>C</div><div>IA</div><div>H</div><div>A</div><div>B</div><div>U</div><div>EA</div><div>D</div><div>L</div><div>E</div><div>N</div><div>N</div><div>C</div><div>E</div><div>G</div><div>Y</div><div>EA</div><div>Y</div><div>N</div><div>EA</div><div>NG</div><div>EA</div><div>O</div><div>O</div><div>TH</div><div>N</div><div>L</div><div>U</div><div>A</div><div>EO</div><div>A</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 0.829):</dt>
+<dt>Pick every last letter (IoC: 0.829 / 0.055):</dt>
 <dd class="runelist">
 <div>A</div><div>EA</div><div>S</div><div>OE</div><div>TH</div><div>G</div><div>AE</div><div>OE</div><div>M</div><div>TH</div><div>U</div><div>F</div><div>W</div><div>A</div><div>IA</div><div>O</div><div>C</div><div>AE</div><div>H</div><div>M</div><div>Y</div><div>R</div><div>AE</div><div>EO</div><div>W</div><div>OE</div><div>L</div><div>N</div><div>I</div><div>O</div><div>A</div><div>U</div><div>S</div><div>F</div><div>E</div><div>S</div><div>G</div><div>OE</div><div>NG</div><div>O</div><div>R</div><div>Y</div><div>H</div><div>P</div><div>G</div><div>U</div><div>EO</div><div>NG</div><div>J</div><div>Y</div><div>I</div><div>Y</div><div>T</div><div>X</div><div>R</div><div>U</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.029):</dt>
+<dt>Words (IoC: 1.029 / 0.255):</dt>
 <dd>
 WNGGXDG EOJEO OIAFIAEA UWRT LWOES FAOIANGBEATHCA A NGM HEWM AEBO D AHEATHDRF ML GLTHBOWU PYU UMUXOYHT AEOET FUTHEDNY UNP POEF OEWD AUY EPFB LIUPTCBX EAF AEI UE G NGA NGXXAE CECWAAEW UMLTHEA TIFSEWNG AEB OLIJT GLGEA PDOFWEO UCM AETH BIAEHEUTLL JFCSNGCP IAETEAUIA PEAHIAU FT NTTHSB EXBGAEFOIX OEGYGNG CIJANOA BRTHAEA TSBNAE BUFAREA AJPUPEAYG ESAOE EOET EAC HNGOE </dd>
-<dt>Pick every first letter (IoC: 1.168):</dt>
+<dt>Pick every first letter (IoC: 1.168 / 0.394):</dt>
 <dd class="runelist">
 <div>W</div><div>EO</div><div>O</div><div>U</div><div>L</div><div>F</div><div>A</div><div>N</div><div>H</div><div>AE</div><div>D</div><div>A</div><div>M</div><div>G</div><div>P</div><div>U</div><div>AE</div><div>F</div><div>U</div><div>P</div><div>OE</div><div>A</div><div>E</div><div>L</div><div>EA</div><div>AE</div><div>U</div><div>G</div><div>N</div><div>NG</div><div>C</div><div>U</div><div>T</div><div>AE</div><div>O</div><div>G</div><div>P</div><div>U</div><div>AE</div><div>B</div><div>J</div><div>IA</div><div>P</div><div>F</div><div>N</div><div>E</div><div>OE</div><div>C</div><div>B</div><div>T</div><div>B</div><div>A</div><div>E</div><div>E</div><div>EA</div><div>H</div></dd>
-<dt>Pick every last letter (IoC: 1.073):</dt>
+<dt>Pick every last letter (IoC: 1.073 / 0.300):</dt>
 <dd class="runelist">
 <div>G</div><div>EO</div><div>EA</div><div>T</div><div>S</div><div>A</div><div>A</div><div>M</div><div>M</div><div>O</div><div>D</div><div>F</div><div>L</div><div>U</div><div>U</div><div>T</div><div>T</div><div>Y</div><div>P</div><div>F</div><div>D</div><div>Y</div><div>B</div><div>X</div><div>F</div><div>I</div><div>E</div><div>G</div><div>A</div><div>E</div><div>W</div><div>EA</div><div>NG</div><div>B</div><div>T</div><div>EA</div><div>EO</div><div>M</div><div>TH</div><div>L</div><div>P</div><div>IA</div><div>U</div><div>T</div><div>B</div><div>X</div><div>G</div><div>A</div><div>EA</div><div>AE</div><div>EA</div><div>G</div><div>OE</div><div>T</div><div>C</div><div>OE</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 0.958):</dt>
+<dt>Words (IoC: 0.958 / 0.184):</dt>
 <dd>
 IBI WHI DOETHMCNX SEST GLJ RIAT RPFMWOD IAEO NGPEOMIAJ ATHJRJNTH CTHURUOE EJAE WOEWEA GLFSH XGG OAEMU UOXNIASFE IAS IH PFNGAENGS FYJITXL AEU PJI EAYFMCYR TEA EATIS T WXCXY YG BTHXIAR EOUTHHXUN LNGPY MDO LN BAFXT BGEOAOED EADYNG LAETXJRX MHOEF EOGOEY GHSM ONEAO NGHTHP BIOEAGL SSEA FA THFCM PHRM XEIADTH UEIOIA MB MIAMUAMNG CHISFIN DIALEPTA NHWBEOS TLF </dd>
-<dt>Pick every first letter (IoC: 0.772):</dt>
+<dt>Pick every first letter (IoC: 0.772 / 0.000):</dt>
 <dd class="runelist">
 <div>I</div><div>W</div><div>D</div><div>S</div><div>G</div><div>R</div><div>R</div><div>IA</div><div>NG</div><div>A</div><div>C</div><div>E</div><div>W</div><div>G</div><div>X</div><div>O</div><div>U</div><div>IA</div><div>I</div><div>P</div><div>F</div><div>AE</div><div>P</div><div>E</div><div>T</div><div>EA</div><div>T</div><div>W</div><div>Y</div><div>B</div><div>EO</div><div>L</div><div>M</div><div>L</div><div>B</div><div>B</div><div>EA</div><div>L</div><div>M</div><div>EO</div><div>G</div><div>O</div><div>NG</div><div>B</div><div>S</div><div>F</div><div>TH</div><div>P</div><div>X</div><div>U</div><div>M</div><div>M</div><div>C</div><div>D</div><div>N</div><div>T</div></dd>
-<dt>Pick every last letter (IoC: 0.791):</dt>
+<dt>Pick every last letter (IoC: 0.791 / 0.017):</dt>
 <dd class="runelist">
 <div>I</div><div>I</div><div>X</div><div>T</div><div>J</div><div>T</div><div>D</div><div>O</div><div>J</div><div>TH</div><div>OE</div><div>AE</div><div>EA</div><div>H</div><div>G</div><div>U</div><div>E</div><div>S</div><div>H</div><div>S</div><div>L</div><div>U</div><div>I</div><div>R</div><div>EA</div><div>S</div><div>T</div><div>Y</div><div>G</div><div>R</div><div>N</div><div>Y</div><div>O</div><div>N</div><div>T</div><div>D</div><div>NG</div><div>X</div><div>F</div><div>Y</div><div>M</div><div>O</div><div>P</div><div>L</div><div>EA</div><div>A</div><div>M</div><div>M</div><div>TH</div><div>IA</div><div>B</div><div>NG</div><div>N</div><div>A</div><div>S</div><div>F</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 0.963):</dt>
+<dt>Words (IoC: 0.963 / 0.190):</dt>
 <dd>
 EOTBIY GEABUYHY DTHEREOC YREAAEND AEEOCTHWM OEWFYNGUYI EABP NLXNG AEOIA IAFATNH DHR NCHW ANA NXNGM WDIS ONTEABOEBFIP XR SRLOE EX OEJW OTHNG OEEAAY SNGB HWTNIAXAETHOE NGOH TAEHR RNGCY SPCOER LB TGWJSIF EALUNTHPSUPR OSOEARMTHOEP EAAEIABTOS SAXOE OOEJ GEOM NIFPL IEAGL RSCTH BNTHH EODEO JYEOXEAAIA XU EAH GC EAREO OEE RMOE RNGJB JEOUTHLCE DXM YIA POENG TFRN IHYSWOXW JGTNGJNG </dd>
-<dt>Pick every first letter (IoC: 1.092):</dt>
+<dt>Pick every first letter (IoC: 1.092 / 0.319):</dt>
 <dd class="runelist">
 <div>EO</div><div>G</div><div>D</div><div>Y</div><div>AE</div><div>OE</div><div>EA</div><div>N</div><div>AE</div><div>IA</div><div>D</div><div>N</div><div>A</div><div>N</div><div>W</div><div>O</div><div>X</div><div>S</div><div>E</div><div>OE</div><div>O</div><div>OE</div><div>S</div><div>H</div><div>NG</div><div>T</div><div>R</div><div>S</div><div>L</div><div>T</div><div>EA</div><div>O</div><div>EA</div><div>S</div><div>O</div><div>G</div><div>N</div><div>I</div><div>R</div><div>B</div><div>EO</div><div>J</div><div>X</div><div>EA</div><div>G</div><div>EA</div><div>O</div><div>R</div><div>R</div><div>J</div><div>D</div><div>Y</div><div>P</div><div>T</div><div>I</div><div>J</div></dd>
-<dt>Pick every last letter (IoC: 1.073):</dt>
+<dt>Pick every last letter (IoC: 1.073 / 0.300):</dt>
 <dd class="runelist">
 <div>Y</div><div>Y</div><div>C</div><div>D</div><div>M</div><div>I</div><div>P</div><div>NG</div><div>IA</div><div>H</div><div>R</div><div>W</div><div>A</div><div>M</div><div>S</div><div>P</div><div>R</div><div>OE</div><div>X</div><div>W</div><div>NG</div><div>Y</div><div>B</div><div>OE</div><div>H</div><div>R</div><div>Y</div><div>R</div><div>B</div><div>F</div><div>R</div><div>P</div><div>S</div><div>OE</div><div>J</div><div>M</div><div>L</div><div>L</div><div>TH</div><div>H</div><div>EO</div><div>IA</div><div>U</div><div>H</div><div>C</div><div>EO</div><div>E</div><div>OE</div><div>B</div><div>E</div><div>M</div><div>IA</div><div>NG</div><div>N</div><div>W</div><div>NG</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 0.956):</dt>
+<dt>Words (IoC: 0.956 / 0.182):</dt>
 <dd>
 UA EOJEO DOETHMCNX YREAAEND UOG A IAEO AEOIA GU AHEATHDRF WOEWEA NXNGM THIAIAPCAO AEOET IAS EX EABY AUY PJI HWTNIAXAETHOE IAEABSHOE UE WXCXY LB EAIIATHNGNENFOMEYA UMLTHEA MDO SAXOE NGS PDOFWEO LAETXJRX RSCTH EAEJBNILEAR IAETEAUIA NGHTHP EAH EAMU OEGYGNG PHRM RNGJB LI AJPUPEAYG CHISFIN TFRN ONGU </dd>
-<dt>Pick every first letter (IoC: 1.113):</dt>
+<dt>Pick every first letter (IoC: 1.113 / 0.339):</dt>
 <dd class="runelist">
 <div>U</div><div>EO</div><div>D</div><div>Y</div><div>U</div><div>A</div><div>IA</div><div>AE</div><div>G</div><div>A</div><div>W</div><div>N</div><div>TH</div><div>AE</div><div>IA</div><div>E</div><div>EA</div><div>A</div><div>P</div><div>H</div><div>IA</div><div>U</div><div>W</div><div>L</div><div>EA</div><div>U</div><div>M</div><div>S</div><div>N</div><div>P</div><div>L</div><div>R</div><div>EA</div><div>IA</div><div>NG</div><div>EA</div><div>EA</div><div>OE</div><div>P</div><div>R</div><div>L</div><div>A</div><div>C</div><div>T</div><div>O</div></dd>
-<dt>Pick every last letter (IoC: 0.849):</dt>
+<dt>Pick every last letter (IoC: 0.849 / 0.076):</dt>
 <dd class="runelist">
 <div>A</div><div>EO</div><div>X</div><div>D</div><div>G</div><div>A</div><div>O</div><div>IA</div><div>U</div><div>F</div><div>EA</div><div>M</div><div>O</div><div>T</div><div>S</div><div>X</div><div>Y</div><div>Y</div><div>I</div><div>OE</div><div>OE</div><div>E</div><div>Y</div><div>B</div><div>A</div><div>EA</div><div>O</div><div>OE</div><div>S</div><div>EO</div><div>X</div><div>TH</div><div>R</div><div>IA</div><div>P</div><div>H</div><div>U</div><div>G</div><div>M</div><div>B</div><div>I</div><div>G</div><div>N</div><div>N</div><div>U</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 0.968):</dt>
+<dt>Words (IoC: 0.968 / 0.195):</dt>
 <dd>
 WNGGXDG WHI DTHEREOC PBIASUDEYTH FAOIANGBEATHCA RPFMWOD NLXNG FYXOEAETH D EJAE ANA ETHUNGIA UMUXOYHT UOXNIASFE SRLOE THDM OEWD AEU SNGB CW AEI T SPCOER UJO CECWAAEW LNGPY EAAEIABTOS NLWE GLGEA EADYNG IEAGL YO JFCSNGCP ONEAO XU NGIIALNGNDAPG EXBGAEFOIX THFCM RMOE NTY BUFAREA MIAMUAMNG POENG AEAR HNGOE </dd>
-<dt>Pick every first letter (IoC: 0.644):</dt>
+<dt>Pick every first letter (IoC: 0.644 / 0.000):</dt>
 <dd class="runelist">
 <div>W</div><div>W</div><div>D</div><div>P</div><div>F</div><div>R</div><div>N</div><div>F</div><div>D</div><div>E</div><div>A</div><div>E</div><div>U</div><div>U</div><div>S</div><div>TH</div><div>OE</div><div>AE</div><div>S</div><div>C</div><div>AE</div><div>T</div><div>S</div><div>U</div><div>C</div><div>L</div><div>EA</div><div>N</div><div>G</div><div>EA</div><div>I</div><div>Y</div><div>J</div><div>O</div><div>X</div><div>NG</div><div>E</div><div>TH</div><div>R</div><div>N</div><div>B</div><div>M</div><div>P</div><div>A</div><div>H</div></dd>
-<dt>Pick every last letter (IoC: 0.791):</dt>
+<dt>Pick every last letter (IoC: 0.791 / 0.017):</dt>
 <dd class="runelist">
 <div>G</div><div>I</div><div>C</div><div>TH</div><div>A</div><div>D</div><div>NG</div><div>TH</div><div>D</div><div>AE</div><div>A</div><div>IA</div><div>T</div><div>E</div><div>OE</div><div>M</div><div>D</div><div>U</div><div>B</div><div>W</div><div>I</div><div>T</div><div>R</div><div>O</div><div>W</div><div>Y</div><div>S</div><div>E</div><div>EA</div><div>NG</div><div>L</div><div>O</div><div>P</div><div>O</div><div>U</div><div>G</div><div>X</div><div>M</div><div>OE</div><div>Y</div><div>EA</div><div>NG</div><div>NG</div><div>R</div><div>OE</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 0.982):</dt>
+<dt>Words (IoC: 0.982 / 0.209):</dt>
 <dd>
 IBI GEABUYHY AJSOE LWOES RIAT EABP IIAAEM AEBO CTHURUOE NCHW CA PYU OAEMU XR UH POEF FYJITXL OEEAAY RTHCEO EAF EATIS RNGCY BYJNGEI NGXXAE EOUTHHXUN OSOEARMTHOEP ETAF OLIJT BGEOAOED NIFPL GCSONG BIAEHEUTLL GHSM JYEOXEAAIA EAYPOETHSYP NTTHSB FA OEE THGJ TSBNAE MB YIA EOTHYTAEX EAC TLF </dd>
-<dt>Pick every first letter (IoC: 0.996):</dt>
+<dt>Pick every first letter (IoC: 0.996 / 0.222):</dt>
 <dd class="runelist">
 <div>I</div><div>G</div><div>A</div><div>L</div><div>R</div><div>EA</div><div>I</div><div>AE</div><div>C</div><div>N</div><div>C</div><div>P</div><div>O</div><div>X</div><div>U</div><div>P</div><div>F</div><div>OE</div><div>R</div><div>EA</div><div>EA</div><div>R</div><div>B</div><div>NG</div><div>EO</div><div>O</div><div>E</div><div>O</div><div>B</div><div>N</div><div>G</div><div>B</div><div>G</div><div>J</div><div>EA</div><div>N</div><div>F</div><div>O</div><div>TH</div><div>T</div><div>M</div><div>Y</div><div>EO</div><div>EA</div><div>T</div></dd>
-<dt>Pick every last letter (IoC: 0.732):</dt>
+<dt>Pick every last letter (IoC: 0.732 / 0.000):</dt>
 <dd class="runelist">
 <div>I</div><div>Y</div><div>OE</div><div>S</div><div>T</div><div>P</div><div>M</div><div>O</div><div>OE</div><div>W</div><div>A</div><div>U</div><div>U</div><div>R</div><div>H</div><div>F</div><div>L</div><div>Y</div><div>EO</div><div>F</div><div>S</div><div>Y</div><div>I</div><div>E</div><div>N</div><div>P</div><div>F</div><div>T</div><div>D</div><div>L</div><div>NG</div><div>L</div><div>M</div><div>IA</div><div>P</div><div>B</div><div>A</div><div>E</div><div>J</div><div>AE</div><div>B</div><div>IA</div><div>X</div><div>C</div><div>F</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 0.977):</dt>
+<dt>Words (IoC: 0.977 / 0.203):</dt>
 <dd>
 EOTBIY NGWURS UWRT GLJ OEWFYNGUYI NGOE HEWM ATHJRJNTH DHR EOIAPEAW GLTHBOWU XGG ONTEABOEBFIP MOOAE UNP PFNGAENGS OTHNG EOEAE LIUPTCBX TEA TAEHR AXEONGSEEOIHN NGA BTHXIAR EALUNTHPSUPR LS AEB BAFXT GEOM EOE AETH EOGOEY EODEO NDNGH FT SSEA EAREO OFBHNG BRTHAEA UEIOIA DXM AET EOET NHWBEOS JGTNGJNG </dd>
-<dt>Pick every first letter (IoC: 0.967):</dt>
+<dt>Pick every first letter (IoC: 0.967 / 0.193):</dt>
 <dd class="runelist">
 <div>EO</div><div>NG</div><div>U</div><div>G</div><div>OE</div><div>NG</div><div>H</div><div>A</div><div>D</div><div>EO</div><div>G</div><div>X</div><div>O</div><div>M</div><div>U</div><div>P</div><div>O</div><div>E</div><div>L</div><div>T</div><div>T</div><div>A</div><div>N</div><div>B</div><div>EA</div><div>L</div><div>AE</div><div>B</div><div>G</div><div>E</div><div>AE</div><div>EO</div><div>EO</div><div>N</div><div>F</div><div>S</div><div>EA</div><div>O</div><div>B</div><div>U</div><div>D</div><div>A</div><div>E</div><div>N</div><div>J</div></dd>
-<dt>Pick every last letter (IoC: 1.084):</dt>
+<dt>Pick every last letter (IoC: 1.084 / 0.310):</dt>
 <dd class="runelist">
 <div>Y</div><div>S</div><div>T</div><div>J</div><div>I</div><div>OE</div><div>M</div><div>TH</div><div>R</div><div>W</div><div>U</div><div>G</div><div>P</div><div>AE</div><div>P</div><div>S</div><div>NG</div><div>AE</div><div>X</div><div>EA</div><div>R</div><div>N</div><div>A</div><div>R</div><div>R</div><div>S</div><div>B</div><div>T</div><div>M</div><div>OE</div><div>TH</div><div>Y</div><div>EO</div><div>H</div><div>T</div><div>EA</div><div>EO</div><div>NG</div><div>EA</div><div>IA</div><div>M</div><div>T</div><div>T</div><div>S</div><div>NG</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 1.000):</dt>
+<dt>Words (IoC: 1.000 / 0.226):</dt>
 <dd>
 EAGSAEPWMEA OIAFIAEA SEST AEEOCTHWM LTAEAE NGM NGPEOMIAJ IAFATNH GWTPEF ML GLFSH WDIS LSNGAEC FUTHEDNY IH OEJW FASIAIHBR EPFB EAYFMCYR NGOH HJSIAWNNIAWL G YG TGWJSIF DAEOERIAAEAU TIFSEWNG LN OOEJ CRG UCM MHOEF BNTHH Y PEAHIAU BIOEAGL GC OIDSLTHEBEO CIJANOA XEIADTH JEOUTHLCE UEATY ESAOE DIALEPTA IHYSWOXW </dd>
-<dt>Pick every first letter (IoC: 0.766):</dt>
+<dt>Pick every first letter (IoC: 0.766 / 0.000):</dt>
 <dd class="runelist">
 <div>EA</div><div>O</div><div>S</div><div>AE</div><div>L</div><div>N</div><div>NG</div><div>IA</div><div>G</div><div>M</div><div>G</div><div>W</div><div>L</div><div>F</div><div>I</div><div>OE</div><div>F</div><div>E</div><div>E</div><div>NG</div><div>H</div><div>G</div><div>Y</div><div>T</div><div>D</div><div>T</div><div>L</div><div>O</div><div>C</div><div>U</div><div>M</div><div>B</div><div>Y</div><div>P</div><div>B</div><div>G</div><div>O</div><div>C</div><div>X</div><div>J</div><div>U</div><div>E</div><div>D</div><div>I</div></dd>
-<dt>Pick every last letter (IoC: 0.981):</dt>
+<dt>Pick every last letter (IoC: 0.981 / 0.207):</dt>
 <dd class="runelist">
 <div>EA</div><div>EA</div><div>T</div><div>M</div><div>AE</div><div>M</div><div>J</div><div>H</div><div>F</div><div>L</div><div>H</div><div>S</div><div>C</div><div>Y</div><div>H</div><div>W</div><div>R</div><div>B</div><div>R</div><div>H</div><div>L</div><div>G</div><div>G</div><div>F</div><div>U</div><div>NG</div><div>N</div><div>J</div><div>G</div><div>M</div><div>F</div><div>H</div><div>Y</div><div>U</div><div>L</div><div>C</div><div>EO</div><div>A</div><div>TH</div><div>E</div><div>Y</div><div>OE</div><div>A</div><div>W</div></dd>
 </dl>

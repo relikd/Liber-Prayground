@@ -35,7 +35,7 @@ class Probability(object):
         return X / ((self.N * (self.N - 1)) / 29)
 
     def IC_norm(self, target_ioc=TARGET_IOC):
-        return abs(self.IC() - target_ioc)
+        return 1 - abs(self.IC() - target_ioc)
 
     def similarity(self):
         probs = normalized_probability(self.prob)

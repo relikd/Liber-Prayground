@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -80,7 +81,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -101,6 +102,22 @@
 		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
 	</p>
 	<p class="red">Mod-IoC is disabled on solved pages</p>
+
+
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<p class="red">Pattern-IoC is disabled on solved pages</p>
 
 
 	<h2 id="running-ioc">Running IoC</h2>
@@ -140,167 +157,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 2.025):</dt>
+<dt>Words (IoC: 2.025 / 0.749):</dt>
 <dd>
 A COAN DURNG A LESSON THE MASTER EXPLAINED THE I THE I IS THE UOICE OF THE CIRCUMFERENCE HE SAID WHEN ASCED BY A STUDENT TO EXPLAIN WHAT THAT MEANT THE MASTER SAID IT IS A UOICE INSIDE YOUR HEAD I DON T HAUE A UOICE IN MY HEAD THOUGHT THE STUDENT AND HE RAISED HIS HAND TO TELL THE MASTER THE MASTER STOPPED THE STUDENT AND SAID THE UOICE THAT JUST SAID YOU HAUE NO UOICE IN YOUR HEAD IS THE I AND THE STUDENTS WERE ENLIGHTENED </dd>
-<dt>Pick every first letter (IoC: 2.462):</dt>
+<dt>Pick every first letter (IoC: 2.462 / 0.312):</dt>
 <dd class="runelist">
 <div>A</div><div>C</div><div>D</div><div>A</div><div>L</div><div>TH</div><div>M</div><div>E</div><div>TH</div><div>I</div><div>TH</div><div>I</div><div>I</div><div>TH</div><div>U</div><div>O</div><div>TH</div><div>C</div><div>H</div><div>S</div><div>W</div><div>A</div><div>B</div><div>A</div><div>S</div><div>T</div><div>E</div><div>W</div><div>TH</div><div>M</div><div>TH</div><div>M</div><div>S</div><div>I</div><div>I</div><div>A</div><div>U</div><div>I</div><div>Y</div><div>H</div><div>I</div><div>D</div><div>T</div><div>H</div><div>A</div><div>U</div><div>I</div><div>M</div><div>H</div><div>TH</div><div>TH</div><div>S</div><div>A</div><div>H</div><div>R</div><div>H</div><div>H</div><div>T</div><div>T</div><div>TH</div><div>M</div><div>TH</div><div>M</div><div>S</div><div>TH</div><div>S</div><div>A</div><div>S</div><div>TH</div><div>U</div><div>TH</div><div>J</div><div>S</div><div>Y</div><div>H</div><div>N</div><div>U</div><div>I</div><div>Y</div><div>H</div><div>I</div><div>TH</div><div>I</div><div>A</div><div>TH</div><div>S</div><div>W</div><div>E</div></dd>
-<dt>Pick every last letter (IoC: 4.098):</dt>
+<dt>Pick every last letter (IoC: 4.098 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>N</div><div>NG</div><div>A</div><div>N</div><div>E</div><div>R</div><div>D</div><div>E</div><div>I</div><div>E</div><div>I</div><div>S</div><div>E</div><div>E</div><div>F</div><div>E</div><div>E</div><div>E</div><div>D</div><div>N</div><div>D</div><div>Y</div><div>A</div><div>T</div><div>O</div><div>N</div><div>T</div><div>T</div><div>T</div><div>E</div><div>R</div><div>D</div><div>T</div><div>S</div><div>A</div><div>E</div><div>E</div><div>R</div><div>D</div><div>I</div><div>N</div><div>T</div><div>E</div><div>A</div><div>E</div><div>N</div><div>Y</div><div>D</div><div>T</div><div>E</div><div>T</div><div>D</div><div>E</div><div>D</div><div>S</div><div>D</div><div>O</div><div>L</div><div>E</div><div>R</div><div>E</div><div>R</div><div>D</div><div>E</div><div>T</div><div>D</div><div>D</div><div>E</div><div>E</div><div>T</div><div>T</div><div>D</div><div>U</div><div>E</div><div>O</div><div>E</div><div>N</div><div>R</div><div>D</div><div>S</div><div>E</div><div>I</div><div>D</div><div>E</div><div>S</div><div>E</div><div>D</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 2.073):</dt>
+<dt>Words (IoC: 2.073 / 0.701):</dt>
 <dd>
 A DURNG LESSON MASTER THE THE IS UOICE THE HE WHEN BY STUDENT EXPLAIN THAT THE SAID IS UOICE YOUR I T A IN HEAD THE AND RAISED HAND TELL MASTER MASTER THE AND THE THAT SAID HAUE UOICE YOUR IS I THE WERE </dd>
-<dt>Pick every first letter (IoC: 2.575):</dt>
+<dt>Pick every first letter (IoC: 2.575 / 0.199):</dt>
 <dd class="runelist">
 <div>A</div><div>D</div><div>L</div><div>M</div><div>TH</div><div>TH</div><div>I</div><div>U</div><div>TH</div><div>H</div><div>W</div><div>B</div><div>S</div><div>E</div><div>TH</div><div>TH</div><div>S</div><div>I</div><div>U</div><div>Y</div><div>I</div><div>T</div><div>A</div><div>I</div><div>H</div><div>TH</div><div>A</div><div>R</div><div>H</div><div>T</div><div>M</div><div>M</div><div>TH</div><div>A</div><div>TH</div><div>TH</div><div>S</div><div>H</div><div>U</div><div>Y</div><div>I</div><div>I</div><div>TH</div><div>W</div></dd>
-<dt>Pick every last letter (IoC: 4.261):</dt>
+<dt>Pick every last letter (IoC: 4.261 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>NG</div><div>N</div><div>R</div><div>E</div><div>E</div><div>S</div><div>E</div><div>E</div><div>E</div><div>N</div><div>Y</div><div>T</div><div>N</div><div>T</div><div>E</div><div>D</div><div>S</div><div>E</div><div>R</div><div>I</div><div>T</div><div>A</div><div>N</div><div>D</div><div>E</div><div>D</div><div>D</div><div>D</div><div>L</div><div>R</div><div>R</div><div>E</div><div>D</div><div>E</div><div>T</div><div>D</div><div>E</div><div>E</div><div>R</div><div>S</div><div>I</div><div>E</div><div>E</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.940):</dt>
+<dt>Words (IoC: 1.940 / 0.833):</dt>
 <dd>
 COAN A THE EXPLAINED I I THE OF CIRCUMFERENCE SAID ASCED A TO WHAT MEANT MASTER IT A INSIDE HEAD DON HAUE UOICE MY THOUGHT STUDENT HE HIS TO THE THE STOPPED STUDENT SAID UOICE JUST YOU NO IN HEAD THE AND STUDENTS ENLIGHTENED </dd>
-<dt>Pick every first letter (IoC: 2.054):</dt>
+<dt>Pick every first letter (IoC: 2.054 / 0.720):</dt>
 <dd class="runelist">
 <div>C</div><div>A</div><div>TH</div><div>E</div><div>I</div><div>I</div><div>TH</div><div>O</div><div>C</div><div>S</div><div>A</div><div>A</div><div>T</div><div>W</div><div>M</div><div>M</div><div>I</div><div>A</div><div>I</div><div>H</div><div>D</div><div>H</div><div>U</div><div>M</div><div>TH</div><div>S</div><div>H</div><div>H</div><div>T</div><div>TH</div><div>TH</div><div>S</div><div>S</div><div>S</div><div>U</div><div>J</div><div>Y</div><div>N</div><div>I</div><div>H</div><div>TH</div><div>A</div><div>S</div><div>E</div></dd>
-<dt>Pick every last letter (IoC: 3.771):</dt>
+<dt>Pick every last letter (IoC: 3.771 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>A</div><div>E</div><div>D</div><div>I</div><div>I</div><div>E</div><div>F</div><div>E</div><div>D</div><div>D</div><div>A</div><div>O</div><div>T</div><div>T</div><div>R</div><div>T</div><div>A</div><div>E</div><div>D</div><div>N</div><div>E</div><div>E</div><div>Y</div><div>T</div><div>T</div><div>E</div><div>S</div><div>O</div><div>E</div><div>E</div><div>D</div><div>T</div><div>D</div><div>E</div><div>T</div><div>U</div><div>O</div><div>N</div><div>D</div><div>E</div><div>D</div><div>S</div><div>D</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 2.021):</dt>
+<dt>Words (IoC: 2.021 / 0.753):</dt>
 <dd>
 A A MASTER I IS OF HE ASCED STUDENT WHAT THE IT UOICE HEAD T UOICE HEAD STUDENT RAISED TO MASTER STOPPED AND UOICE SAID NO YOUR THE THE ENLIGHTENED </dd>
-<dt>Pick every first letter (IoC: 1.733):</dt>
+<dt>Pick every first letter (IoC: 1.733 / 0.960):</dt>
 <dd class="runelist">
 <div>A</div><div>A</div><div>M</div><div>I</div><div>I</div><div>O</div><div>H</div><div>A</div><div>S</div><div>W</div><div>TH</div><div>I</div><div>U</div><div>H</div><div>T</div><div>U</div><div>H</div><div>S</div><div>R</div><div>T</div><div>M</div><div>S</div><div>A</div><div>U</div><div>S</div><div>N</div><div>Y</div><div>TH</div><div>TH</div><div>E</div></dd>
-<dt>Pick every last letter (IoC: 4.267):</dt>
+<dt>Pick every last letter (IoC: 4.267 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>A</div><div>R</div><div>I</div><div>S</div><div>F</div><div>E</div><div>D</div><div>T</div><div>T</div><div>E</div><div>T</div><div>E</div><div>D</div><div>T</div><div>E</div><div>D</div><div>T</div><div>D</div><div>O</div><div>R</div><div>D</div><div>D</div><div>E</div><div>D</div><div>O</div><div>R</div><div>E</div><div>E</div><div>D</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.971):</dt>
+<dt>Words (IoC: 1.971 / 0.803):</dt>
 <dd>
 COAN LESSON EXPLAINED THE THE THE SAID BY TO THAT MASTER IS INSIDE I HAUE IN THOUGHT AND HIS TELL THE THE SAID THAT YOU UOICE HEAD I STUDENTS </dd>
-<dt>Pick every first letter (IoC: 3.214):</dt>
+<dt>Pick every first letter (IoC: 3.214 / 0.000):</dt>
 <dd class="runelist">
 <div>C</div><div>L</div><div>E</div><div>TH</div><div>TH</div><div>TH</div><div>S</div><div>B</div><div>T</div><div>TH</div><div>M</div><div>I</div><div>I</div><div>I</div><div>H</div><div>I</div><div>TH</div><div>A</div><div>H</div><div>T</div><div>TH</div><div>TH</div><div>S</div><div>TH</div><div>Y</div><div>U</div><div>H</div><div>I</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 3.429):</dt>
+<dt>Pick every last letter (IoC: 3.429 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>N</div><div>D</div><div>E</div><div>E</div><div>E</div><div>D</div><div>Y</div><div>O</div><div>T</div><div>R</div><div>S</div><div>E</div><div>I</div><div>E</div><div>N</div><div>T</div><div>D</div><div>S</div><div>L</div><div>E</div><div>E</div><div>D</div><div>T</div><div>U</div><div>E</div><div>D</div><div>I</div><div>S</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.875):</dt>
+<dt>Words (IoC: 1.875 / 0.899):</dt>
 <dd>
 DURNG THE THE I UOICE CIRCUMFERENCE WHEN A EXPLAIN MEANT SAID A YOUR DON A MY THE HE HAND THE MASTER STUDENT THE JUST HAUE IN IS AND WERE </dd>
-<dt>Pick every first letter (IoC: 2.000):</dt>
+<dt>Pick every first letter (IoC: 2.000 / 0.774):</dt>
 <dd class="runelist">
 <div>D</div><div>TH</div><div>TH</div><div>I</div><div>U</div><div>C</div><div>W</div><div>A</div><div>E</div><div>M</div><div>S</div><div>A</div><div>Y</div><div>D</div><div>A</div><div>M</div><div>TH</div><div>H</div><div>H</div><div>TH</div><div>M</div><div>S</div><div>TH</div><div>J</div><div>H</div><div>I</div><div>I</div><div>A</div><div>W</div></dd>
-<dt>Pick every last letter (IoC: 4.357):</dt>
+<dt>Pick every last letter (IoC: 4.357 / 0.000):</dt>
 <dd class="runelist">
 <div>NG</div><div>E</div><div>E</div><div>I</div><div>E</div><div>E</div><div>N</div><div>A</div><div>N</div><div>T</div><div>D</div><div>A</div><div>R</div><div>N</div><div>A</div><div>Y</div><div>E</div><div>E</div><div>D</div><div>E</div><div>R</div><div>T</div><div>E</div><div>T</div><div>E</div><div>N</div><div>S</div><div>D</div><div>E</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 2.194):</dt>
+<dt>Words (IoC: 2.194 / 0.580):</dt>
 <dd>
 A LESSON THE IS THE WHEN STUDENT THAT SAID UOICE I A HEAD AND HAND MASTER THE THE SAID UOICE IS THE </dd>
-<dt>Pick every first letter (IoC: 3.264):</dt>
+<dt>Pick every first letter (IoC: 3.264 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>L</div><div>TH</div><div>I</div><div>TH</div><div>W</div><div>S</div><div>TH</div><div>S</div><div>U</div><div>I</div><div>A</div><div>H</div><div>A</div><div>H</div><div>M</div><div>TH</div><div>TH</div><div>S</div><div>U</div><div>I</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 4.394):</dt>
+<dt>Pick every last letter (IoC: 4.394 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>N</div><div>E</div><div>S</div><div>E</div><div>N</div><div>T</div><div>T</div><div>D</div><div>E</div><div>I</div><div>A</div><div>D</div><div>D</div><div>D</div><div>R</div><div>E</div><div>E</div><div>D</div><div>E</div><div>S</div><div>E</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 2.174):</dt>
+<dt>Words (IoC: 2.174 / 0.599):</dt>
 <dd>
 COAN THE I THE CIRCUMFERENCE ASCED TO MEANT IT INSIDE DON UOICE THOUGHT HE TO THE STUDENT UOICE YOU IN THE STUDENTS </dd>
-<dt>Pick every first letter (IoC: 2.511):</dt>
+<dt>Pick every first letter (IoC: 2.511 / 0.263):</dt>
 <dd class="runelist">
 <div>C</div><div>TH</div><div>I</div><div>TH</div><div>C</div><div>A</div><div>T</div><div>M</div><div>I</div><div>I</div><div>D</div><div>U</div><div>TH</div><div>H</div><div>T</div><div>TH</div><div>S</div><div>U</div><div>Y</div><div>I</div><div>TH</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 5.775):</dt>
+<dt>Pick every last letter (IoC: 5.775 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>E</div><div>I</div><div>E</div><div>E</div><div>D</div><div>O</div><div>T</div><div>T</div><div>E</div><div>N</div><div>E</div><div>T</div><div>E</div><div>O</div><div>E</div><div>T</div><div>E</div><div>U</div><div>N</div><div>E</div><div>S</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.872):</dt>
+<dt>Words (IoC: 1.872 / 0.901):</dt>
 <dd>
 DURNG MASTER THE UOICE HE BY EXPLAIN THE IS YOUR T IN THE RAISED TELL MASTER AND THAT HAUE YOUR I WERE </dd>
-<dt>Pick every first letter (IoC: 1.632):</dt>
+<dt>Pick every first letter (IoC: 1.632 / 0.858):</dt>
 <dd class="runelist">
 <div>D</div><div>M</div><div>TH</div><div>U</div><div>H</div><div>B</div><div>E</div><div>TH</div><div>I</div><div>Y</div><div>T</div><div>I</div><div>TH</div><div>R</div><div>T</div><div>M</div><div>A</div><div>TH</div><div>H</div><div>Y</div><div>I</div><div>W</div></dd>
-<dt>Pick every last letter (IoC: 3.766):</dt>
+<dt>Pick every last letter (IoC: 3.766 / 0.000):</dt>
 <dd class="runelist">
 <div>NG</div><div>R</div><div>E</div><div>E</div><div>E</div><div>Y</div><div>N</div><div>E</div><div>S</div><div>R</div><div>T</div><div>N</div><div>E</div><div>D</div><div>L</div><div>R</div><div>D</div><div>T</div><div>E</div><div>R</div><div>I</div><div>E</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.872):</dt>
+<dt>Words (IoC: 1.872 / 0.902):</dt>
 <dd>
 A EXPLAINED I OF SAID A WHAT MASTER A HEAD HAUE MY STUDENT HIS THE STOPPED SAID JUST NO HEAD AND ENLIGHTENED </dd>
-<dt>Pick every first letter (IoC: 2.511):</dt>
+<dt>Pick every first letter (IoC: 2.511 / 0.263):</dt>
 <dd class="runelist">
 <div>A</div><div>E</div><div>I</div><div>O</div><div>S</div><div>A</div><div>W</div><div>M</div><div>A</div><div>H</div><div>H</div><div>M</div><div>S</div><div>H</div><div>TH</div><div>S</div><div>S</div><div>J</div><div>N</div><div>H</div><div>A</div><div>E</div></dd>
-<dt>Pick every last letter (IoC: 4.394):</dt>
+<dt>Pick every last letter (IoC: 4.394 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>D</div><div>I</div><div>F</div><div>D</div><div>A</div><div>T</div><div>R</div><div>A</div><div>D</div><div>E</div><div>Y</div><div>T</div><div>S</div><div>E</div><div>D</div><div>D</div><div>T</div><div>O</div><div>D</div><div>D</div><div>D</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 2.168):</dt>
+<dt>Words (IoC: 2.168 / 0.606):</dt>
 <dd>
 A THE THE OF WHEN TO THE A I UOICE THE HIS MASTER STUDENT THAT NO IS STUDENTS </dd>
-<dt>Pick every first letter (IoC: 2.464):</dt>
+<dt>Pick every first letter (IoC: 2.464 / 0.310):</dt>
 <dd class="runelist">
 <div>A</div><div>TH</div><div>TH</div><div>O</div><div>W</div><div>T</div><div>TH</div><div>A</div><div>I</div><div>U</div><div>TH</div><div>H</div><div>M</div><div>S</div><div>TH</div><div>N</div><div>I</div><div>S</div></dd>
-<dt>Pick every last letter (IoC: 3.033):</dt>
+<dt>Pick every last letter (IoC: 3.033 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>E</div><div>E</div><div>F</div><div>N</div><div>O</div><div>E</div><div>A</div><div>I</div><div>E</div><div>E</div><div>S</div><div>R</div><div>T</div><div>T</div><div>O</div><div>S</div><div>S</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.963):</dt>
+<dt>Words (IoC: 1.963 / 0.811):</dt>
 <dd>
 COAN MASTER I THE ASCED EXPLAIN MASTER UOICE DON IN STUDENT HAND THE AND JUST UOICE THE WERE </dd>
-<dt>Pick every first letter (IoC: 1.327):</dt>
+<dt>Pick every first letter (IoC: 1.327 / 0.553):</dt>
 <dd class="runelist">
 <div>C</div><div>M</div><div>I</div><div>TH</div><div>A</div><div>E</div><div>M</div><div>U</div><div>D</div><div>I</div><div>S</div><div>H</div><div>TH</div><div>A</div><div>J</div><div>U</div><div>TH</div><div>W</div></dd>
-<dt>Pick every last letter (IoC: 4.928):</dt>
+<dt>Pick every last letter (IoC: 4.928 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>R</div><div>I</div><div>E</div><div>D</div><div>N</div><div>R</div><div>E</div><div>N</div><div>N</div><div>T</div><div>D</div><div>E</div><div>D</div><div>T</div><div>E</div><div>E</div><div>E</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.936):</dt>
+<dt>Words (IoC: 1.936 / 0.837):</dt>
 <dd>
 DURNG EXPLAINED IS CIRCUMFERENCE BY WHAT SAID INSIDE T MY AND TO MASTER SAID SAID IN I ENLIGHTENED </dd>
-<dt>Pick every first letter (IoC: 2.275):</dt>
+<dt>Pick every first letter (IoC: 2.275 / 0.499):</dt>
 <dd class="runelist">
 <div>D</div><div>E</div><div>I</div><div>C</div><div>B</div><div>W</div><div>S</div><div>I</div><div>T</div><div>M</div><div>A</div><div>T</div><div>M</div><div>S</div><div>S</div><div>I</div><div>I</div><div>E</div></dd>
-<dt>Pick every last letter (IoC: 3.412):</dt>
+<dt>Pick every last letter (IoC: 3.412 / 0.000):</dt>
 <dd class="runelist">
 <div>NG</div><div>D</div><div>S</div><div>E</div><div>Y</div><div>T</div><div>D</div><div>E</div><div>T</div><div>Y</div><div>D</div><div>O</div><div>R</div><div>D</div><div>D</div><div>N</div><div>I</div><div>D</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.899):</dt>
+<dt>Words (IoC: 1.899 / 0.875):</dt>
 <dd>
 A THE THE HE A THAT IT YOUR HAUE HEAD HE TELL STOPPED THE YOU YOUR AND </dd>
-<dt>Pick every first letter (IoC: 3.838):</dt>
+<dt>Pick every first letter (IoC: 3.838 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>TH</div><div>TH</div><div>H</div><div>A</div><div>TH</div><div>I</div><div>Y</div><div>H</div><div>H</div><div>H</div><div>T</div><div>S</div><div>TH</div><div>Y</div><div>Y</div><div>A</div></dd>
-<dt>Pick every last letter (IoC: 4.478):</dt>
+<dt>Pick every last letter (IoC: 4.478 / 0.000):</dt>
 <dd class="runelist">
 <div>A</div><div>E</div><div>E</div><div>E</div><div>A</div><div>T</div><div>T</div><div>R</div><div>E</div><div>D</div><div>E</div><div>L</div><div>D</div><div>E</div><div>U</div><div>R</div><div>D</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 1.826):</dt>
+<dt>Words (IoC: 1.826 / 0.947):</dt>
 <dd>
 LESSON I UOICE SAID STUDENT MEANT IS HEAD A THOUGHT RAISED THE THE UOICE HAUE HEAD THE </dd>
-<dt>Pick every first letter (IoC: 2.559):</dt>
+<dt>Pick every first letter (IoC: 2.559 / 0.215):</dt>
 <dd class="runelist">
 <div>L</div><div>I</div><div>U</div><div>S</div><div>S</div><div>M</div><div>I</div><div>H</div><div>A</div><div>TH</div><div>R</div><div>TH</div><div>TH</div><div>U</div><div>H</div><div>H</div><div>TH</div></dd>
-<dt>Pick every last letter (IoC: 5.118):</dt>
+<dt>Pick every last letter (IoC: 5.118 / 0.000):</dt>
 <dd class="runelist">
 <div>N</div><div>I</div><div>E</div><div>D</div><div>T</div><div>T</div><div>S</div><div>D</div><div>A</div><div>T</div><div>D</div><div>E</div><div>E</div><div>E</div><div>E</div><div>D</div><div>E</div></dd>
 </dl>

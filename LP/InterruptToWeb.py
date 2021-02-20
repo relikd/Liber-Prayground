@@ -11,7 +11,51 @@ NORM_MIN = 0.40
 NORM_MAX = 0.98
 HIGH_MIN = 1.25
 HIGH_MAX = 1.65
+MEM_DB = None  # stores a DBToMem object
 
+
+#########################################
+#  DBToMem  :  Loads all dbs into memory so you don't need to re-read each
+#########################################
+
+class DBToMem(object):
+    def __init__(self):
+        lsc = InterruptDB.load_scores
+        self.indices = InterruptIndices()
+        self.db = {}
+        for ioc_kind in ['high', 'norm']:
+            prfx = 'db_' + ioc_kind
+            self.db[ioc_kind] = {
+                'main': lsc(prfx),
+                'mod': {typ: [
+                        (mod, p, lsc(prfx + f'_mod_{typ}_{mod}.{p}'))
+                        for mod in range(2, 4) for p in range(mod)]
+                        for typ in 'ab'},
+                'mirror': {typ: lsc(prfx + f'_pattern_mirror_{typ}.0')
+                           for typ in 'ab'},
+                'shift': {kl: lsc(prfx + f'_pattern_shift_{kl}.0')
+                          for kl in range(4, 19)},
+            }
+
+    def vertical_kl(self, tbl, iocKey, fname, irp, kl_range):
+        pointer = self.db[iocKey]['main'][fname][irp]
+        maxscore = 0
+        bestkl = -1
+        for kl in kl_range:
+            try:
+                score = pointer[kl][0]
+                tbl[kl].append(score)
+                if score > maxscore:
+                    maxscore = score
+                    bestkl = kl
+            except KeyError:
+                tbl[kl].append('–')
+        return bestkl
+
+
+#########################################
+#  HTML helper class
+#########################################
 
 class HTML(object):
     @staticmethod
@@ -93,87 +137,65 @@ class HTML(object):
 #########################################
 
 class InterruptToWeb(object):
-    def __init__(self, dbname, template='templates/ioc.html'):
+    def __init__(self, template='templates/ioc.html'):
         with open(LPath.results(template), 'r') as f:
             self.template = f.read()
-        self.scores = InterruptDB.load_scores(dbname)
 
-    def table_reliable(self):
-        db_indices = InterruptIndices()
-        tbl = [({'class': 'rotate'}, [''])]
-        tbl += [[x] for x in RUNES]
-        tbl += [({'class': 'small'}, ['Total'])]
+    def table_reliable(self, iocKey):
+        head = [''] + [f'<div>{x}</div>' for x in FILES_ALL]
+        foot = ['Total'] + [MEM_DB.indices.total(x) for x in FILES_ALL]
+
+        tbl = [[irp] for irp in RUNES]
         for name in FILES_ALL:
-            if name not in self.scores:
-                continue
-            tbl[0][1].append(f'<div>{name}</div>')
-            tbl[-1][1].append(db_indices.total(name))
-            for i in range(29):
-                scrs = self.scores[name][i][1:]
-                if not scrs:
-                    tbl[i + 1].append('–')
+            pointer = MEM_DB.db[iocKey]['main'][name]
+            for irp in range(29):
+                maxirp = set(maxirp for _, maxirp in pointer[irp].values())
+                worst_irp_c = min(maxirp)
+                if worst_irp_c == 0 and max(maxirp) != 0:
+                    tbl[irp].append('?')
                     continue
-                worst_irpc = min([x[1] for x in scrs])
-                if worst_irpc == 0:
-                    if max([x[1] for x in scrs]) != 0:
-                        tbl[i + 1].append('?')
-                        continue
-                _, num = db_indices.consider(name, i, worst_irpc)
-                tbl[i + 1].append(num)
+                _, num = MEM_DB.indices.consider(name, irp, worst_irp_c)
+                tbl[irp].append(num)
+
+        tbl.insert(0, ({'class': 'rotate'}, head))
+        tbl.append(({'class': 'small'}, foot))
         return HTML.num_table(tbl, [(384, 812, 1, 1, 99, len(tbl) - 1)])
 
-    def table_interrupt(self, irp, pmin, pmax):
-        maxkl = max(len(x[irp]) for x in self.scores.values())
-        tbl = [({'class': 'rotate'}, [''])]
-        tbl += [[x] for x in range(1, maxkl)]
-        tbl += [({'class': 'small'}, ['best'])]
-        for name in FILES_ALL:
-            maxscore = 0
-            bestkl = -1
-            try:
-                klarr = self.scores[name][irp]
-            except KeyError:
-                continue
-            tbl[0][1].append(f'<div>{name}</div>')
-            for kl, (score, _) in enumerate(klarr):
-                if kl == 0:
-                    continue
-                tbl[kl].append(score)
-                if score > maxscore:
-                    maxscore = score
-                    bestkl = kl
-            tbl[-1][1].append(bestkl)
+    def table_interrupt(self, iocKey, irp, pmin, pmax):
+        head = [''] + [f'<div>{x}</div>' for x in FILES_ALL]
+        foot = ['best']
+
+        tbl = [[kl] for kl in range(33)]
+        for ni, name in enumerate(FILES_ALL):
+            bestkl = MEM_DB.vertical_kl(tbl, iocKey, name, irp, range(1, 33))
+            foot.append(bestkl)
+
+        tbl[0] = ({'class': 'rotate'}, head)
+        tbl.append(({'class': 'small'}, foot))
         return HTML.num_table(tbl, [(pmin, pmax, 1, 1, 99, len(tbl) - 1)])
 
-    def make(self, outfile, pmin, pmax):
+    def make(self, iocKey, outfile, pmin, pmax):
         nav = ''
         txt = ''
         for i in range(29):
-            has_entries = any(True for x in self.scores.values() if x[i])
-            if not has_entries:
-                continue
             nav += f'<a href="#tb-i{i}">{RUNES[i]}</a>\n'
             txt += f'<h3 id="tb-i{i}">Interrupt {i}: <b>{RUNES[i]}</b></h3>'
-            txt += self.table_interrupt(i, pmin, pmax)
+            txt += self.table_interrupt(iocKey, i, pmin, pmax)
         html = self.template.replace('__NAVIGATION__', nav)
-        html = html.replace('__TAB_RELIABLE__', self.table_reliable())
+        html = html.replace('__TAB_RELIABLE__', self.table_reliable(iocKey))
         html = html.replace('__INTERRUPT_TABLES__', txt)
         with open(LPath.results(outfile), 'w') as f:
             f.write(html)
 
 
+#########################################
+#  ChapterToWeb  :  Combine different analyses for a single chapter
+#########################################
+
 class ChapterToWeb(object):
     def __init__(self, template='templates/pages.html'):
         with open(LPath.results(template), 'r') as f:
             self.template = f.read()
-        self.db_indices = InterruptIndices()
-        self.score = [(InterruptDB.load_scores('db_high'), HIGH_MIN, HIGH_MAX),
-                      (InterruptDB.load_scores('db_norm'), NORM_MIN, NORM_MAX)]
-        self.db_mod = {
-            k: [(mod, mo, InterruptDB.load_scores(f'db_{k}_{mod}.{mo}'))
-                for mod in range(2, 4) for mo in range(mod)]
-            for k in ['high_mod_a', 'norm_mod_a', 'high_mod_b', 'norm_mod_b']
-        }
 
     def pick_ngrams(self, runes, gramsize, limit=100):
         res = {}
@@ -222,43 +244,25 @@ class ChapterToWeb(object):
         return '<dl>\n' + txt + '</dl>\n'
 
     def sec_ioc(self, fname):
-        tbl = [['',
-                ({'colspan': 2}, 'IoC-<a href="./ioc/high.html">high</a>'),
-                ({'colspan': 2}, 'IoC-<a href="./ioc/norm.html">norm</a>'),
-                ({'colspan': 2}, 'Runes / keylen')]]
-        tbl += [['']]
-        tbl += [[x] for x in range(1, 33)]
-        tbl += [({'class': 'small'}, ['best'])]
-        for scores, pmin, pmax in self.score:
+        tbl = [[x] for x in range(33)]
+        foot = ['best']
+        for typ in ['high', 'norm']:
             for irp in [0, 28]:
-                maxscore = 0
-                bestkl = -1
-                try:
-                    klarr = scores[fname][irp]
-                except KeyError:
-                    continue
-                tbl[1].append(RUNES[irp])
-                for kl, (score, _) in enumerate(klarr):
-                    if kl == 0:
-                        continue
-                    tbl[kl + 1].append(score)
-                    if score > maxscore:
-                        maxscore = score
-                        bestkl = kl
-                tbl[-1][1].append(bestkl)
+                bestkl = MEM_DB.vertical_kl(tbl, typ, fname, irp, range(1, 33))
+                foot.append(bestkl)
 
         for irp in [0, 28]:
-            try:
-                klarr = scores[fname][irp]
-            except KeyError:
-                continue
-            tbl[1].append(RUNES[irp])
-            for kl, (_, maxirp) in enumerate(klarr):
-                if maxirp > 0:
-                    _, num = self.db_indices.consider(fname, irp, maxirp)
-                    num /= kl
-                    tbl[kl + 1].append(int(num))
+            for kl in range(1, 33):
+                score, maxirp = MEM_DB.db['high']['main'][fname][irp][kl]
+                _, num = MEM_DB.indices.consider(fname, irp, maxirp)
+                tbl[kl].append(num // kl)
 
+        tbl[0] = ['',
+                  ({'colspan': 2}, 'IoC-<a href="./ioc/high.html">high</a>'),
+                  ({'colspan': 2}, 'IoC-<a href="./ioc/norm.html">norm</a>'),
+                  ({'colspan': 2}, 'Runes / keylen')]
+        tbl.insert(1, [''] + [RUNES[irp] for irp in [0, 28]] * 3)
+        tbl.append(({'class': 'small'}, foot))
         return HTML.num_table(tbl, [
             (HIGH_MIN, HIGH_MAX, 1, 2, 3, len(tbl) - 1),
             (NORM_MIN, NORM_MAX, 3, 2, 5, len(tbl) - 1),
@@ -266,44 +270,74 @@ class ChapterToWeb(object):
         ], thr=2)
 
     def sec_ioc_mod(self, fname):
+        def add_line():
+            res = []
+            for kl, (score, maxirp) in scores[fname][irp].items():
+                if kl > len(res):
+                    res += [''] * (kl - len(res))
+                res[kl - 1] = score
+            if typ == 'a':
+                _, num = MEM_DB.indices.consider(fname, irp, maxirp)
+                num = num // mod + (1 if off < num % mod else 0)
+            else:
+                _, num = MEM_DB.indices.consider_mod_b(
+                    fname, irp, maxirp, mod)
+                num = num[off]
+            return num, res
+
         txt = '<dl>\n'
-        for key, minkl, maxkl in [
-            ('high_mod_a', 1, 13), ('norm_mod_a', 1, 13),
-            ('high_mod_b', 2, 18), ('norm_mod_b', 2, 18)
-        ]:
-            tbl = [['', 'runes'] + [i for i in range(minkl, maxkl + 1)]]
-            type_is_mod_a = key.endswith('a')
-            for irp in [0, 28]:
-                for mod, off, scores in self.db_mod[key]:
-                    try:
-                        klarr = scores[fname][irp][minkl:]
-                        maxirp = klarr[-1][1]
-                    except (KeyError, IndexError):
-                        continue
-                    if type_is_mod_a:
-                        _, num = self.db_indices.consider(fname, irp, maxirp)
-                        num = num // mod + (1 if off < num % mod else 0)
-                    else:
-                        _, num = self.db_indices.consider_mod_b(
-                            fname, irp, maxirp, mod)
-                        num = num[off]
-                    tr = [f'{RUNES[irp]}.{mod}.{off}', num]
-                    tr += [score for score, _ in klarr]
-                    tbl.append(tr)
+        for typ, title, min_kl in [('a', 'Interrupt first, then mod', 1),
+                                   ('b', 'Mod first, then interrupt', 2)]:
+            for kind, pmin, pmax in [('high', HIGH_MIN, HIGH_MAX),
+                                     ('norm', NORM_MIN, NORM_MAX)]:
+                tbl = []
+                max_kl = 0
+                for irp in [0, 28]:
+                    for mod, off, scores in MEM_DB.db[kind]['mod'][typ]:
+                        num, line = add_line()
+                        max_kl = max(max_kl, len(line))
+                        line = line[min_kl - 1:]
+                        tbl.append([f'{RUNES[irp]}.{mod}.{off}', num] + line)
 
-            if type_is_mod_a:
-                title = 'Interrupt first, then mod'
-            else:
-                title = 'Mod first, then interrupt'
+                head = [['', 'runes'] + [i for i in range(min_kl, max_kl + 1)]]
+                tbl = HTML.num_table(head + tbl, [(pmin, pmax, 2, 1, 99, 99)])
+                ttl = f'{title} (IoC-<a href="../ioc/{kind}.html">{kind}</a>):'
+                txt += HTML.dt_dd(ttl, tbl)
+        return txt + '</dl>\n'
 
-            if key.startswith('high'):
-                title += ' (IoC-<a href="../ioc/high.html">high</a>):'
-                tbl = HTML.num_table(tbl, [(HIGH_MIN, HIGH_MAX, 2, 1, 99, 99)])
-            else:
-                title += ' (IoC-<a href="../ioc/norm.html">norm</a>):'
-                tbl = HTML.num_table(tbl, [(NORM_MIN, NORM_MAX, 2, 1, 99, 99)])
+    def sec_ioc_pattern(self, fname):
+        def sub_table(title, key, variants, cols):
+            txt = ''
+            per_kl = key == 'shift'
+            for kind, pmin, pmax in [('high', HIGH_MIN, HIGH_MAX),
+                                     ('norm', NORM_MIN, NORM_MAX)]:
+                tbl = []
+                for irp in [0, 28]:
+                    for typ in variants:
+                        pointer = MEM_DB.db[kind][key][typ][fname][irp]
+                        scores = []
+                        for kl in cols:
+                            try:
+                                scores.append(pointer[kl][0])
+                            except KeyError:
+                                break
+                        _, num = MEM_DB.indices.consider(fname, irp, 20)
+                        if per_kl:
+                            actual_kl = int(typ)
+                            num //= actual_kl
+                        tbl.append([f'{RUNES[irp]}.{typ}', num] + scores)
+                head = [['', 'runes'] + [i for i in cols]]
+                colors = [(pmin, pmax, 2, 1, 99, 99)]
+                if per_kl:
+                    colors.append((28, 100, 1, 1, 2, 99))
+                tbl = HTML.num_table(head + tbl, colors)
+                ttl = f'{title} (IoC-<a href="../ioc/{kind}.html">{kind}</a>):'
+                txt += HTML.dt_dd(ttl, tbl)
+            return txt
 
-            txt += HTML.dt_dd(title, tbl)
+        txt = '<dl>\n'
+        txt += sub_table('Mirror Pattern', 'mirror', 'ab', range(4, 19))
+        txt += sub_table('Shift Pattern', 'shift', range(4, 19), range(1, 18))
         return txt + '</dl>\n'
 
     def sec_ioc_flow(self, indices):
@@ -317,31 +351,30 @@ class ChapterToWeb(object):
                               {'class': 'ioc-list small four'})
         return txt + '</dl>\n'
 
-    def pick_letters(self, words, idx, desc):
-        letters = [x[idx] for x in words]
-        ioc = Probability(x.index for x in letters).IC()
-        return HTML.dt_dd(f'Pick every {desc} letter (IoC: {ioc:.3f}):',
-                          ''.join(f'<div>{x.text}</div>' for x in letters),
-                          {'class': 'runelist'})
-
-    def pick_words(self, words, n):
-        txt = ''
-        for u in range(n):
-            if n > 1:
-                txt += f'<h4>Start with {u + 1}. word</h4>\n'
-            subset = [x for x in words[u::n]]
-            ioc = Probability(x.index for y in subset for x in y).IC()
-            txt += HTML.dt_dd(f'Words (IoC: {ioc:.3f}):',
-                              ''.join(x.text + ' ' for x in subset))
-            txt += self.pick_letters(subset, 0, 'first')
-            txt += self.pick_letters(subset, -1, 'last')
-        return txt
+    def ioc_head(self, desc, letters):
+        ioc = Probability(x.index for x in letters)
+        txt = f'IoC: {ioc.IC():.3f} / {max(0, ioc.IC_norm()):.3f}'
+        return f'{desc} ({txt}):'
 
     def sec_concealment(self, words):
         txt = ''
         for n in range(1, 6):
-            txt += f'<h3>Pick every {n}. word</h3>\n'
-            txt += f'<dl>\n{self.pick_words(words, n)}</dl>\n'
+            txt += f'<h3>Pick every {n}. word</h3>\n<dl>\n'
+            for u in range(n):
+                if n > 1:
+                    txt += f'<h4>Start with {u + 1}. word</h4>\n'
+                subset = [x for x in words[u::n]]
+                txt += HTML.dt_dd(
+                    self.ioc_head('Words', (x for y in subset for x in y)),
+                    ''.join(x.text + ' ' for x in subset))
+
+                for desc, idx in [('first', 0), ('last', -1)]:
+                    letters = [x[idx] for x in subset]
+                    txt += HTML.dt_dd(
+                        self.ioc_head(f'Pick every {desc} letter', letters),
+                        ''.join(f'<div>{x.text}</div>' for x in letters),
+                        {'class': 'runelist'})
+            txt += '</dl>\n'
         return txt
 
     def make(self, fname, outfile):
@@ -360,14 +393,22 @@ class ChapterToWeb(object):
             html = html.replace('__SEC_IOC__', self.sec_ioc(fname))
         if fname in FILES_UNSOLVED:
             html = html.replace('__SEC_IOC_MOD__', self.sec_ioc_mod(fname))
+            html = html.replace('__SEC_IOC_PATTERN__',
+                                self.sec_ioc_pattern(fname))
         else:
             html = html.replace('__SEC_IOC_MOD__', HTML.p_warn(
                 'Mod-IoC is disabled on solved pages'))
+            html = html.replace('__SEC_IOC_PATTERN__', HTML.p_warn(
+                'Pattern-IoC is disabled on solved pages'))
         html = html.replace('__SEC_IOC_FLOW__', self.sec_ioc_flow(indices))
         html = html.replace('__SEC_CONCEAL__', self.sec_concealment(words))
         with open(LPath.results(outfile), 'w') as f:
             f.write(html)
 
+
+#########################################
+#  IndexToWeb  :  Creates the index page with links to all other analysis pages
+#########################################
 
 class IndexToWeb(object):
     def __init__(self, template='templates/index.html'):
@@ -383,6 +424,10 @@ class IndexToWeb(object):
             f.write(html)
 
 
+#########################################
+#  main entry
+#########################################
+
 if __name__ == '__main__':
     links = {
         '__A_IOC__': [('ioc/high.html', 'Highest (bluntly)'),
@@ -391,8 +436,10 @@ if __name__ == '__main__':
         '__A_SOLVED__': [(f'pages/solved_{x}.html', x)
                          for x in FILES_SOLVED]
     }
-    InterruptToWeb('db_high').make('ioc/high.html', HIGH_MIN, HIGH_MAX)
-    InterruptToWeb('db_norm').make('ioc/norm.html', NORM_MIN, NORM_MAX)
+    MEM_DB = DBToMem()
+    iocweb = InterruptToWeb()
+    iocweb.make('high', 'ioc/high.html', HIGH_MIN, HIGH_MAX)
+    iocweb.make('norm', 'ioc/norm.html', NORM_MIN, NORM_MAX)
     ctw = ChapterToWeb()
     for x, y in links['__A_CHAPTER__']:
         ctw.make(y, x)

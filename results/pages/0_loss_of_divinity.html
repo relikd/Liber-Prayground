@@ -14,6 +14,7 @@
 		<a href="#double-rune">Double-Rune</a>
 		<a href="#ioc">IoC</a>
 		<a href="#mod-ioc">Mod-IoC</a>
+		<a href="#pattern-ioc">Pattern-IoC</a>
 		<a href="#running-ioc">Running-IoC</a>
 		<a href="#concealment">Concealment</a>
 	</nav>
@@ -116,7 +117,7 @@
 
 	<h2 id="mod-ioc">Modulo IoC</h2>
 	<p>
-		This sections explores the idea of multiple alphabets alternating.
+		This section explores the idea of multiple alphabet-sets alternating.
 		For example, have two or three Vigenere ciphers that switch after each rune.
 		A Vigenere with key length 3 (ABC) plus another Vigenere with key length 5 (DEFGH) will generate a pattern that only repeats after 30 runes (ADBECFAGBHCDAEBFCGAHBDCEAFBGCH).
 		So the first group will represent every 2nd rune starting with the first, and the second group will contain every 2nd rune starting with the second.
@@ -137,6 +138,22 @@
 		In the previous example, with a key length of 7, indices 0, 14, 28, ... are part of one alphabet, and indices 2, 17, 30, ... are part of another alphabet.
 	</p>
 	<p class="red">Mod-IoC is disabled on solved pages</p>
+
+
+	<h2 id="pattern-ioc">Pattern IoC</h2>
+	<p>
+		This section looks at different ways to extend a short key into a longer one. The result of the expansion is still a plain Vigenere-like encryption but the key is so long that we would not be able to find it with IoC analysis. However, we can use the fact that the same letters appear again and so there are less alphabets than the key length.
+	</p>
+	<p>
+		The two mirror pattern variants simply flip the key in reverse and append it to the original key. For example, the key ABCD will become ABCDDCBA (Variant A) or ABCDCB (Variant B). Both keys will repeat after that. Notice how the first variant will produce double letters (DD and AA) and the second not.
+	</p>
+	<p>
+		The shift pattern simply offsets the key by one and appends this permutation to the key. For example, ABCD becomes ABCDBCDACDABDABC. Each key length n (here 4) has n - 1 shifts. The example before was shift = 1. The other two are ABCDCDAB (shift=2) and ABCDDABCCDABBCDA (shift=3). And again, like with the mirror pattern, we greatly increase the key length without increasing the alphabet count.
+	</p>
+	<p>
+		<b>Note:</b> while the column in the mirror pattern represents the key length, the column in the shift pattern is <b>not</b> the key length. Instead, the key length is given in the row title, e.g., “ᚠ.5”. The column header represents the key shift variation.
+	</p>
+	<p class="red">Pattern-IoC is disabled on solved pages</p>
 
 
 	<h2 id="running-ioc">Running IoC</h2>
@@ -176,167 +193,170 @@
 
 
 	<h2 id="concealment">Concealment Analysis</h2>
+	<p>
+		Concealment ciphers hide text in plain sight. Here we look at every n-th word, as well as every first and last letter of each word. That is performed on all possible veriations. The numbers inside the parenthesis are the IoC analysis on the selected text as high / norm.
+	</p>
 	<h3>Pick every 1. word</h3>
 <dl>
-<dt>Words (IoC: 1.775):</dt>
+<dt>Words (IoC: 1.775 / 0.998):</dt>
 <dd>
 THE LOSS OF DIUINITY THE CIRCUMFERENCE PRACTICES THREE BEHAUIARS WHICH CAUSE THE LOSS OF DIUINITY CONSUMPTIAN WE CONSUME TOO MUCH BECAUSE WE BELEIUE THE FOLLOWNG TWO ERRORS WITHIN THE DECEPTIAN WE DO NOT HAUE ENOUGH OR THERE IS NOT ENOUGH WE HAUE WHAT WE HAUE NOW BY LUCC AND WE WILL NOT BE STRONG ENOUGH LATER TO OBTAIN WHAT WE NEED MOST THNGS ARE NOT WORTH CONSUMNG PRESERUATIAN WE PRESERUE THNGS BECAUSE WE BELIEUE WE ARE WEAC IF WE LOSE THEM WE WILL NOT BE STRONG ENOUGH TO GAIN THEM AGAIN THIS IS THE DECEPTIAN MOST THNGS ARE NOT WORTH PRESERUNG ADHERENCE WE FOLLOW DOGMA SO THAT WE CAN BELONG AND BE RIGHT OR WE FOLLOW REASON SO WE CAN BELONG AND BE RIGHT THERE IS NOTHNG TO BE RIGHT ABOUT TO BELONG IS DEATH IT IS THE BEHAUIARS OF CONSUMPTIAN PRESERUATIAN AND ADHERENCE THAT HAUE US LOSE OUR PRIMALITY AND THUS OUR DIUINITY SOME WISDOM AMASS GREAT WEALTH NEUER BECOME ATTACHED TO WHAT YOU OWN BE PREPARED TO DESTROY ALL THAT YOU OWN AN INSTRUCTIAN PROGRAM YOUR MIND PROGRAM REALITY </dd>
-<dt>Pick every first letter (IoC: 2.019):</dt>
+<dt>Pick every first letter (IoC: 2.019 / 0.755):</dt>
 <dd class="runelist">
 <div>TH</div><div>L</div><div>O</div><div>D</div><div>TH</div><div>C</div><div>P</div><div>TH</div><div>B</div><div>W</div><div>C</div><div>TH</div><div>L</div><div>O</div><div>D</div><div>C</div><div>W</div><div>C</div><div>T</div><div>M</div><div>B</div><div>W</div><div>B</div><div>TH</div><div>F</div><div>T</div><div>E</div><div>W</div><div>TH</div><div>D</div><div>W</div><div>D</div><div>N</div><div>H</div><div>E</div><div>O</div><div>TH</div><div>I</div><div>N</div><div>E</div><div>W</div><div>H</div><div>W</div><div>W</div><div>H</div><div>N</div><div>B</div><div>L</div><div>A</div><div>W</div><div>W</div><div>N</div><div>B</div><div>S</div><div>E</div><div>L</div><div>T</div><div>O</div><div>W</div><div>W</div><div>N</div><div>M</div><div>TH</div><div>A</div><div>N</div><div>W</div><div>C</div><div>P</div><div>W</div><div>P</div><div>TH</div><div>B</div><div>W</div><div>B</div><div>W</div><div>A</div><div>W</div><div>I</div><div>W</div><div>L</div><div>TH</div><div>W</div><div>W</div><div>N</div><div>B</div><div>S</div><div>E</div><div>T</div><div>G</div><div>TH</div><div>A</div><div>TH</div><div>I</div><div>TH</div><div>D</div><div>M</div><div>TH</div><div>A</div><div>N</div><div>W</div><div>P</div><div>A</div><div>W</div><div>F</div><div>D</div><div>S</div><div>TH</div><div>W</div><div>C</div><div>B</div><div>A</div><div>B</div><div>R</div><div>O</div><div>W</div><div>F</div><div>R</div><div>S</div><div>W</div><div>C</div><div>B</div><div>A</div><div>B</div><div>R</div><div>TH</div><div>I</div><div>N</div><div>T</div><div>B</div><div>R</div><div>A</div><div>T</div><div>B</div><div>I</div><div>D</div><div>I</div><div>I</div><div>TH</div><div>B</div><div>O</div><div>C</div><div>P</div><div>A</div><div>A</div><div>TH</div><div>H</div><div>U</div><div>L</div><div>O</div><div>P</div><div>A</div><div>TH</div><div>O</div><div>D</div><div>S</div><div>W</div><div>A</div><div>G</div><div>W</div><div>N</div><div>B</div><div>A</div><div>T</div><div>W</div><div>Y</div><div>O</div><div>B</div><div>P</div><div>T</div><div>D</div><div>A</div><div>TH</div><div>Y</div><div>O</div><div>A</div><div>I</div><div>P</div><div>Y</div><div>M</div><div>P</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 3.687):</dt>
+<dt>Pick every last letter (IoC: 3.687 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>S</div><div>F</div><div>Y</div><div>E</div><div>E</div><div>S</div><div>E</div><div>S</div><div>H</div><div>E</div><div>E</div><div>S</div><div>F</div><div>Y</div><div>N</div><div>E</div><div>E</div><div>O</div><div>H</div><div>E</div><div>E</div><div>E</div><div>E</div><div>NG</div><div>O</div><div>S</div><div>N</div><div>E</div><div>N</div><div>E</div><div>O</div><div>T</div><div>E</div><div>H</div><div>R</div><div>E</div><div>S</div><div>T</div><div>H</div><div>E</div><div>E</div><div>T</div><div>E</div><div>E</div><div>W</div><div>Y</div><div>C</div><div>D</div><div>E</div><div>L</div><div>T</div><div>E</div><div>NG</div><div>H</div><div>R</div><div>O</div><div>N</div><div>T</div><div>E</div><div>D</div><div>T</div><div>S</div><div>E</div><div>T</div><div>TH</div><div>NG</div><div>N</div><div>E</div><div>E</div><div>S</div><div>E</div><div>E</div><div>E</div><div>E</div><div>E</div><div>C</div><div>F</div><div>E</div><div>E</div><div>M</div><div>E</div><div>L</div><div>T</div><div>E</div><div>NG</div><div>H</div><div>O</div><div>N</div><div>M</div><div>N</div><div>S</div><div>S</div><div>E</div><div>N</div><div>T</div><div>S</div><div>E</div><div>T</div><div>TH</div><div>NG</div><div>E</div><div>E</div><div>W</div><div>A</div><div>O</div><div>T</div><div>E</div><div>N</div><div>NG</div><div>D</div><div>E</div><div>T</div><div>R</div><div>E</div><div>W</div><div>N</div><div>O</div><div>E</div><div>N</div><div>NG</div><div>D</div><div>E</div><div>T</div><div>E</div><div>S</div><div>NG</div><div>O</div><div>E</div><div>T</div><div>T</div><div>O</div><div>NG</div><div>S</div><div>TH</div><div>T</div><div>S</div><div>E</div><div>S</div><div>F</div><div>N</div><div>N</div><div>D</div><div>E</div><div>T</div><div>E</div><div>S</div><div>E</div><div>R</div><div>Y</div><div>D</div><div>S</div><div>R</div><div>Y</div><div>E</div><div>M</div><div>S</div><div>T</div><div>TH</div><div>R</div><div>E</div><div>D</div><div>O</div><div>T</div><div>U</div><div>N</div><div>E</div><div>D</div><div>O</div><div>Y</div><div>L</div><div>T</div><div>U</div><div>N</div><div>N</div><div>N</div><div>M</div><div>R</div><div>D</div><div>M</div><div>Y</div></dd>
 </dl>
 <h3>Pick every 2. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.695):</dt>
+<dt>Words (IoC: 1.695 / 0.921):</dt>
 <dd>
 THE OF THE PRACTICES BEHAUIARS CAUSE LOSS DIUINITY WE TOO BECAUSE BELEIUE FOLLOWNG ERRORS THE WE NOT ENOUGH THERE NOT WE WHAT HAUE BY AND WILL BE ENOUGH TO WHAT NEED THNGS NOT CONSUMNG WE THNGS WE WE WEAC WE THEM WILL BE ENOUGH GAIN AGAIN IS DECEPTIAN THNGS NOT PRESERUNG WE DOGMA THAT CAN AND RIGHT WE REASON WE BELONG BE THERE NOTHNG BE ABOUT BELONG DEATH IS BEHAUIARS CONSUMPTIAN AND THAT US OUR AND OUR SOME AMASS WEALTH BECOME TO YOU BE TO ALL YOU AN PROGRAM MIND REALITY </dd>
-<dt>Pick every first letter (IoC: 2.401):</dt>
+<dt>Pick every first letter (IoC: 2.401 / 0.373):</dt>
 <dd class="runelist">
 <div>TH</div><div>O</div><div>TH</div><div>P</div><div>B</div><div>C</div><div>L</div><div>D</div><div>W</div><div>T</div><div>B</div><div>B</div><div>F</div><div>E</div><div>TH</div><div>W</div><div>N</div><div>E</div><div>TH</div><div>N</div><div>W</div><div>W</div><div>H</div><div>B</div><div>A</div><div>W</div><div>B</div><div>E</div><div>T</div><div>W</div><div>N</div><div>TH</div><div>N</div><div>C</div><div>W</div><div>TH</div><div>W</div><div>W</div><div>W</div><div>W</div><div>TH</div><div>W</div><div>B</div><div>E</div><div>G</div><div>A</div><div>I</div><div>D</div><div>TH</div><div>N</div><div>P</div><div>W</div><div>D</div><div>TH</div><div>C</div><div>A</div><div>R</div><div>W</div><div>R</div><div>W</div><div>B</div><div>B</div><div>TH</div><div>N</div><div>B</div><div>A</div><div>B</div><div>D</div><div>I</div><div>B</div><div>C</div><div>A</div><div>TH</div><div>U</div><div>O</div><div>A</div><div>O</div><div>S</div><div>A</div><div>W</div><div>B</div><div>T</div><div>Y</div><div>B</div><div>T</div><div>A</div><div>Y</div><div>A</div><div>P</div><div>M</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 3.583):</dt>
+<dt>Pick every last letter (IoC: 3.583 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>F</div><div>E</div><div>S</div><div>S</div><div>E</div><div>S</div><div>Y</div><div>E</div><div>O</div><div>E</div><div>E</div><div>NG</div><div>S</div><div>E</div><div>E</div><div>T</div><div>H</div><div>E</div><div>T</div><div>E</div><div>T</div><div>E</div><div>Y</div><div>D</div><div>L</div><div>E</div><div>H</div><div>O</div><div>T</div><div>D</div><div>S</div><div>T</div><div>NG</div><div>E</div><div>S</div><div>E</div><div>E</div><div>C</div><div>E</div><div>M</div><div>L</div><div>E</div><div>H</div><div>N</div><div>N</div><div>S</div><div>N</div><div>S</div><div>T</div><div>NG</div><div>E</div><div>A</div><div>T</div><div>N</div><div>D</div><div>T</div><div>E</div><div>N</div><div>E</div><div>NG</div><div>E</div><div>E</div><div>NG</div><div>E</div><div>T</div><div>NG</div><div>TH</div><div>S</div><div>S</div><div>N</div><div>D</div><div>T</div><div>S</div><div>R</div><div>D</div><div>R</div><div>E</div><div>S</div><div>TH</div><div>E</div><div>O</div><div>U</div><div>E</div><div>O</div><div>L</div><div>U</div><div>N</div><div>M</div><div>D</div><div>Y</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.836):</dt>
+<dt>Words (IoC: 1.836 / 0.938):</dt>
 <dd>
 LOSS DIUINITY CIRCUMFERENCE THREE WHICH THE OF CONSUMPTIAN CONSUME MUCH WE THE TWO WITHIN DECEPTIAN DO HAUE OR IS ENOUGH HAUE WE NOW LUCC WE NOT STRONG LATER OBTAIN WE MOST ARE WORTH PRESERUATIAN PRESERUE BECAUSE BELIEUE ARE IF LOSE WE NOT STRONG TO THEM THIS THE MOST ARE WORTH ADHERENCE FOLLOW SO WE BELONG BE OR FOLLOW SO CAN AND RIGHT IS TO RIGHT TO IS IT THE OF PRESERUATIAN ADHERENCE HAUE LOSE PRIMALITY THUS DIUINITY WISDOM GREAT NEUER ATTACHED WHAT OWN PREPARED DESTROY THAT OWN INSTRUCTIAN YOUR PROGRAM </dd>
-<dt>Pick every first letter (IoC: 1.680):</dt>
+<dt>Pick every first letter (IoC: 1.680 / 0.906):</dt>
 <dd class="runelist">
 <div>L</div><div>D</div><div>C</div><div>TH</div><div>W</div><div>TH</div><div>O</div><div>C</div><div>C</div><div>M</div><div>W</div><div>TH</div><div>T</div><div>W</div><div>D</div><div>D</div><div>H</div><div>O</div><div>I</div><div>E</div><div>H</div><div>W</div><div>N</div><div>L</div><div>W</div><div>N</div><div>S</div><div>L</div><div>O</div><div>W</div><div>M</div><div>A</div><div>W</div><div>P</div><div>P</div><div>B</div><div>B</div><div>A</div><div>I</div><div>L</div><div>W</div><div>N</div><div>S</div><div>T</div><div>TH</div><div>TH</div><div>TH</div><div>M</div><div>A</div><div>W</div><div>A</div><div>F</div><div>S</div><div>W</div><div>B</div><div>B</div><div>O</div><div>F</div><div>S</div><div>C</div><div>A</div><div>R</div><div>I</div><div>T</div><div>R</div><div>T</div><div>I</div><div>I</div><div>TH</div><div>O</div><div>P</div><div>A</div><div>H</div><div>L</div><div>P</div><div>TH</div><div>D</div><div>W</div><div>G</div><div>N</div><div>A</div><div>W</div><div>O</div><div>P</div><div>D</div><div>TH</div><div>O</div><div>I</div><div>Y</div><div>P</div></dd>
-<dt>Pick every last letter (IoC: 3.707):</dt>
+<dt>Pick every last letter (IoC: 3.707 / 0.000):</dt>
 <dd class="runelist">
 <div>S</div><div>Y</div><div>E</div><div>E</div><div>H</div><div>E</div><div>F</div><div>N</div><div>E</div><div>H</div><div>E</div><div>E</div><div>O</div><div>N</div><div>N</div><div>O</div><div>E</div><div>R</div><div>S</div><div>H</div><div>E</div><div>E</div><div>W</div><div>C</div><div>E</div><div>T</div><div>NG</div><div>R</div><div>N</div><div>E</div><div>T</div><div>E</div><div>TH</div><div>N</div><div>E</div><div>E</div><div>E</div><div>E</div><div>F</div><div>E</div><div>E</div><div>T</div><div>NG</div><div>O</div><div>M</div><div>S</div><div>E</div><div>T</div><div>E</div><div>TH</div><div>E</div><div>W</div><div>O</div><div>E</div><div>NG</div><div>E</div><div>R</div><div>W</div><div>O</div><div>N</div><div>D</div><div>T</div><div>S</div><div>O</div><div>T</div><div>O</div><div>S</div><div>T</div><div>E</div><div>F</div><div>N</div><div>E</div><div>E</div><div>E</div><div>Y</div><div>S</div><div>Y</div><div>M</div><div>T</div><div>R</div><div>D</div><div>T</div><div>N</div><div>D</div><div>Y</div><div>T</div><div>N</div><div>N</div><div>R</div><div>M</div></dd>
 </dl>
 <h3>Pick every 3. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.762):</dt>
+<dt>Words (IoC: 1.762 / 0.988):</dt>
 <dd>
 THE DIUINITY PRACTICES WHICH LOSS CONSUMPTIAN TOO WE FOLLOWNG WITHIN WE HAUE THERE ENOUGH WHAT NOW AND NOT ENOUGH OBTAIN NEED ARE CONSUMNG PRESERUE WE ARE WE WE BE TO AGAIN THE THNGS WORTH WE SO CAN BE WE SO BELONG RIGHT NOTHNG RIGHT BELONG IT BEHAUIARS PRESERUATIAN THAT LOSE AND DIUINITY AMASS NEUER TO OWN TO THAT AN YOUR REALITY </dd>
-<dt>Pick every first letter (IoC: 2.076):</dt>
+<dt>Pick every first letter (IoC: 2.076 / 0.698):</dt>
 <dd class="runelist">
 <div>TH</div><div>D</div><div>P</div><div>W</div><div>L</div><div>C</div><div>T</div><div>W</div><div>F</div><div>W</div><div>W</div><div>H</div><div>TH</div><div>E</div><div>W</div><div>N</div><div>A</div><div>N</div><div>E</div><div>O</div><div>N</div><div>A</div><div>C</div><div>P</div><div>W</div><div>A</div><div>W</div><div>W</div><div>B</div><div>T</div><div>A</div><div>TH</div><div>TH</div><div>W</div><div>W</div><div>S</div><div>C</div><div>B</div><div>W</div><div>S</div><div>B</div><div>R</div><div>N</div><div>R</div><div>B</div><div>I</div><div>B</div><div>P</div><div>TH</div><div>L</div><div>A</div><div>D</div><div>A</div><div>N</div><div>T</div><div>O</div><div>T</div><div>TH</div><div>A</div><div>Y</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 3.645):</dt>
+<dt>Pick every last letter (IoC: 3.645 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>Y</div><div>S</div><div>H</div><div>S</div><div>N</div><div>O</div><div>E</div><div>NG</div><div>N</div><div>E</div><div>E</div><div>E</div><div>H</div><div>T</div><div>W</div><div>D</div><div>T</div><div>H</div><div>N</div><div>D</div><div>E</div><div>NG</div><div>E</div><div>E</div><div>E</div><div>E</div><div>E</div><div>E</div><div>O</div><div>N</div><div>E</div><div>S</div><div>TH</div><div>E</div><div>O</div><div>N</div><div>E</div><div>E</div><div>O</div><div>NG</div><div>T</div><div>NG</div><div>T</div><div>NG</div><div>T</div><div>S</div><div>N</div><div>T</div><div>E</div><div>D</div><div>Y</div><div>S</div><div>R</div><div>O</div><div>N</div><div>O</div><div>T</div><div>N</div><div>R</div><div>Y</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.788):</dt>
+<dt>Words (IoC: 1.788 / 0.986):</dt>
 <dd>
 LOSS THE THREE CAUSE OF WE MUCH BELEIUE TWO THE DO ENOUGH IS WE WE BY WE BE LATER WHAT MOST NOT PRESERUATIAN THNGS BELIEUE WEAC LOSE WILL STRONG GAIN THIS DECEPTIAN ARE PRESERUNG FOLLOW THAT BELONG RIGHT FOLLOW WE AND THERE TO ABOUT IS IS OF AND HAUE OUR THUS SOME GREAT BECOME WHAT BE DESTROY YOU INSTRUCTIAN MIND </dd>
-<dt>Pick every first letter (IoC: 1.868):</dt>
+<dt>Pick every first letter (IoC: 1.868 / 0.906):</dt>
 <dd class="runelist">
 <div>L</div><div>TH</div><div>TH</div><div>C</div><div>O</div><div>W</div><div>M</div><div>B</div><div>T</div><div>TH</div><div>D</div><div>E</div><div>I</div><div>W</div><div>W</div><div>B</div><div>W</div><div>B</div><div>L</div><div>W</div><div>M</div><div>N</div><div>P</div><div>TH</div><div>B</div><div>W</div><div>L</div><div>W</div><div>S</div><div>G</div><div>TH</div><div>D</div><div>A</div><div>P</div><div>F</div><div>TH</div><div>B</div><div>R</div><div>F</div><div>W</div><div>A</div><div>TH</div><div>T</div><div>A</div><div>I</div><div>I</div><div>O</div><div>A</div><div>H</div><div>O</div><div>TH</div><div>S</div><div>G</div><div>B</div><div>W</div><div>B</div><div>D</div><div>Y</div><div>I</div><div>M</div></dd>
-<dt>Pick every last letter (IoC: 3.932):</dt>
+<dt>Pick every last letter (IoC: 3.932 / 0.000):</dt>
 <dd class="runelist">
 <div>S</div><div>E</div><div>E</div><div>E</div><div>F</div><div>E</div><div>H</div><div>E</div><div>O</div><div>E</div><div>O</div><div>H</div><div>S</div><div>E</div><div>E</div><div>Y</div><div>E</div><div>E</div><div>R</div><div>T</div><div>T</div><div>T</div><div>N</div><div>S</div><div>E</div><div>C</div><div>E</div><div>L</div><div>NG</div><div>N</div><div>S</div><div>N</div><div>E</div><div>NG</div><div>W</div><div>T</div><div>NG</div><div>T</div><div>W</div><div>E</div><div>D</div><div>E</div><div>O</div><div>T</div><div>S</div><div>S</div><div>F</div><div>D</div><div>E</div><div>R</div><div>S</div><div>E</div><div>T</div><div>E</div><div>T</div><div>E</div><div>Y</div><div>U</div><div>N</div><div>D</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.701):</dt>
+<dt>Words (IoC: 1.701 / 0.927):</dt>
 <dd>
 OF CIRCUMFERENCE BEHAUIARS THE DIUINITY CONSUME BECAUSE THE ERRORS DECEPTIAN NOT OR NOT HAUE HAUE LUCC WILL STRONG TO WE THNGS WORTH WE BECAUSE WE IF THEM NOT ENOUGH THEM IS MOST NOT ADHERENCE DOGMA WE AND OR REASON CAN BE IS BE TO DEATH THE CONSUMPTIAN ADHERENCE US PRIMALITY OUR WISDOM WEALTH ATTACHED YOU PREPARED ALL OWN PROGRAM PROGRAM </dd>
-<dt>Pick every first letter (IoC: 1.688):</dt>
+<dt>Pick every first letter (IoC: 1.688 / 0.914):</dt>
 <dd class="runelist">
 <div>O</div><div>C</div><div>B</div><div>TH</div><div>D</div><div>C</div><div>B</div><div>TH</div><div>E</div><div>D</div><div>N</div><div>O</div><div>N</div><div>H</div><div>H</div><div>L</div><div>W</div><div>S</div><div>T</div><div>W</div><div>TH</div><div>W</div><div>W</div><div>B</div><div>W</div><div>I</div><div>TH</div><div>N</div><div>E</div><div>TH</div><div>I</div><div>M</div><div>N</div><div>A</div><div>D</div><div>W</div><div>A</div><div>O</div><div>R</div><div>C</div><div>B</div><div>I</div><div>B</div><div>T</div><div>D</div><div>TH</div><div>C</div><div>A</div><div>U</div><div>P</div><div>O</div><div>W</div><div>W</div><div>A</div><div>Y</div><div>P</div><div>A</div><div>O</div><div>P</div><div>P</div></dd>
-<dt>Pick every last letter (IoC: 3.179):</dt>
+<dt>Pick every last letter (IoC: 3.179 / 0.000):</dt>
 <dd class="runelist">
 <div>F</div><div>E</div><div>S</div><div>E</div><div>Y</div><div>E</div><div>E</div><div>E</div><div>S</div><div>N</div><div>T</div><div>R</div><div>T</div><div>E</div><div>E</div><div>C</div><div>L</div><div>NG</div><div>O</div><div>E</div><div>S</div><div>TH</div><div>E</div><div>E</div><div>E</div><div>F</div><div>M</div><div>T</div><div>H</div><div>M</div><div>S</div><div>T</div><div>T</div><div>E</div><div>A</div><div>E</div><div>D</div><div>R</div><div>N</div><div>N</div><div>E</div><div>S</div><div>E</div><div>O</div><div>TH</div><div>E</div><div>N</div><div>E</div><div>S</div><div>Y</div><div>R</div><div>M</div><div>TH</div><div>D</div><div>U</div><div>D</div><div>L</div><div>N</div><div>M</div><div>M</div></dd>
 </dl>
 <h3>Pick every 4. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.758):</dt>
+<dt>Words (IoC: 1.758 / 0.984):</dt>
 <dd>
 THE THE BEHAUIARS LOSS WE BECAUSE FOLLOWNG THE NOT THERE WE HAUE AND BE TO NEED NOT WE WE WEAC THEM BE GAIN IS THNGS PRESERUNG DOGMA CAN RIGHT REASON BELONG THERE BE BELONG IS CONSUMPTIAN THAT OUR OUR AMASS BECOME YOU TO YOU PROGRAM REALITY </dd>
-<dt>Pick every first letter (IoC: 2.214):</dt>
+<dt>Pick every first letter (IoC: 2.214 / 0.560):</dt>
 <dd class="runelist">
 <div>TH</div><div>TH</div><div>B</div><div>L</div><div>W</div><div>B</div><div>F</div><div>TH</div><div>N</div><div>TH</div><div>W</div><div>H</div><div>A</div><div>B</div><div>T</div><div>N</div><div>N</div><div>W</div><div>W</div><div>W</div><div>TH</div><div>B</div><div>G</div><div>I</div><div>TH</div><div>P</div><div>D</div><div>C</div><div>R</div><div>R</div><div>B</div><div>TH</div><div>B</div><div>B</div><div>I</div><div>C</div><div>TH</div><div>O</div><div>O</div><div>A</div><div>B</div><div>Y</div><div>T</div><div>Y</div><div>P</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 4.007):</dt>
+<dt>Pick every last letter (IoC: 4.007 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>E</div><div>S</div><div>S</div><div>E</div><div>E</div><div>NG</div><div>E</div><div>T</div><div>E</div><div>E</div><div>E</div><div>D</div><div>E</div><div>O</div><div>D</div><div>T</div><div>E</div><div>E</div><div>C</div><div>M</div><div>E</div><div>N</div><div>S</div><div>S</div><div>NG</div><div>A</div><div>N</div><div>T</div><div>N</div><div>NG</div><div>E</div><div>E</div><div>NG</div><div>S</div><div>N</div><div>T</div><div>R</div><div>R</div><div>S</div><div>E</div><div>U</div><div>O</div><div>U</div><div>M</div><div>Y</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.809):</dt>
+<dt>Words (IoC: 1.809 / 0.965):</dt>
 <dd>
 LOSS CIRCUMFERENCE WHICH OF CONSUME WE TWO DECEPTIAN HAUE IS HAUE NOW WE STRONG OBTAIN MOST WORTH PRESERUE BELIEUE IF WE STRONG THEM THE ARE ADHERENCE SO BELONG OR SO AND IS RIGHT IS THE PRESERUATIAN HAUE PRIMALITY DIUINITY GREAT ATTACHED OWN DESTROY OWN YOUR </dd>
-<dt>Pick every first letter (IoC: 1.523):</dt>
+<dt>Pick every first letter (IoC: 1.523 / 0.750):</dt>
 <dd class="runelist">
 <div>L</div><div>C</div><div>W</div><div>O</div><div>C</div><div>W</div><div>T</div><div>D</div><div>H</div><div>I</div><div>H</div><div>N</div><div>W</div><div>S</div><div>O</div><div>M</div><div>W</div><div>P</div><div>B</div><div>I</div><div>W</div><div>S</div><div>TH</div><div>TH</div><div>A</div><div>A</div><div>S</div><div>B</div><div>O</div><div>S</div><div>A</div><div>I</div><div>R</div><div>I</div><div>TH</div><div>P</div><div>H</div><div>P</div><div>D</div><div>G</div><div>A</div><div>O</div><div>D</div><div>O</div><div>Y</div></dd>
-<dt>Pick every last letter (IoC: 3.574):</dt>
+<dt>Pick every last letter (IoC: 3.574 / 0.000):</dt>
 <dd class="runelist">
 <div>S</div><div>E</div><div>H</div><div>F</div><div>E</div><div>E</div><div>O</div><div>N</div><div>E</div><div>S</div><div>E</div><div>W</div><div>E</div><div>NG</div><div>N</div><div>T</div><div>TH</div><div>E</div><div>E</div><div>F</div><div>E</div><div>NG</div><div>M</div><div>E</div><div>E</div><div>E</div><div>O</div><div>NG</div><div>R</div><div>O</div><div>D</div><div>S</div><div>T</div><div>S</div><div>E</div><div>N</div><div>E</div><div>Y</div><div>Y</div><div>T</div><div>D</div><div>N</div><div>Y</div><div>N</div><div>R</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.596):</dt>
+<dt>Words (IoC: 1.596 / 0.822):</dt>
 <dd>
 OF PRACTICES CAUSE DIUINITY TOO BELEIUE ERRORS WE ENOUGH NOT WHAT BY WILL ENOUGH WHAT THNGS CONSUMNG THNGS WE WE WILL ENOUGH AGAIN DECEPTIAN NOT WE THAT AND WE WE BE NOTHNG ABOUT DEATH BEHAUIARS AND US AND SOME WEALTH TO BE ALL AN MIND </dd>
-<dt>Pick every first letter (IoC: 3.017):</dt>
+<dt>Pick every first letter (IoC: 3.017 / 0.000):</dt>
 <dd class="runelist">
 <div>O</div><div>P</div><div>C</div><div>D</div><div>T</div><div>B</div><div>E</div><div>W</div><div>E</div><div>N</div><div>W</div><div>B</div><div>W</div><div>E</div><div>W</div><div>TH</div><div>C</div><div>TH</div><div>W</div><div>W</div><div>W</div><div>E</div><div>A</div><div>D</div><div>N</div><div>W</div><div>TH</div><div>A</div><div>W</div><div>W</div><div>B</div><div>N</div><div>A</div><div>D</div><div>B</div><div>A</div><div>U</div><div>A</div><div>S</div><div>W</div><div>T</div><div>B</div><div>A</div><div>A</div><div>M</div></dd>
-<dt>Pick every last letter (IoC: 3.046):</dt>
+<dt>Pick every last letter (IoC: 3.046 / 0.000):</dt>
 <dd class="runelist">
 <div>F</div><div>S</div><div>E</div><div>Y</div><div>O</div><div>E</div><div>S</div><div>E</div><div>H</div><div>T</div><div>T</div><div>Y</div><div>L</div><div>H</div><div>T</div><div>S</div><div>NG</div><div>S</div><div>E</div><div>E</div><div>L</div><div>H</div><div>N</div><div>N</div><div>T</div><div>E</div><div>T</div><div>D</div><div>E</div><div>E</div><div>E</div><div>NG</div><div>T</div><div>TH</div><div>S</div><div>D</div><div>S</div><div>D</div><div>E</div><div>TH</div><div>O</div><div>E</div><div>L</div><div>N</div><div>D</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.772):</dt>
+<dt>Words (IoC: 1.772 / 0.999):</dt>
 <dd>
 DIUINITY THREE THE CONSUMPTIAN MUCH THE WITHIN DO OR ENOUGH WE LUCC NOT LATER WE ARE PRESERUATIAN BECAUSE ARE LOSE NOT TO THIS MOST WORTH FOLLOW WE BE FOLLOW CAN RIGHT TO TO IT OF ADHERENCE LOSE THUS WISDOM NEUER WHAT PREPARED THAT INSTRUCTIAN PROGRAM </dd>
-<dt>Pick every first letter (IoC: 1.787):</dt>
+<dt>Pick every first letter (IoC: 1.787 / 0.987):</dt>
 <dd class="runelist">
 <div>D</div><div>TH</div><div>TH</div><div>C</div><div>M</div><div>TH</div><div>W</div><div>D</div><div>O</div><div>E</div><div>W</div><div>L</div><div>N</div><div>L</div><div>W</div><div>A</div><div>P</div><div>B</div><div>A</div><div>L</div><div>N</div><div>T</div><div>TH</div><div>M</div><div>W</div><div>F</div><div>W</div><div>B</div><div>F</div><div>C</div><div>R</div><div>T</div><div>T</div><div>I</div><div>O</div><div>A</div><div>L</div><div>TH</div><div>W</div><div>N</div><div>W</div><div>P</div><div>TH</div><div>I</div><div>P</div></dd>
-<dt>Pick every last letter (IoC: 3.574):</dt>
+<dt>Pick every last letter (IoC: 3.574 / 0.000):</dt>
 <dd class="runelist">
 <div>Y</div><div>E</div><div>E</div><div>N</div><div>H</div><div>E</div><div>N</div><div>O</div><div>R</div><div>H</div><div>E</div><div>C</div><div>T</div><div>R</div><div>E</div><div>E</div><div>N</div><div>E</div><div>E</div><div>E</div><div>T</div><div>O</div><div>S</div><div>T</div><div>TH</div><div>W</div><div>E</div><div>E</div><div>W</div><div>N</div><div>T</div><div>O</div><div>O</div><div>T</div><div>F</div><div>E</div><div>E</div><div>S</div><div>M</div><div>R</div><div>T</div><div>D</div><div>T</div><div>N</div><div>M</div></dd>
 </dl>
 <h3>Pick every 5. word</h3>
 <dl>
 <h4>Start with 1. word</h4>
-<dt>Words (IoC: 1.643):</dt>
+<dt>Words (IoC: 1.643 / 0.869):</dt>
 <dd>
 THE CIRCUMFERENCE CAUSE CONSUMPTIAN BECAUSE TWO WE OR WE NOW WILL LATER NEED WORTH THNGS ARE THEM STRONG AGAIN MOST PRESERUNG SO AND FOLLOW BELONG IS ABOUT IT CONSUMPTIAN HAUE AND WISDOM BECOME OWN ALL INSTRUCTIAN REALITY </dd>
-<dt>Pick every first letter (IoC: 1.872):</dt>
+<dt>Pick every first letter (IoC: 1.872 / 0.901):</dt>
 <dd class="runelist">
 <div>TH</div><div>C</div><div>C</div><div>C</div><div>B</div><div>T</div><div>W</div><div>O</div><div>W</div><div>N</div><div>W</div><div>L</div><div>N</div><div>W</div><div>TH</div><div>A</div><div>TH</div><div>S</div><div>A</div><div>M</div><div>P</div><div>S</div><div>A</div><div>F</div><div>B</div><div>I</div><div>A</div><div>I</div><div>C</div><div>H</div><div>A</div><div>W</div><div>B</div><div>O</div><div>A</div><div>I</div><div>R</div></dd>
-<dt>Pick every last letter (IoC: 2.656):</dt>
+<dt>Pick every last letter (IoC: 2.656 / 0.118):</dt>
 <dd class="runelist">
 <div>E</div><div>E</div><div>E</div><div>N</div><div>E</div><div>O</div><div>E</div><div>R</div><div>E</div><div>W</div><div>L</div><div>R</div><div>D</div><div>TH</div><div>S</div><div>E</div><div>M</div><div>NG</div><div>N</div><div>T</div><div>NG</div><div>O</div><div>D</div><div>W</div><div>NG</div><div>S</div><div>T</div><div>T</div><div>N</div><div>E</div><div>D</div><div>M</div><div>E</div><div>N</div><div>L</div><div>N</div><div>Y</div></dd>
 <h4>Start with 2. word</h4>
-<dt>Words (IoC: 1.847):</dt>
+<dt>Words (IoC: 1.847 / 0.926):</dt>
 <dd>
 LOSS PRACTICES THE WE WE ERRORS DO THERE HAUE BY NOT TO MOST CONSUMNG BECAUSE WEAC WE ENOUGH THIS THNGS ADHERENCE THAT BE REASON AND NOTHNG TO IS PRESERUATIAN US THUS AMASS ATTACHED BE THAT PROGRAM </dd>
-<dt>Pick every first letter (IoC: 2.071):</dt>
+<dt>Pick every first letter (IoC: 2.071 / 0.702):</dt>
 <dd class="runelist">
 <div>L</div><div>P</div><div>TH</div><div>W</div><div>W</div><div>E</div><div>D</div><div>TH</div><div>H</div><div>B</div><div>N</div><div>T</div><div>M</div><div>C</div><div>B</div><div>W</div><div>W</div><div>E</div><div>TH</div><div>TH</div><div>A</div><div>TH</div><div>B</div><div>R</div><div>A</div><div>N</div><div>T</div><div>I</div><div>P</div><div>U</div><div>TH</div><div>A</div><div>A</div><div>B</div><div>TH</div><div>P</div></dd>
-<dt>Pick every last letter (IoC: 4.281):</dt>
+<dt>Pick every last letter (IoC: 4.281 / 0.000):</dt>
 <dd class="runelist">
 <div>S</div><div>S</div><div>E</div><div>E</div><div>E</div><div>S</div><div>O</div><div>E</div><div>E</div><div>Y</div><div>T</div><div>O</div><div>T</div><div>NG</div><div>E</div><div>C</div><div>E</div><div>H</div><div>S</div><div>S</div><div>E</div><div>T</div><div>E</div><div>N</div><div>D</div><div>NG</div><div>O</div><div>S</div><div>N</div><div>S</div><div>S</div><div>S</div><div>D</div><div>E</div><div>T</div><div>M</div></dd>
 <h4>Start with 3. word</h4>
-<dt>Words (IoC: 1.778):</dt>
+<dt>Words (IoC: 1.778 / 0.996):</dt>
 <dd>
 OF THREE LOSS CONSUME BELEIUE WITHIN NOT IS WHAT LUCC BE OBTAIN THNGS PRESERUATIAN WE IF WILL TO IS ARE WE WE RIGHT SO BE TO BELONG THE AND LOSE OUR GREAT TO PREPARED YOU YOUR </dd>
-<dt>Pick every first letter (IoC: 1.795):</dt>
+<dt>Pick every first letter (IoC: 1.795 / 0.978):</dt>
 <dd class="runelist">
 <div>O</div><div>TH</div><div>L</div><div>C</div><div>B</div><div>W</div><div>N</div><div>I</div><div>W</div><div>L</div><div>B</div><div>O</div><div>TH</div><div>P</div><div>W</div><div>I</div><div>W</div><div>T</div><div>I</div><div>A</div><div>W</div><div>W</div><div>R</div><div>S</div><div>B</div><div>T</div><div>B</div><div>TH</div><div>A</div><div>L</div><div>O</div><div>G</div><div>T</div><div>P</div><div>Y</div><div>Y</div></dd>
-<dt>Pick every last letter (IoC: 3.637):</dt>
+<dt>Pick every last letter (IoC: 3.637 / 0.000):</dt>
 <dd class="runelist">
 <div>F</div><div>E</div><div>S</div><div>E</div><div>E</div><div>N</div><div>T</div><div>S</div><div>T</div><div>C</div><div>E</div><div>N</div><div>S</div><div>N</div><div>E</div><div>F</div><div>L</div><div>O</div><div>S</div><div>E</div><div>E</div><div>E</div><div>T</div><div>O</div><div>E</div><div>O</div><div>NG</div><div>E</div><div>D</div><div>E</div><div>R</div><div>T</div><div>O</div><div>D</div><div>U</div><div>R</div></dd>
 <h4>Start with 4. word</h4>
-<dt>Words (IoC: 1.772):</dt>
+<dt>Words (IoC: 1.772 / 0.998):</dt>
 <dd>
 DIUINITY BEHAUIARS OF TOO THE THE HAUE NOT WE AND STRONG WHAT ARE WE BELIEUE WE NOT GAIN THE NOT FOLLOW CAN OR WE RIGHT BE IS BEHAUIARS ADHERENCE OUR DIUINITY WEALTH WHAT TO OWN MIND </dd>
-<dt>Pick every first letter (IoC: 2.025):</dt>
+<dt>Pick every first letter (IoC: 2.025 / 0.748):</dt>
 <dd class="runelist">
 <div>D</div><div>B</div><div>O</div><div>T</div><div>TH</div><div>TH</div><div>H</div><div>N</div><div>W</div><div>A</div><div>S</div><div>W</div><div>A</div><div>W</div><div>B</div><div>W</div><div>N</div><div>G</div><div>TH</div><div>N</div><div>F</div><div>C</div><div>O</div><div>W</div><div>R</div><div>B</div><div>I</div><div>B</div><div>A</div><div>O</div><div>D</div><div>W</div><div>W</div><div>T</div><div>O</div><div>M</div></dd>
-<dt>Pick every last letter (IoC: 4.189):</dt>
+<dt>Pick every last letter (IoC: 4.189 / 0.000):</dt>
 <dd class="runelist">
 <div>Y</div><div>S</div><div>F</div><div>O</div><div>E</div><div>E</div><div>E</div><div>T</div><div>E</div><div>D</div><div>NG</div><div>T</div><div>E</div><div>E</div><div>E</div><div>E</div><div>T</div><div>N</div><div>E</div><div>T</div><div>W</div><div>N</div><div>R</div><div>E</div><div>T</div><div>E</div><div>S</div><div>S</div><div>E</div><div>R</div><div>Y</div><div>TH</div><div>T</div><div>O</div><div>N</div><div>D</div></dd>
 <h4>Start with 5. word</h4>
-<dt>Words (IoC: 1.715):</dt>
+<dt>Words (IoC: 1.715 / 0.942):</dt>
 <dd>
 THE WHICH DIUINITY MUCH FOLLOWNG DECEPTIAN ENOUGH ENOUGH HAUE WE ENOUGH WE NOT PRESERUE WE LOSE BE THEM DECEPTIAN WORTH DOGMA BELONG WE CAN THERE RIGHT DEATH OF THAT PRIMALITY SOME NEUER YOU DESTROY AN PROGRAM </dd>
-<dt>Pick every first letter (IoC: 2.025):</dt>
+<dt>Pick every first letter (IoC: 2.025 / 0.748):</dt>
 <dd class="runelist">
 <div>TH</div><div>W</div><div>D</div><div>M</div><div>F</div><div>D</div><div>E</div><div>E</div><div>H</div><div>W</div><div>E</div><div>W</div><div>N</div><div>P</div><div>W</div><div>L</div><div>B</div><div>TH</div><div>D</div><div>W</div><div>D</div><div>B</div><div>W</div><div>C</div><div>TH</div><div>R</div><div>D</div><div>O</div><div>TH</div><div>P</div><div>S</div><div>N</div><div>Y</div><div>D</div><div>A</div><div>P</div></dd>
-<dt>Pick every last letter (IoC: 3.683):</dt>
+<dt>Pick every last letter (IoC: 3.683 / 0.000):</dt>
 <dd class="runelist">
 <div>E</div><div>H</div><div>Y</div><div>H</div><div>NG</div><div>N</div><div>H</div><div>H</div><div>E</div><div>E</div><div>H</div><div>E</div><div>T</div><div>E</div><div>E</div><div>E</div><div>E</div><div>M</div><div>N</div><div>TH</div><div>A</div><div>NG</div><div>E</div><div>N</div><div>E</div><div>T</div><div>TH</div><div>F</div><div>T</div><div>Y</div><div>E</div><div>R</div><div>U</div><div>Y</div><div>N</div><div>M</div></dd>
 </dl>
