@@ -61,12 +61,11 @@ class GuessAffine(object):
 
 class GuessPattern(object):
     @staticmethod
-    def groups(nums, keylen, shift=1, offset=0):
-        gen = GuessPattern.shift_pattern(keylen, shift)
+    def groups(nums, keylen, generator, offset=0):
         for _ in range(offset):
-            next(gen)
+            next(generator)
         ret = [[] for _ in range(keylen)]
-        for idx, value in zip(gen, nums):
+        for idx, value in zip(generator, nums):
             ret[idx].append(value)
         return ret
 

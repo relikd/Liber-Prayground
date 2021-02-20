@@ -51,3 +51,12 @@ class Probability(object):
         val = sum(abs(Probability(nums[x::keylen]).IC() - target_ioc)
                   for x in range(keylen))
         return 1 - (val / keylen)
+
+    @staticmethod
+    def parts_high(parts, keylen):
+        return sum(Probability(x).IC() for x in parts) / keylen
+
+    @staticmethod
+    def parts_norm(parts, keylen, target_ioc=TARGET_IOC):
+        val = sum(abs(Probability(x).IC() - target_ioc) for x in parts)
+        return 1 - (val / keylen)

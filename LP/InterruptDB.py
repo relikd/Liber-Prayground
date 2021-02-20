@@ -170,20 +170,37 @@ def create_mod_b_db(dbprefix, fn_score):
                 print(f'mod b {mod}.{mo}, kl: {kl}, score: {score:.4f}')
 
 
-def create_pattern_shift_db(offset=0):
+def create_pattern_shift_db(dbprefix, fn_score, offset=0):
     # we misuse the db's keylen column as pattern shift multiply
     for kpl in range(4, 19):  # key pattern length, equiv. to x^2 vigenere
-        def fn_score(x, kpl_shift):
-            parts = GuessPattern.groups(x, kpl, kpl_shift, offset)
-            return sum(Probability(x).IC() for x in parts) / kpl
-            # return 1 - (sum(Probability(x).IC_norm() for x in parts) / kl)
+        def fn_pattern_scr(x, kpl_shift):
+            gen = GuessPattern.shift_pattern(kpl, kpl_shift)
+            parts = GuessPattern.groups(x, kpl, gen, offset)
+            return fn_score(parts, kpl)
 
-        dbname = f'db_high_pattern_shift_{kpl}.{offset}'
-        for db, fname, score, kl, skips in enum_db_irps(dbname, fn_score,
-                                                        irpset=[0],
+        dbname = f'db_{dbprefix}_pattern_shift_{kpl}.{offset}'
+        for db, fname, score, kl, skips in enum_db_irps(dbname, fn_pattern_scr,
+                                                        irpset=[0, 28],
                                                         klset=range(1, kpl)):
             db.write(dbname, fname, score, kl, skips)
-            print(f'shift_pattern {kpl}.{offset}, shift: {kl}, score: {score:.4f}')
+            print(f'shift_pattern {kpl}.{offset}'
+                  f', shift: {kl}, score: {score:.4f}')
+
+
+def create_pattern_mirror_db(dbprefix, fn_score, offset=0):
+    for typ, generator in [('a', GuessPattern.mirror_pattern_a),
+                           ('b', GuessPattern.mirror_pattern_b)]:
+        def fn_mirror_scr(x, kl):
+            parts = GuessPattern.groups(x, kl, generator(kl), offset)
+            return fn_score(parts, kl)
+
+        dbname = f'db_{dbprefix}_pattern_mirror_{typ}.{offset}'
+        for db, fname, score, kl, skips in enum_db_irps(dbname, fn_mirror_scr,
+                                                        irpset=[0, 28],
+                                                        klset=range(4, 19)):
+            db.write(dbname, fname, score, kl, skips)
+            print(f'mirror_pattern {typ}.{offset}'
+                  f', kl: {kl}, score: {score:.4f}')
 
 
 if __name__ == '__main__':
@@ -193,7 +210,10 @@ if __name__ == '__main__':
     # create_mod_a_db('norm', Probability.target_diff)
     # create_mod_b_db('high', Probability.IC_w_keylen)
     # create_mod_b_db('norm', Probability.target_diff)
-    create_pattern_shift_db(offset=0)
+    # create_pattern_shift_db('high', Probability.parts_high, offset=0)
+    # create_pattern_shift_db('norm', Probability.parts_norm, offset=0)
+    create_pattern_mirror_db('high', Probability.parts_high, offset=0)
+    create_pattern_mirror_db('norm', Probability.parts_norm, offset=0)
     # create_secondary('db_high', 'db_high_secondary',
     #                  Probability.IC_w_keylen, threshold=1.4)
     # create_secondary('db_norm', 'db_norm_secondary',
