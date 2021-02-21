@@ -19,6 +19,7 @@ class IOWriter(object):
         self.file_output = None
 
     def clear(self):
+        self.wordsum = 0
         self.linesum = 0
         self.out_r = ''
         self.out_t = ''
@@ -34,12 +35,26 @@ class IOWriter(object):
             self.out_p += m
             # self.out_ps += m  # No. Because a word may be split-up
 
+    def printwordsum(self):
+        if self.wordsum <= 0:
+            return
+        self.linesum += self.wordsum
+        if self.VERBOSE:
+            if self.out_ps:
+                self.out_ps += ' + '
+            self.out_ps += str(self.wordsum)
+        if utils.is_prime(self.wordsum):
+            if self.VERBOSE:
+                self.out_ps += '*'
+            elif not self.QUIET:  # and self.wordsum > 109
+                self.out_t += '__'
+        self.wordsum = 0
+
     def run(self, data, highlight=None):  # make sure sorted, non-overlapping
         break_on = self.BREAK_MODE  # set by user
         if break_on is None:  # check None specifically, to allow '' as value
             break_on = 'l' if self.VERBOSE else 's'  # dynamically adapt mode
 
-        wsum = 0
         self.clear()
         if not highlight:
             highlight = []
@@ -64,6 +79,8 @@ class IOWriter(object):
             if cur.kind == 'l':
                 if cur.kind == break_on:
                     self.write()
+                elif eow:
+                    self.printwordsum()
                 continue  # ignore all \n,\r if not forced explicitly
             self.out_r += cur.rune
             self.out_t += cur.text
@@ -72,7 +89,14 @@ class IOWriter(object):
                     self.out_p += ' '
                 if cur.kind == break_on:
                     self.write()
+                elif eow:
+                    self.printwordsum()
                 continue
+
+            # Mark prime words
+            self.wordsum += cur.prime
+            if eow:
+                self.printwordsum()
 
             # Special case when printing numbers.
             # Keep both lines (text + numbers) in sync.
@@ -85,21 +109,6 @@ class IOWriter(object):
                     if fillup >= 0:
                         self.out_t += ' '
                     self.out_p += '+'
-
-            # Mark prime words
-            wsum += cur.prime
-            if eow and wsum > 0:
-                self.linesum += wsum
-                if self.VERBOSE:
-                    if self.out_ps:
-                        self.out_ps += ' + '
-                    self.out_ps += str(wsum)
-                if utils.is_prime(wsum):
-                    if self.VERBOSE:
-                        self.out_ps += '*'
-                    elif not self.QUIET:  # and wsum > 109
-                        self.out_t += '__'
-                wsum = 0
         self.write()
 
     def write(self):
@@ -112,6 +121,9 @@ class IOWriter(object):
 
         if not self.out_t:
             return
+
+        if self.wordsum > 0:
+            self.printwordsum()
 
         prev_color = self.cur_color
         if prev_color:
