@@ -84,6 +84,14 @@ def get_db(fname, irp, max_irp):
     return InterruptDB(data, irp, irp_stops=stops)
 
 
+def get_db_invert(fname, irp, max_irp):
+    stops, Z = InterruptIndices().consider(fname, 28 - irp, max_irp)
+    data = RuneTextFile(LPath.page(fname))
+    data.invert()
+    data = data.index_no_white[:Z]
+    return InterruptDB(data, irp, irp_stops=stops)
+
+
 def enum_db_irps(dbname, fn_score, max_irp=20, irpset=[0, 28],
                  klset=range(1, 33), files=FILES_UNSOLVED, fn_load_db=get_db):
     oldValues = {k: set((a, b, c) for a, _, b, c, _ in v)
@@ -206,6 +214,29 @@ def create_pattern_mirror_db(dbprefix, fn_score, offset=0):
                   f', kl: {kl}, score: {score:.4f}')
 
 
+def create_autokey_db(dbprefix, fn_score):
+    # we misuse the db's keylen column as start offset. kl is always 1
+    primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53,
+              59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109]
+
+    def fn_autokey_scr(x, kl):
+        res = []
+        prev = kl
+        for y in x:
+            z = (y - primes[prev]) % 29  # change here +/- or primes[prev]/prev
+            res.append(z)
+            prev = z
+        return fn_score(res, 1)
+
+    desc = '-p'  # +/- prime, +/- index, '_inv' for invert
+    dbname = f'db_{dbprefix}_autokey_{desc}'
+    for db, fname, score, kl, skips in enum_db_irps(
+            dbname, fn_autokey_scr, max_irp=16, irpset=[0], klset=range(29)):
+            # fn_load_db=get_db_invert):  # uncomment to invert, leave irpset=0
+        db.write(dbname, fname, score, kl, skips)
+        print(f'autokey {desc}, start: {kl}, score: {score:.4f}')
+
+
 if __name__ == '__main__':
     # create_primary('db_high', Probability.IC_w_keylen)
     # create_primary('db_norm', Probability.target_diff)
@@ -215,8 +246,10 @@ if __name__ == '__main__':
     # create_mod_b_db('norm', Probability.target_diff)
     # create_pattern_shift_db('high', Probability.parts_high, offset=0)
     # create_pattern_shift_db('norm', Probability.parts_norm, offset=0)
-    create_pattern_mirror_db('high', Probability.parts_high, offset=0)
-    create_pattern_mirror_db('norm', Probability.parts_norm, offset=0)
+    # create_pattern_mirror_db('high', Probability.parts_high, offset=0)
+    # create_pattern_mirror_db('norm', Probability.parts_norm, offset=0)
+    create_autokey_db('high', Probability.IC_w_keylen)
+    # create_autokey_db('norm', Probability.target_diff)
     # create_secondary('db_high', 'db_high_secondary',
     #                  Probability.IC_w_keylen, threshold=1.4)
     # create_secondary('db_norm', 'db_norm_secondary',

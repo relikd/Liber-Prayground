@@ -1,3 +1,10 @@
+## OEIS
+
+Download and unzip the OEIS [stripped.gz][oeis]. Rename the file to `oeis_orig.txt`. Run `trim_orig_oeis()` in `solver.py`, which will generate the `oeis.txt`.
+
+[oeis]: https://oeis.org/stripped.gz
+
+
 ## InterruptDB
 
 - `db_indices` : Just each index of each rune for all chapters
@@ -69,8 +76,12 @@ This pattern is similar to the shift pattern. Here we have two variants. Variant
 
 
 
-## OEIS
+#### Pattern: Autokey
 
-Download and unzip the OEIS [stripped.gz][oeis]. Rename the file to `oeis_orig.txt`. Run `trim_orig_oeis()` in `solver.py`, which will generate the `oeis.txt`.
+`db_high_autokey_{+|-}{p|i}{_inv}`
 
-[oeis]: https://oeis.org/stripped.gz
+A very brief test on reusing the previously decrypted result similar to autokey. Though autokey would use a key word with key length, here we simply use a single letter. The current rune will only be influenced by the decrypted value of the previous rune. `+`/`-` denote the operation of decryption and `p`/`i` what value was used, either the runes prime value or its index. The db has `_inv` appended if the input text was inverted prior.
+
+As the whole text will be used, we can lower our interrupt limit to 16 without sacrificing reliability. This makes the calculations faster. But still, all variations are as uniform as the LP itself (IoC between 1.0 and 1.15). The vast majority is below 1.1 though.
+
+Just two notable exceptions: p0-2 with `-i` and p3-7 with `-i_inv` produce higher than average IoCs consistently on all initialization letters (all of them are above 1.1).
