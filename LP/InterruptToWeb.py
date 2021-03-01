@@ -4,8 +4,6 @@ from Alphabet import RUNES
 from LPath import FILES_ALL, FILES_SOLVED, FILES_UNSOLVED, LPath
 from InterruptDB import InterruptDB
 from InterruptIndices import InterruptIndices
-from RuneText import RuneTextFile
-from Probability import Probability
 
 NORM_MIN = 0.40
 NORM_MAX = 0.98
@@ -197,52 +195,6 @@ class ChapterToWeb(object):
         with open(LPath.results(template), 'r') as f:
             self.template = f.read()
 
-    def pick_ngrams(self, runes, gramsize, limit=100):
-        res = {}
-        for i in range(len(runes) - gramsize + 1):
-            ngram = ''.join(x.rune for x in runes[i:i + gramsize])
-            try:
-                res[ngram] += 1
-            except KeyError:
-                res[ngram] = 1
-        res = sorted(res.items(), key=lambda x: -x[1])
-        z = ''.join(f'<div><div>{x}:</div> {y}</div>' for x, y in res[:limit])
-        if len(res) > limit:
-            z += f'+{len(res) - limit}&nbsp;others'
-        return HTML.dt_dd(f'{gramsize}-grams:', z, {'class': 'tabwidth'})
-
-    def sec_counts(self, words, runes):
-        txt = f'<p><b>Words:</b> {len(words)}</p>\n'
-        txt += f'<p><b>Runes:</b> {len(runes)}</p>\n'
-        txt += '<dl>\n'
-        rcount = [0] * 29
-        for r in runes:
-            rcount[r.index] += 1
-        minmax = [min(rcount), max(rcount)]
-        vals = [f'<b>{y}</b>' if y in minmax else str(y) for y in rcount]
-        z = ''.join(f'<div><div>{x}:</div> {y}</div>'
-                    for x, y in zip(RUNES, vals))
-        txt += HTML.dt_dd('1-grams:', z, {'class': 'tabwidth'})
-        txt += self.pick_ngrams(runes, 2, limit=100)
-        txt += self.pick_ngrams(runes, 3, limit=50)
-        txt += self.pick_ngrams(runes, 4, limit=25)
-        return txt + '</dl>\n'
-
-    def sec_double_rune(self, indices):
-        num_a = []
-        num_b = []
-        for i, (a, b) in enumerate(zip(indices, indices[1:])):
-            x = min(abs(a - b), min(a, b) + 29 - max(a, b))
-            num_a.append(({'title': f'offset: {i}, rune: {RUNES[a]}'}, 1)
-                         if x == 0 else '.')
-            num_b.append(({'title': f'offset: {i}'}, x))
-        txt = ''
-        txt += HTML.dt_dd('Double Runes:', HTML.num_stream(num_a, 0, 1),
-                          {'class': 'ioc-list small one'})
-        txt += HTML.dt_dd('Rune Difference:', HTML.num_stream(num_b, 0, 14),
-                          {'class': 'ioc-list small two'})
-        return '<dl>\n' + txt + '</dl>\n'
-
     def sec_ioc(self, fname):
         tbl = [[x] for x in range(33)]
         foot = ['best']
@@ -340,51 +292,8 @@ class ChapterToWeb(object):
         txt += sub_table('Shift Pattern', 'shift', range(4, 19), range(1, 18))
         return txt + '</dl>\n'
 
-    def sec_ioc_flow(self, indices):
-        txt = '<dl>\n'
-        for wsize in [120, 80, 50, 30, 20]:
-            nums = HTML.num_stream((({'title': f'offset: {i}'},
-                                     Probability(indices[i:i + wsize]).IC())
-                                    for i in range(len(indices) - wsize + 1)),
-                                   HIGH_MIN - 0.1, HIGH_MAX)
-            txt += HTML.dt_dd(f'Window size {wsize}:', nums,
-                              {'class': 'ioc-list small four'})
-        return txt + '</dl>\n'
-
-    def ioc_head(self, desc, letters):
-        ioc = Probability(x.index for x in letters)
-        txt = f'IoC: {ioc.IC():.3f} / {max(0, ioc.IC_norm()):.3f}'
-        return f'{desc} ({txt}):'
-
-    def sec_concealment(self, words):
-        txt = ''
-        for n in range(1, 6):
-            txt += f'<h3>Pick every {n}. word</h3>\n<dl>\n'
-            for u in range(n):
-                if n > 1:
-                    txt += f'<h4>Start with {u + 1}. word</h4>\n'
-                subset = [x for x in words[u::n]]
-                txt += HTML.dt_dd(
-                    self.ioc_head('Words', (x for y in subset for x in y)),
-                    ''.join(x.text + ' ' for x in subset))
-
-                for desc, idx in [('first', 0), ('last', -1)]:
-                    letters = [x[idx] for x in subset]
-                    txt += HTML.dt_dd(
-                        self.ioc_head(f'Pick every {desc} letter', letters),
-                        ''.join(f'<div>{x.text}</div>' for x in letters),
-                        {'class': 'runelist'})
-            txt += '</dl>\n'
-        return txt
-
     def make(self, fname, outfile):
-        source = RuneTextFile(LPath.page(fname))
-        words = [x[3] for x in source.enum_words()]
-        runes = [x for w in words for x in w]
-        indices = [x.index for x in runes]
         html = self.template.replace('__FNAME__', fname)
-        html = html.replace('__SEC_COUNTS__', self.sec_counts(words, runes))
-        html = html.replace('__SEC_DOUBLE__', self.sec_double_rune(indices))
         if fname.startswith('solved_'):
             ref = f'<a href="./{fname[7:]}.html">“unsolved” page</a>'
             html = html.replace('__SEC_IOC__', HTML.p_warn(
@@ -400,8 +309,6 @@ class ChapterToWeb(object):
                 'Mod-IoC is disabled on solved pages'))
             html = html.replace('__SEC_IOC_PATTERN__', HTML.p_warn(
                 'Pattern-IoC is disabled on solved pages'))
-        html = html.replace('__SEC_IOC_FLOW__', self.sec_ioc_flow(indices))
-        html = html.replace('__SEC_CONCEAL__', self.sec_concealment(words))
         with open(LPath.results(outfile), 'w') as f:
             f.write(html)
 
@@ -432,17 +339,14 @@ if __name__ == '__main__':
     links = {
         '__A_IOC__': [('ioc/high.html', 'Highest (bluntly)'),
                       ('ioc/norm.html', 'Normal english (1.7767)')],
-        '__A_CHAPTER__': [(f'pages/{x}.html', x) for x in FILES_ALL],
-        '__A_SOLVED__': [(f'pages/solved_{x}.html', x)
-                         for x in FILES_SOLVED]
+        '__A_CHAPTER__': [(f'pages/{x}.html', x) for x in FILES_UNSOLVED],
+        '__A_SOLVED__': [(f'pages/{x}.html', x) for x in FILES_SOLVED],
     }
     MEM_DB = DBToMem()
     iocweb = InterruptToWeb()
     iocweb.make('high', 'ioc/high.html', HIGH_MIN, HIGH_MAX)
     iocweb.make('norm', 'ioc/norm.html', NORM_MIN, NORM_MAX)
     ctw = ChapterToWeb()
-    for x, y in links['__A_CHAPTER__']:
+    for x, y in links['__A_CHAPTER__'] + links['__A_SOLVED__']:
         ctw.make(y, x)
-    for x, y in links['__A_SOLVED__']:
-        ctw.make('solved_' + y, x)
     IndexToWeb().make(links)
