@@ -169,7 +169,7 @@ function count_table(id, nums) {
 	txt += '</tr>\n<tr>';
 	for (var i = 0; i <= high; i++) { txt += '<td>' + (counts[i] || '–') + '</td>'; }
 	txt += '</tr>\n</table>\n';
-	txt += '<br><span class="small">⤳ IoC: ' + IC_direct(counts, high + 1).toFixed(3) + '</span>';
+	// txt += '<br><span class="small">⤳ IoC: ' + IC_direct(counts, high + 1).toFixed(3) + '</span>';
 	return txt;
 }
 
@@ -189,17 +189,28 @@ function sec_double() {
 			num_c.push([y, 'offset: ' + i]);
 		}
 	}
+	var num_vig_b = [];
+	var num_vig_c = [];
+	for (var i = 0; i < num_b.length; i++) {
+		num_vig_b.push(window.txt_abc[num_b[i][0]]);
+	}
+	for (var i = 0; i < num_c.length; i++) {
+		num_vig_c.push(window.txt_abc[num_c[i][0]]);
+	}
 	var txt = '';
 	txt += dt_dd('Double Letters:', num_stream(num_a), 'ioc-list small one', 'strm-dbls');
 	txt += dt_dd('Letter Difference (2nd – 1st):', num_stream(num_b), 'ioc-list small two', 'strm-diff2a');
 	txt += dt_dd('Count Difference (2nd – 1st):', count_table('tbl-ldiff2a', num_b));
+	txt += dt_dd('IoC Difference (2nd – 1st):', keylen_table('tbl-kldiff2', ['IoC'], [num_vig_b], 1, 18));
 	for (var i = num_b.length - 1; i >= 0; i--) {
 		num_b[i][0] = Math.min(num_b[i][0], window.txt_abc.length - num_b[i][0])
 	}
 	txt += dt_dd('Letter Difference (2nd, Absolute):', num_stream(num_b), 'ioc-list small two', 'strm-diff2b');
 	txt += dt_dd('Count Difference (2nd, Absolute):', count_table('tbl-ldiff2b', num_b));
+
 	txt += dt_dd('Letter Difference (3rd – 1st):', num_stream(num_c), 'ioc-list small two', 'strm-diff3a');
 	txt += dt_dd('Count Difference (3rd – 1st):', count_table('tbl-ldiff3a', num_c));
+	txt += dt_dd('IoC Difference (3rd – 1st):', keylen_table('tbl-kldiff3', ['IoC'], [num_vig_c], 1, 18));
 	for (var i = num_c.length - 1; i >= 0; i--) {
 		num_c[i][0] = Math.min(num_c[i][0], window.txt_abc.length - num_c[i][0])
 	}
@@ -213,6 +224,8 @@ function sec_double() {
 		apply_colors('strm-diff' + i + 'b', 'div', 0, parseInt((window.txt_abc.length - 1) / 2));
 		apply_colors('tbl-ldiff' + i + 'a', 'td');
 		apply_colors('tbl-ldiff' + i + 'b', 'td');
+		apply_colors('tbl-kldiff' + i, 'tr:not(.small)>td', MIN_IOC, MAX_IOC);
+		apply_colors('tbl-kldiff' + i, 'tr.small>td', MIN_CHR, MAX_CHR);
 	}
 }
 
