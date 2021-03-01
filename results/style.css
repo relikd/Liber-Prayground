@@ -17,7 +17,7 @@ nav {
 }
 nav a { padding: .5em .25em; color: #FFF; text-decoration: none; }
 dt { font-weight: lighter; margin: .5em 0 }
-dd span { display: block; color: #33F; }
+dd span { display: block; color: #33F; margin-top: .5em; }
 table { width: 100%; }
 td { text-align: center; font-size: 0.9em; }
 h3 + table { margin-top: -4em; }

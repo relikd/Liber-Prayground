@@ -38,7 +38,8 @@ function num_stream(stream) {
 	for (var i = 0; i < stream.length; i++) {
 		var val = stream[i];
 		var title = '';
-		if (typeof stream[i] != 'string') {
+		const typ = typeof stream[i];
+		if (typ != 'string' && typ != 'number') {
 			title = ' title="' + val[1] + '"';
 			val = val[0];
 		}
@@ -126,36 +127,93 @@ function sec_counts() {
 		}
 		ngrams.push(arrset);
 	}
-	var txt = '<p><b>Words:</b> ' + window.words.length + '</p>\n';
-	txt += '<p><b>Runes:</b> ' + window.runes.length + '</p>\n';
+	var txt = '<p><b>Letters:</b> ' + window.runes.length + '</p>\n';
+	txt += '<p><b>Words:</b> ' + window.words.length + '</p>\n';
 	txt += '<dl>\n';
-
+	var wlens = [];
+	for (var i = 0; i < window.words.length; i++) {
+		wlens.push([window.words[i].length, window.words[i] + ' (' + window.eng_words[i].join('') + ')']);
+	}
+	txt += dt_dd('Word lengths:', num_stream(wlens), 'ioc-list small two', 'strm-wlen');
 	txt += dt_dd('1-grams:', ngram_table(ngrams[0], 'tbl-1g'));
 	txt += dt_dd('2-grams:', ngram_table(ngrams[1], 'tbl-2g', window.txt_abc));
 	txt += pick_ngrams(3, ngrams[2], 100);
 	txt += pick_ngrams(4, ngrams[3], 50);
 	txt += '</dl>\n';
 	byID('sec_counts').innerHTML = txt;
+	apply_colors('strm-wlen', 'div');
 	apply_colors('tbl-1g', 'td');
 	apply_colors('tbl-2g', 'td');
+}
+
+function IC_direct(prob, count) {
+	var sum = 0;
+	var ioc = 0;
+	for (k in prob) {
+		sum += prob[k];
+		ioc += prob[k] * (prob[k] - 1);
+	}
+	return ioc / ((sum * (sum - 1)) / count);
+}
+
+function count_table(id, nums) {
+	var counts = [];
+	var high = 0;
+	for (var i = nums.length - 1; i >= 0; i--) {
+		const val = nums[i][0];
+		if (val > high) { high = val; }
+		counts[val] = (counts[val] || 0) + 1;
+	}
+	var txt = '<table id="' + id + '">\n<tr>';
+	for (var i = 0; i <= high; i++) { txt += '<th>' + i + '</th>'; }
+	txt += '</tr>\n<tr>';
+	for (var i = 0; i <= high; i++) { txt += '<td>' + (counts[i] || '–') + '</td>'; }
+	txt += '</tr>\n</table>\n';
+	txt += '<br><span class="small">⤳ IoC: ' + IC_direct(counts, high + 1).toFixed(3) + '</span>';
+	return txt;
 }
 
 function sec_double() {
 	var num_a = [];
 	var num_b = [];
+	var num_c = [];
 	for (var i = 0; i < window.runes.length - 1; i++) {
 		const a = window.txt_abc.indexOf(window.runes[i]);
 		const b = window.txt_abc.indexOf(window.runes[i + 1]);
-		const x = Math.min(Math.abs(a - b), Math.min(a, b) + 29 - Math.max(a, b));
+		const c = window.txt_abc.indexOf(window.runes[i + 2]);
+		const x = (b - a + window.txt_abc.length) % window.txt_abc.length;
 		num_a.push(x == 0  ? [1, 'offset: ' + i + ', char: ' + window.txt_abc[a]] : '.');
 		num_b.push([x, 'offset: ' + i]);
+		if (c != -1) {  // is -1 for the last entry
+			const y = (c - a + window.txt_abc.length) % window.txt_abc.length;
+			num_c.push([y, 'offset: ' + i]);
+		}
 	}
 	var txt = '';
 	txt += dt_dd('Double Letters:', num_stream(num_a), 'ioc-list small one', 'strm-dbls');
-	txt += dt_dd('Letter Difference:', num_stream(num_b), 'ioc-list small two', 'strm-diff');
+	txt += dt_dd('Letter Difference (2nd – 1st):', num_stream(num_b), 'ioc-list small two', 'strm-diff2a');
+	txt += dt_dd('Count Difference (2nd – 1st):', count_table('tbl-ldiff2a', num_b));
+	for (var i = num_b.length - 1; i >= 0; i--) {
+		num_b[i][0] = Math.min(num_b[i][0], window.txt_abc.length - num_b[i][0])
+	}
+	txt += dt_dd('Letter Difference (2nd, Absolute):', num_stream(num_b), 'ioc-list small two', 'strm-diff2b');
+	txt += dt_dd('Count Difference (2nd, Absolute):', count_table('tbl-ldiff2b', num_b));
+	txt += dt_dd('Letter Difference (3rd – 1st):', num_stream(num_c), 'ioc-list small two', 'strm-diff3a');
+	txt += dt_dd('Count Difference (3rd – 1st):', count_table('tbl-ldiff3a', num_c));
+	for (var i = num_c.length - 1; i >= 0; i--) {
+		num_c[i][0] = Math.min(num_c[i][0], window.txt_abc.length - num_c[i][0])
+	}
+	txt += dt_dd('Letter Difference (3rd, Absolute):', num_stream(num_c), 'ioc-list small two', 'strm-diff3b');
+	txt += dt_dd('Count Difference (3rd, Absolute):', count_table('tbl-ldiff3b', num_c));
+	
 	byID('sec_double').innerHTML = '<dl>\n' + txt + '</dl>\n';
 	apply_colors('strm-dbls', 'div', 0, 1);
-	apply_colors('strm-diff', 'div', 0, 14);
+	for (var i = 2; i <= 3; i++) {
+		apply_colors('strm-diff' + i + 'a', 'div', 0, window.txt_abc.length - 1);
+		apply_colors('strm-diff' + i + 'b', 'div', 0, parseInt((window.txt_abc.length - 1) / 2));
+		apply_colors('tbl-ldiff' + i + 'a', 'td');
+		apply_colors('tbl-ldiff' + i + 'b', 'td');
+	}
 }
 
 function IC(nums) {
